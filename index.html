@@ -2353,7 +2353,7 @@ $('#exportPdfBtn').onclick=()=>{
   const subRows=Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([s,m])=>'<tr><td>'+esc(s)+'</td><td>'+m+' min</td></tr>').join('')||'<tr><td colspan="2">0 min</td></tr>';
   const dayRows=d.days.map((day,i)=>'<tr><td>'+d.names[i]+' · '+day+'</td><td>'+d.vals[i]+' min</td></tr>').join('');
   const svg=reportGraphSvg();
-  const html='<!DOCTYPE html><html><head><title>VELKORE Weekly Report</title><style>@page{size:A4;margin:16mm}body{font-family:system-ui,Segoe UI,sans-serif;color:#161616;max-width:780px;margin:auto}h1{margin-bottom:3px}h2{margin-top:22px;border-bottom:1px solid #ddd;padding-bottom:5px}.muted{color:#666}table{width:100%;border-collapse:collapse;margin:10px 0 18px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f2f2f2}.graph{border:1px solid #ddd;border-radius:10px;padding:8px}.graph svg{width:100%;height:auto}</style></head><body><h1>VELKORE Study Report</h1><p class="muted">Student: <b>'+esc(data.profile.displayName||'Student')+'</b><br>Week: '+esc(d.range)+'<br>Generated: '+new Date().toLocaleString('en-IN')+'</p><table><tr><th>Metric</th><th>Value</th></tr><tr><td>Week focus</td><td>'+d.total+' min</td></tr><tr><td>Today focus</td><td>'+todayTimed()+' min</td></tr><tr><td>Streak</td><td>'+st+' days</td></tr><tr><td>XP / Level</td><td>'+xp+' XP / Level '+levelOf(xp)+'</td></tr></table><h2>Weekly graph</h2><div class="graph">'+svg+'</div><p class="muted">Chart mode: '+esc(data.statsChart||'combo')+' · Mon–Sun. Goal line is '+d.goal+' min/day.</p><h2>Daily breakdown</h2><table><tr><th>Day</th><th>Minutes</th></tr>'+dayRows+'</table><h2>Subject breakdown</h2><table><tr><th>Subject</th><th>Minutes</th></tr>'+subRows+'</table><p class="muted">Study help report — not an official CBSE document.</p><script>onload=function(){print()}<\/script></body></html>';
+  const html='<!DOCTYPE html><html><head><title>VELKORE Weekly Report</title><style>@page{size:A4;margin:16mm}body{font-family:system-ui,Segoe UI,sans-serif;color:#161616;max-width:780px;margin:auto}h1{margin-bottom:3px}h2{margin-top:22px;border-bottom:1px solid #ddd;padding-bottom:5px}.muted{color:#666}table{width:100%;border-collapse:collapse;margin:10px 0 18px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f2f2f2}.graph{border:1px solid #ddd;border-radius:10px;padding:8px}.graph svg{width:100%;height:auto}</style></head><body><h1>VELKORE Study Report</h1><p class="muted">Student: <b>'+esc(data.profile.displayName||'Student')+'</b><br>Week: '+esc(d.range)+'<br>Generated: '+new Date().toLocaleString('en-IN')+'</p><table><tr><th>Metric</th><th>Value</th></tr><tr><td>Week focus</td><td>'+d.total+' min</td></tr><tr><td>Today focus</td><td>'+todayTimed()+' min</td></tr><tr><td>Streak</td><td>'+st+' days</td></tr><tr><td>XP / Level</td><td>'+xp+' XP / Level '+levelOf(xp)+'</td></tr></table><h2>Weekly graph</h2><div class="graph">'+svg+'</div><p class="muted">Chart mode: '+esc(data.statsChart||'combo')+' · Mon–Sun. Goal line is '+d.goal+' min/day.</p><h2>Daily breakdown</h2><table><tr><th>Day</th><th>Minutes</th></tr>'+dayRows+'</table><h2>Subject breakdown</h2><table><tr><th>Subject</th><th>Minutes</th></tr>'+subRows+'</table><p class="muted">Study help report — not an official CBSE document.</p><script>onload=function(){print()}<\/script>';
   const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();return;}const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='VELKORE-Weekly-Report.html';a.click();toast('Popup blocked — report file downloaded');
 };
 
@@ -2780,7 +2780,7 @@ function chiPrint(title,bodyHtml){
   .infoBoard{display:grid;grid-template-columns:1fr 1fr;gap:10px}.infoCell{border:1px solid #bbb;padding:10px}
 </style></head><body>
   <h1>VELKORE · CHIKARA</h1><div class="meta">Class 10 CBSE · ${esc(title)} · ${new Date().toLocaleDateString('en-IN')}</div>
-  ${bodyHtml}<div class="foot">Class 10 CBSE study sheet. Not an official CBSE paper.</div></body></html>`;
+  ${bodyHtml}<div class="foot">Class 10 CBSE study sheet. Not an official CBSE paper.</div>`;
   const w=window.open('','_blank');
   if(w){w.document.write(html+'<script>onload=function(){print()}<\/script>');w.document.close();return;}
   const blob=new Blob([html],{type:'text/html'});
@@ -4877,6 +4877,992 @@ try{afterBootFixes();}catch(e){console.warn(e);}
 </script>
 
 
+
+<!-- VK_V19_SPIDER_PIE_MATCH -->
+<style id="VK_V19_SPIDER_PIE_MATCH">
+#statsChartSwitcher{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px!important}
+#statsChartSwitcher .btn{min-height:44px!important;border-radius:13px!important;font-weight:900!important}
+.vkTopStudy{display:flex;align-items:center;gap:10px;margin:10px 0 4px;padding:12px 14px;border-radius:14px;border:1px solid rgba(245,185,66,.35);background:linear-gradient(145deg,rgba(245,185,66,.14),rgba(255,255,255,.03))}.vkTopStudy span{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#ffe7a3}.vkTopStudy b{flex:1;font-size:14px}.vkTopStudy strong{font-size:16px;color:#ffe7a3}
+#vkDaySubjectCard{display:block!important;margin-top:12px}
+#vkDaySubjectCard .vkPieLayout{display:grid;grid-template-columns:minmax(180px,240px) 1fr;gap:16px;align-items:center;margin-top:12px}
+#vkDaySubjectCard .vkPieStage{position:relative;width:min(230px,100%);aspect-ratio:1;margin:auto;filter:drop-shadow(0 10px 22px rgba(245,185,66,.18))}
+#vkDaySubjectCard .vkPieStage svg{width:100%;height:100%;display:block;overflow:visible}
+#vkDaySubjectCard .vkPieLegend{display:grid;gap:8px}
+#vkDaySubjectCard .vkPieRow{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:42px;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 88%,transparent),var(--in))}
+#vkDaySubjectCard .vkPieSwatch{width:12px;height:12px;border-radius:4px}
+#vkDaySubjectCard .vkPieName{font-size:12px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#vkDaySubjectCard .vkPieVal{font-size:11px;font-weight:900;color:var(--s)}
+#vkDaySubjectCard .vkDayStrip{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#vkDaySubjectCard .vkDayStrip button{min-height:36px;padding:6px 8px;border-radius:10px;font-size:10px;font-weight:900}
+#vkDaySubjectCard .vkDayStrip button.on{border-color:color-mix(in srgb,var(--p) 65%,var(--line));background:color-mix(in srgb,var(--p) 14%,var(--btn))}
+.vkTopicSelect{position:relative;width:100%}
+.vkTopicSelect .smartSelectMenu{max-height:260px}
+.vkTopicSelect .smartSelectOption{position:relative}
+.vkTopicSelect .smartSelectOption input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.vkTopicSelect .smartSelectOption b{color:var(--good);font-size:14px;min-width:14px;text-align:right}
+#chart svg.vkSpiderSvg,#vkCompareChart svg{display:block;width:100%;height:100%}
+#sessionTopicsPicker .smartSelectOption,#taskTopicsPicker .smartSelectOption,#planTopicsPicker .smartSelectOption,#sessionSubtopicsPicker .smartSelectOption,#taskSubtopicsPicker .smartSelectOption,#planSubtopicsPicker .smartSelectOption{min-height:42px!important;border-radius:10px!important;font-size:11px!important;font-weight:800!important}
+#sessionTopicsPicker .smartSelectFace,#taskTopicsPicker .smartSelectFace,#planTopicsPicker .smartSelectFace,#sessionSubtopicsPicker .smartSelectFace,#taskSubtopicsPicker .smartSelectFace,#planSubtopicsPicker .smartSelectFace{min-height:48px!important;border-radius:14px!important}
+#chart svg,#vkCompareChart svg,#vkDaySubjectCard svg{shape-rendering:geometricPrecision}
+#vkDaySubjectCard{overflow:hidden}
+#vkDaySubjectCard .vkDayStrip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+#vkDaySubjectCard .vkDayStrip button{min-width:0;padding:6px 2px;font-size:9px}
+@media(max-width:640px){
+  #vkDaySubjectCard .vkPieLayout{grid-template-columns:1fr}
+  #statsChartSwitcher{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #vkDaySubjectCard .vkPieStage{width:min(200px,70vw)}
+}
+</style>
+<script id="VK_V19_SPIDER_PIE_MATCH_JS">
+(function(){
+'use strict';
+if(window.__VK_V19__) return;
+window.__VK_V19__ = true;
+function D(){return window.data||(window.data={});}
+function N(v){v=Number(v);return Number.isFinite(v)?Math.max(0,v):0;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c];});}
+function keyOf(dt){var d=dt instanceof Date?dt:new Date(dt||Date.now());if(isNaN(d.getTime()))d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function sDay(s){var raw=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;if(s&&s.startTime){var x=new Date(s.startTime);if(!isNaN(x))return keyOf(x);}return raw;}
+function sessions(){return Array.isArray(D().sessions)?D().sessions:[];}
+function minsOf(s){return Math.round(N(s&&(s.minutes!=null?s.minutes:s.min)));}
+function weekDates(off){off=parseInt(off,10)||0;var d=new Date();d.setHours(12,0,0,0);var dow=d.getDay();d.setDate(d.getDate()-(dow===0?6:dow-1)+off*7);var a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(keyOf(x));}return a;}
+function minsDay(k){return sessions().filter(function(s){return sDay(s)===k;}).reduce(function(a,s){return a+minsOf(s);},0);}
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var COLORS=['#f5b942','#8eb8ff','#b68cff','#67d7c4','#ff9f68','#e7e7ea','#7fd38b','#e08bd7'];
+function fmtMin(m){m=Math.round(N(m));if(m<=0)return '0 min';if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return r?h+'h '+r+'m':h+'h';}
+
+function spiderSvg(vals, labels, theme){
+  vals=vals||[]; labels=labels||DAYS; theme=theme||'dark';
+  var W=760,H=440,cx=380,cy=214,R=132;
+  var m=Math.max(30, Math.max.apply(null, vals.concat([1])));
+  var cream=theme==='print';
+  var grid=cream?'#e4d7b8':'rgba(255,255,255,.09)';
+  var ink=cream?'#3a3224':'#aaa6b0';
+  var gold=cream?'#b8891d':'#f5b942';
+  var g='<defs><filter id="vkSpG"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  if(cream) g+='<rect width="'+W+'" height="'+H+'" rx="16" fill="#fffaf0"/>';
+  var n=Math.max(vals.length,3);
+  for(var ring=1;ring<=4;ring++){
+    var pts=[];
+    for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n;var rr=R*ring/4;pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}
+    g+='<polygon points="'+pts.join(' ')+'" fill="'+(ring===4?(cream?'rgba(201,162,39,.05)':'rgba(245,185,66,.035)'):'none')+'" stroke="'+grid+'"/>';
+  }
+  var data=[];
+  for(var i=0;i<n;i++){
+    var a=-Math.PI/2+i*2*Math.PI/n;
+    var rr=R*(N(vals[i])/m);
+    data.push([cx+rr*Math.cos(a), cy+rr*Math.sin(a)]);
+    g+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(a)).toFixed(1)+'" y2="'+(cy+R*Math.sin(a)).toFixed(1)+'" stroke="'+grid+'"/>';
+    g+='<text x="'+(cx+(R+28)*Math.cos(a)).toFixed(1)+'" y="'+(cy+(R+28)*Math.sin(a)+4).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="800" fill="'+ink+'">'+esc(labels[i]||'')+'</text>';
+  }
+  if(!data.length) return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'"></svg>';
+  var d='M '+data[0][0].toFixed(1)+' '+data[0][1].toFixed(1);
+  for(var i=0;i<data.length;i++){
+    var p0=data[i], p1=data[(i+1)%data.length];
+    var mx=(p0[0]+p1[0])/2, my=(p0[1]+p1[1])/2;
+    d+=' Q '+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' '+mx.toFixed(1)+' '+my.toFixed(1);
+  }
+  d+=' Z';
+  g+='<path d="'+d+'" fill="'+(cream?'rgba(201,162,39,.28)':'rgba(245,185,66,.22)')+'" stroke="'+gold+'" stroke-width="4.5" stroke-linejoin="round" filter="url(#vkSpG)"/>';
+  data.forEach(function(p,i){
+    g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="5.5" fill="'+(cream?'#fffaf0':'#17171b')+'" stroke="'+gold+'" stroke-width="3"/>';
+    if(N(vals[i])>0) g+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]-12).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="900" fill="'+gold+'">'+Math.round(vals[i])+'</text>';
+  });
+  g+='<text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="18" font-weight="900" fill="'+(cream?'#3a3224':'#fff')+'">'+Math.round(vals.reduce(function(a,b){return a+N(b);},0))+'</text>';
+  g+='<text x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle" font-size="10" font-weight="800" fill="'+ink+'">min</text>';
+  return '<svg class="vkSpiderSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';
+}
+
+function pieSvg(items, theme){
+  items=(items||[]).filter(function(x){return N(x.value)>0;});
+  var W=320,H=320,cx=160,cy=160,R=132;
+  var cream=theme==='print';
+  var total=items.reduce(function(a,x){return a+N(x.value);},0);
+  var g='<defs><filter id="vkPieG"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  if(cream) g+='<rect width="'+W+'" height="'+H+'" fill="#fffaf0"/>';
+  if(!total){
+    g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+(cream?'#f3ead6':'rgba(255,255,255,.04)')+'" stroke="'+(cream?'#e4d7b8':'rgba(255,255,255,.08)')+'"/>';
+    g+='<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-size="13" fill="'+(cream?'#8a7a58':'#aaa6b0')+'">No study yet</text>';
+  }else{
+    var a0=-Math.PI/2;
+    items.forEach(function(it,i){
+      var frac=N(it.value)/total;
+      var a1=a0+frac*Math.PI*2;
+      var large=frac>0.5?1:0;
+      var x1=cx+R*Math.cos(a0), y1=cy+R*Math.sin(a0), x2=cx+R*Math.cos(a1), y2=cy+R*Math.sin(a1);
+      var col=it.color||COLORS[i%COLORS.length];
+      if(items.length===1){
+        g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+col+'" filter="url(#vkPieG)"/>';
+      }else{
+        g+='<path d="M '+cx+' '+cy+' L '+x1.toFixed(2)+' '+y1.toFixed(2)+' A '+R+' '+R+' 0 '+large+' 1 '+x2.toFixed(2)+' '+y2.toFixed(2)+' Z" fill="'+col+'" stroke="'+(cream?'#fffaf0':'#141218')+'" stroke-width="2.4" stroke-linejoin="round" filter="url(#vkPieG)"/>';
+      }
+      if(frac>=0.08){
+        var mid=(a0+a1)/2, lr=R*0.62;
+        g+='<text x="'+(cx+lr*Math.cos(mid)).toFixed(1)+'" y="'+(cy+lr*Math.sin(mid)+4).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="900" fill="#1a1408">'+Math.round(frac*100)+'%</text>';
+      }
+      a0=a1;
+    });
+  }
+  return '<svg class="vkPieSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';
+}
+
+function subjectItems(keysOrDay){
+  var map={};
+  sessions().forEach(function(s){
+    var k=sDay(s);
+    var ok=Array.isArray(keysOrDay)?keysOrDay.indexOf(k)>=0:k===keysOrDay;
+    if(!ok) return;
+    var sub=String(s.subject||'General');
+    map[sub]=(map[sub]||0)+minsOf(s);
+  });
+  return Object.keys(map).map(function(name,i){return {name:name,value:map[name],color:COLORS[i%COLORS.length]};}).sort(function(a,b){return b.value-a.value;});
+}
+
+function installSpiderLock(){
+  if(window.__vkSpiderLock) return;
+  window.__vkSpiderLock=1;
+  var desc=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+  if(!desc||!desc.set) return;
+  Object.defineProperty(Element.prototype,'innerHTML',{
+    configurable:true,
+    get:function(){return desc.get.call(this);},
+    set:function(v){
+      try{
+        if(this&&this.id==='chart' && (D().statsChart==='heat') && typeof v==='string' && v.indexOf('vkSpiderSvg')<0){
+          var keys=weekDates(D().statsWeekOffset||0);
+          v=spiderSvg(keys.map(minsDay), DAYS, 'dark');
+        }
+      }catch(e){}
+      return desc.set.call(this, v);
+    }
+  });
+}
+function paintSpider(){
+  var box=document.getElementById('chart'); if(!box) return;
+  var keys=weekDates(D().statsWeekOffset||0);
+  var vals=keys.map(minsDay);
+  box.innerHTML=spiderSvg(vals, DAYS, 'dark');
+  var title=document.getElementById('weekChartTitle');
+  if(title) title.textContent='This week · SPIDER';
+  var total=document.getElementById('weekChartTotal');
+  if(total) total.textContent=Math.round(vals.reduce(function(a,b){return a+b;},0))+' min';
+  document.querySelectorAll('#statsChartSwitcher [data-chart]').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-chart')==='heat');
+  });
+  var heat=document.querySelector('#statsChartSwitcher [data-chart="heat"]');
+  if(heat) heat.textContent='SPIDER';
+}
+
+function ensureChartMode(){
+  var t=D().statsChart||'donut';
+  var heat=document.querySelector('#statsChartSwitcher [data-chart="heat"]');
+  if(heat) heat.textContent='SPIDER';
+  if(t==='heat') paintSpider();
+}
+
+function paintSubjectPie(){
+  var stats=document.getElementById('stats'); if(!stats) return;
+  var card=document.getElementById('vkDaySubjectCard');
+  if(!card){
+    card=document.createElement('div');
+    card.id='vkDaySubjectCard';
+    card.className='card chartCard';
+    var anchor=document.getElementById('chart');
+    var host=anchor&&anchor.closest?anchor.closest('.card'):null;
+    if(host&&host.parentNode) host.parentNode.insertBefore(card, host.nextSibling);
+    else stats.appendChild(card);
+  }
+  card.style.display='block';
+  var keys=weekDates(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(keys.indexOf(day)<0) day=keys.indexOf(keyOf(new Date()))>=0?keyOf(new Date()):keys[0];
+  D().statsSelectedDay=day;
+  var items=subjectItems(day);
+  var total=items.reduce(function(a,x){return a+x.value;},0);
+  var strip=keys.map(function(k,i){
+    var on=k===day?' on':'';
+    return '<button class="btn'+on+'" type="button" data-vkday="'+k+'">'+DAYS[i]+'<br>'+k.slice(8)+'</button>';
+  }).join('');
+  var legend=items.map(function(it){
+    return '<div class="vkPieRow"><i class="vkPieSwatch" style="background:'+it.color+'"></i><span class="vkPieName">'+esc(it.name)+'</span><span class="vkPieVal">'+esc(fmtMin(it.value))+'</span></div>';
+  }).join('') || '<div class="empty">Is din koi saved session nahi. Focus complete karo, pie yahin banega.</div>';
+  var top=items[0];
+  var topLine=top?'<div class="vkTopStudy"><span>Most studied</span><b>'+esc(top.name)+'</b><strong>'+esc(fmtMin(top.value))+'</strong></div>':'<div class="vkTopStudy"><span>Most studied</span><b>No session</b><strong>0 min</strong></div>';
+  card.innerHTML='<div class="row" style="align-items:flex-start"><div><h2>Subject studied</h2><p class="muted">'+esc(day)+' · saved sessions only · smooth pie</p></div><span class="pill">'+esc(fmtMin(total))+'</span></div>'+
+    topLine+
+    '<div class="vkDayStrip">'+strip+'</div>'+
+    '<div class="vkPieLayout"><div class="vkPieStage">'+pieSvg(items,'dark')+'</div><div class="vkPieLegend">'+legend+'</div></div>';
+}
+window.paintDaySubjects=paintSubjectPie;
+window.__vkV19Paint=function(){ensureChartMode();paintSubjectPie();};
+
+function enhanceTopics(box){
+  if(!box) return;
+  var chips=[].slice.call(box.querySelectorAll('input[type="checkbox"]'));
+  if(!chips.length){
+    if(!box.querySelector('.smartSelectFace')){
+      var empty=box.querySelector('.currEmpty');
+      var msg=empty?empty.textContent:'Select a chapter to see topics.';
+      box.innerHTML='<div class="smartSelectWrap vkTopicSelect"><button type="button" class="smartSelectFace isEmpty" disabled><span class="smartSelectLabel">'+esc(msg)+'</span></button></div>';
+    }
+    return;
+  }
+  if(box.dataset.vkSig===chips.map(function(c){return c.value+':'+(c.checked?1:0);}).join('|') && box.querySelector('.vkTopicSelect')){
+    syncTopicFace(box); return;
+  }
+  var wrap=document.createElement('div');
+  wrap.className='smartSelectWrap vkTopicSelect';
+  var face=document.createElement('button');
+  face.type='button'; face.className='smartSelectFace';
+  face.innerHTML='<span class="smartSelectLabel"></span>';
+  var menu=document.createElement('div');
+  menu.className='smartSelectMenu';
+  chips.forEach(function(input){
+    var name=(input.parentElement&&input.parentElement.querySelector('span')&&input.parentElement.querySelector('span').textContent)||input.value;
+    var row=document.createElement('label');
+    row.className='smartSelectOption topicChip'+(input.checked?' selected':'');
+    input.tabIndex=-1;
+    row.appendChild(input);
+    var span=document.createElement('span'); span.textContent=name; row.appendChild(span);
+    var mark=document.createElement('b'); mark.textContent=input.checked?'✓':''; row.appendChild(mark);
+    row.addEventListener('click', function(){
+      setTimeout(function(){
+        row.classList.toggle('selected', input.checked);
+        mark.textContent=input.checked?'✓':'';
+        syncTopicFace(box);
+      },0);
+    });
+    menu.appendChild(row);
+  });
+  face.addEventListener('click', function(e){
+    e.preventDefault(); e.stopPropagation();
+    var open=wrap.classList.toggle('open');
+    document.querySelectorAll('.smartSelectWrap.open').forEach(function(w){if(w!==wrap)w.classList.remove('open');});
+  });
+  wrap.appendChild(face); wrap.appendChild(menu);
+  box.innerHTML=''; box.appendChild(wrap);
+  box.dataset.vkSig=chips.map(function(c){return c.value+':'+(c.checked?1:0);}).join('|');
+  syncTopicFace(box);
+}
+function syncTopicFace(box){
+  var face=box.querySelector('.smartSelectLabel'); if(!face) return;
+  var picked=[].slice.call(box.querySelectorAll('input:checked')).map(function(i){return i.value;});
+  var btn=box.querySelector('.smartSelectFace');
+  if(!picked.length){face.textContent=box.id.indexOf('Sub')>=0?'Select subtopics':'Select topics'; if(btn) btn.classList.add('isEmpty');}
+  else {face.textContent=picked.join(', '); if(btn) btn.classList.remove('isEmpty');}
+  box.dataset.vkSig=[].slice.call(box.querySelectorAll('input[type="checkbox"]')).map(function(c){return c.value+':'+(c.checked?1:0);}).join('|');
+}
+function enhanceAllTopics(){
+  ['sessionTopicsPicker','taskTopicsPicker','planTopicsPicker','chapterTopicsPicker','sessionSubtopicsPicker','taskSubtopicsPicker','planSubtopicsPicker'].forEach(function(id){
+    enhanceTopics(document.getElementById(id));
+  });
+}
+
+function reportBar(vals, labels, title){
+  vals=vals||[]; labels=labels||[];
+  var W=720,H=280,padL=42,padR=16,padT=52,padB=42;
+  var max=Math.max(60, Math.max.apply(null, vals.concat([1])));
+  var n=Math.max(vals.length,1);
+  var slot=(W-padL-padR)/n;
+  var barW=Math.min(42, slot*0.62);
+  var g='<rect width="'+W+'" height="'+H+'" fill="#fffaf0" rx="12"/>';
+  g+='<text x="'+padL+'" y="18" font-size="12" font-weight="800" fill="#5a5040">'+esc(title)+'</text>';
+  g+='<text x="'+padL+'" y="31" font-size="9" font-weight="700" fill="#8a7a58">Saved focus minutes · gold bars</text>';
+  for(var q=0;q<4;q++){
+    var gy=padT+q/3*(H-padT-padB);
+    g+='<line x1="'+padL+'" x2="'+(W-padR)+'" y1="'+gy.toFixed(1)+'" y2="'+gy.toFixed(1)+'" stroke="#e8dfc8"/>';
+  }
+  g+='<defs><linearGradient id="vkRepBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe7a3"/><stop offset=".5" stop-color="#c9a227"/><stop offset="1" stop-color="#8d6b12"/></linearGradient></defs>';
+  for(var i=0;i<n;i++){
+    var v=Math.round(N(vals[i]));
+    var bh=(v/max)*(H-padT-padB);
+    var x=padL+i*slot+(slot-barW)/2;
+    var y=padT+(H-padT-padB)-bh;
+    g+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+Math.max(v?5:2,bh).toFixed(1)+'" rx="8" fill="url(#vkRepBar)"/>';
+    g+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(v?y-6:y-4).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="800" fill="#3a3224">'+(v?fmtMin(v):'0')+'</text>';
+    var lab=String(labels[i]||'');
+    g+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#3a3224">'+esc(lab.length>14?lab.slice(0,13)+'…':lab)+'</text>';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+g+'</svg>';
+}
+function selectedName(){
+  var t=D().statsChart||'donut';
+  if(t==='heat') return 'Spider graph';
+  if(t==='bars') return 'Bar graph';
+  if(t==='line') return 'Line graph';
+  return 'Donut graph';
+}
+function reportLine(vals, labels, title){
+  vals=vals||[]; labels=labels||[];
+  var W=720,H=300,L=48,R=18,T=52,B=46,iw=W-L-R,ih=H-T-B;
+  var m=Math.max(60, Math.max.apply(null, vals.concat([1])));
+  var n=Math.max(vals.length,1);
+  var pts=vals.map(function(x,i){return [L+(n===1?iw/2:i*iw/(n-1)), T+ih-ih*N(x)/m];});
+  var g='<rect width="'+W+'" height="'+H+'" fill="#17140f" rx="16"/>';
+  g+='<text x="'+L+'" y="24" font-size="14" font-weight="800" fill="#ffe7a3">'+esc(title)+'</text>';
+  g+='<text x="'+L+'" y="40" font-size="10" fill="#cbb98a">'+esc(selectedName())+' · saved minutes</text>';
+  var d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],mx=(a[0]+b[0])/2; d+=' C '+mx.toFixed(1)+' '+a[1].toFixed(1)+', '+mx.toFixed(1)+' '+b[1].toFixed(1)+', '+b[0].toFixed(1)+' '+b[1].toFixed(1);}
+  g+='<path d="'+d+'" fill="none" stroke="#f5b942" stroke-width="6" stroke-linecap="round"/>';
+  pts.forEach(function(pt,i){g+='<circle cx="'+pt[0].toFixed(1)+'" cy="'+pt[1].toFixed(1)+'" r="5" fill="#17140f" stroke="#ffe7a3" stroke-width="3"/><text x="'+pt[0].toFixed(1)+'" y="'+(H-16)+'" text-anchor="middle" font-size="11" fill="#eee">'+esc(labels[i]||'')+'</text>';});
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+g+'</svg>';
+}
+function selectedGraph(vals, labels, title){
+  var t=D().statsChart||'donut';
+  if(t==='bars') return reportBar(vals, labels, title);
+  if(t==='line') return reportLine(vals, labels, title);
+  if(t==='heat') return spiderSvg(vals.slice(0,7), labels.slice(0,7), 'print').replace('viewBox="0 0 760 440"','viewBox="0 0 760 440" width="100%"');
+  var items=vals.map(function(v,i){return {name:labels[i]||'Item', value:v, color:COLORS[i%COLORS.length]};});
+  return pieSvg(items, 'print').replace('viewBox="0 0 320 320"','viewBox="0 0 320 320" width="280"');
+}
+function pdfGraphs(mode){
+  var keys=weekDates(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) day=keyOf(new Date());
+  var hours=selectedGraph(keys.map(minsDay), DAYS, 'Hours studied — Mon to Sun');
+  var items=subjectItems(mode==='week'?keys:day);
+  var top=items[0];
+  var sub=selectedGraph(items.map(function(x){return x.value;}), items.map(function(x){return x.name;}), mode==='week'?'Week minutes per subject':'Today — minutes per subject');
+  var mention=(mode==='week'?'This week':'Today '+day)+' · selected graph: '+selectedName()+(top?' · most studied: '+top.name+' '+fmtMin(top.value):'');
+  return {hours:hours, sub:sub, mention:mention, name:selectedName()};
+}
+function injectPdf(html){
+  if(typeof html!=='string' || html.indexOf('VELKORE')<0) return html;
+  var mode=html.indexOf('Weekly Report')>=0?'week':'day';
+  var g=pdfGraphs(mode);
+  html=html.replace(/<h2>Spider graph — hours each day<\/h2>[\s\S]*?(?=<h2>Hours each day<\/h2>|<h2>Day table)/,'');
+  html=html.replace(/<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"[\s\S]*?<\/svg>/g, function(svg){
+    if(svg.indexOf('Hours studied')>=0 || svg.indexOf('vkSpiderSvg')>=0) return g.hours;
+    if(svg.indexOf('Subject minutes')>=0 || svg.indexOf('Week minutes')>=0 || svg.indexOf('vkPieSvg')>=0) return g.sub;
+    return svg;
+  });
+  if(html.indexOf('Today — minutes per subject')<0 && mode==='day'){
+    html=html.replace('<h2>Today — minutes per subject</h2>', '<h2>Today — minutes per subject</h2><p class="muted">'+esc(g.mention)+'</p>'+g.sub);
+  }
+  html=html.replace('<h2>Hours each day</h2>', '<h2>Hours each day</h2><p class="muted">'+esc(g.mention)+'</p>'+g.hours);
+  html=html.replace('<h2>This week — hours each day</h2>', '<h2>This week — hours each day</h2><p class="muted">'+esc(g.mention)+'</p>'+g.hours);
+  html=html.replace('<h2>Today — minutes per subject</h2>', '<h2>Today — minutes per subject</h2><p class="muted">'+esc(g.mention)+'</p>');
+  html=html.replace('<h2>Subject totals this week</h2>', '<h2>Subject totals this week</h2><p class="muted">'+esc(g.mention)+'</p>'+g.sub);
+  return html;
+}
+if(!window.open.__vk19){
+  var origOpen=window.open.bind(window);
+  window.open=function(){
+    var w=origOpen.apply(window, arguments);
+    try{
+      if(w&&w.document&&!w.document.write.__vk19){
+        var origWrite=w.document.write.bind(w.document);
+        w.document.write=function(html){return origWrite(injectPdf(html));};
+        w.document.write.__vk19=1;
+      }
+    }catch(e){}
+    return w;
+  };
+  window.open.__vk19=1;
+}
+document.addEventListener('click', function(e){
+  var dayBtn=e.target&&e.target.closest&&e.target.closest('[data-vkday]');
+  if(dayBtn){
+    D().statsSelectedDay=dayBtn.getAttribute('data-vkday');
+    D().statsScope='day';
+    try{if(typeof persist==='function') persist(true);}catch(err){}
+    paintSubjectPie();
+    return;
+  }
+  var chartBtn=e.target&&e.target.closest&&e.target.closest('#statsChartSwitcher [data-chart]');
+  if(chartBtn){
+    setTimeout(ensureChartMode, 0);
+    setTimeout(ensureChartMode, 60);
+    setTimeout(ensureChartMode, 240);
+  }
+  if(e.target&&e.target.closest&&e.target.closest('[data-page="stats"]')) setTimeout(function(){ensureChartMode();paintSubjectPie();}, 80);
+}, true);
+document.addEventListener('click', function(e){
+  if(!e.target.closest || !e.target.closest('.vkTopicSelect')){
+    document.querySelectorAll('.vkTopicSelect.open').forEach(function(w){w.classList.remove('open');});
+  }
+});
+var enhancing=false;
+function safeEnhance(){if(enhancing)return; enhancing=true; try{enhanceAllTopics();}finally{enhancing=false;}}
+function boot(){ensureChartMode();paintSubjectPie();safeEnhance();}
+installSpiderLock();
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+setTimeout(boot, 400); setTimeout(boot, 1200); setTimeout(safeEnhance, 800); setInterval(safeEnhance, 1500);
+function lockSpider(){
+  if((D().statsChart||'')!=='heat') return;
+  var box=document.getElementById('chart');
+  if(box && box.innerHTML.indexOf('vkSpiderSvg')<0) paintSpider();
+}
+setInterval(lockSpider, 250);
+window.__vkV18Render=function(){ensureChartMode();};
+function killSpiderPdf(){
+  window.vkDailyPdf=function(day){ if(day&&window.data) window.data.statsSelectedDay=day; if(typeof window.__vkOriginalDaily==='function') return window.__vkOriginalDaily(day); };
+  window.vkWeeklyPdf=function(){ if(typeof window.__vkOriginalWeekly==='function') return window.__vkOriginalWeekly(); };
+  window.vkExportPdf=window.vkWeeklyPdf;
+  window.makeCleanPdf=function(m){ if(m==='day') window.vkDailyPdf(); else window.vkWeeklyPdf(); };
+}
+killSpiderPdf();
+setTimeout(killSpiderPdf, 400);
+setTimeout(killSpiderPdf, 1500);
+
+var prev14=window.__VELKORE_V14_REFRESH;
+window.__VELKORE_V14_REFRESH=function(){try{if(typeof prev14==='function' && D().statsChart!=='heat') prev14();}catch(e){} lockSpider(); paintSubjectPie();};
+if(window.MutationObserver){
+  var chartLock=new MutationObserver(lockSpider);
+  var bootLock=function(){var box=document.getElementById('chart'); if(box) chartLock.observe(box,{childList:true});};
+  bootLock(); setTimeout(bootLock, 500);
+}
+})();
+</script>
+
+
+<!-- VK_V20_PDF_MATCH -->
+<style id="VK_V20_PDF_MATCH">
+#stats .chartCard .chartBox,#stats .chartCard .chartWrap{height:460px!important;min-height:460px!important}
+#vkDaySubjectCard .vkTopStudy{display:flex!important;align-items:center;gap:10px;margin:10px 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(245,185,66,.4);background:linear-gradient(145deg,rgba(245,185,66,.16),rgba(255,255,255,.03))}
+#vkDaySubjectCard .vkTopStudy span{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#ffe7a3}
+#vkDaySubjectCard .vkTopStudy b{flex:1;font-size:15px}
+#vkDaySubjectCard .vkTopStudy strong{font-size:18px;color:#ffe7a3}
+#vkDaySubjectCard .vkPieStage{width:min(280px,100%)!important}
+</style>
+<script id="VK_V20_PDF_MATCH_JS">
+(function(){
+'use strict';
+function D(){return window.data||(window.data={});}
+function N(v){v=Number(v);return Number.isFinite(v)?Math.max(0,v):0;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c];});}
+function keyOf(dt){var d=dt instanceof Date?dt:new Date(dt||Date.now());return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function sDay(s){var r=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(r))return r;if(s&&s.startTime){var x=new Date(s.startTime);if(!isNaN(x))return keyOf(x);}return r;}
+function sessions(){return Array.isArray(D().sessions)?D().sessions:[];}
+function mins(s){return Math.round(N(s&&(s.minutes!=null?s.minutes:s.min)));}
+function week(off){off=parseInt(off,10)||0;var d=new Date();d.setHours(12,0,0,0);var dow=d.getDay();d.setDate(d.getDate()-(dow===0?6:dow-1)+off*7);var a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(keyOf(x));}return a;}
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var COLORS=['#f5b942','#8eb8ff','#b68cff','#67d7c4','#ff9f68','#e7e7ea','#7fd38b'];
+function fmt(m){m=Math.round(N(m));if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return r?h+'h '+r+'m':h+'h';}
+function type(){var t=D().statsChart||'donut';if(t==='combo'||t==='subjects')t='donut';return t;}
+function typeName(){return type()==='heat'?'Spider graph':type()==='bars'?'Bar graph':type()==='line'?'Line graph':'Donut graph';}
+function subjectsOf(dayOrKeys){
+  var map={};
+  sessions().forEach(function(s){var k=sDay(s);var ok=Array.isArray(dayOrKeys)?dayOrKeys.indexOf(k)>=0:k===dayOrKeys;if(!ok)return;var n=String(s.subject||'General');map[n]=(map[n]||0)+mins(s);});
+  return Object.keys(map).map(function(n){return {name:n,value:map[n]};}).sort(function(a,b){return b.value-a.value;});
+}
+function frame(W,H,title,inner){
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-height:280px"><rect width="'+W+'" height="'+H+'" rx="18" fill="#14110d"/><text x="28" y="28" font-size="15" font-weight="800" fill="#ffe7a3">'+esc(title)+'</text><text x="28" y="46" font-size="11" fill="#cbb98a">'+esc(typeName())+' · same style as Stats</text>'+inner+'</svg>';
+}
+function bars(vals,labs,title){
+  var W=760,H=420,L=54,R=20,T=70,B=54,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),slot=iw/Math.max(vals.length,1),bw=Math.min(64,slot*0.56),g='';
+  vals.forEach(function(v,i){v=N(v);var h=ih*v/m,x=L+i*slot+(slot-bw)/2,y=T+ih-h;g+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(6,h).toFixed(1)+'" rx="12" fill="#f5b942"/><text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#ffe7a3">'+fmt(v)+'</text><text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-22)+'" text-anchor="middle" font-size="12" fill="#ddd">'+esc(labs[i]||'')+'</text>';});
+  return frame(W,H,title,g);
+}
+function line(vals,labs,title){
+  var W=760,H=420,L=54,R=20,T=70,B=54,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),n=Math.max(vals.length,1);
+  var pts=vals.map(function(v,i){return [L+(n===1?iw/2:i*iw/(n-1)), T+ih-ih*N(v)/m];});
+  var d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],mx=(a[0]+b[0])/2;d+=' C '+mx.toFixed(1)+' '+a[1].toFixed(1)+', '+mx.toFixed(1)+' '+b[1].toFixed(1)+', '+b[0].toFixed(1)+' '+b[1].toFixed(1);}
+  var g='<path d="'+d+'" fill="none" stroke="#f5b942" stroke-width="7" stroke-linecap="round"/>';
+  pts.forEach(function(p,i){g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="6" fill="#14110d" stroke="#ffe7a3" stroke-width="3"/><text x="'+p[0].toFixed(1)+'" y="'+(p[1]-14)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#ffe7a3">'+fmt(vals[i])+'</text><text x="'+p[0].toFixed(1)+'" y="'+(H-22)+'" text-anchor="middle" font-size="12" fill="#ddd">'+esc(labs[i]||'')+'</text>';});
+  return frame(W,H,title,g);
+}
+function spider(vals,labs,title){
+  var W=760,H=460,cx=380,cy=250,R=150,m=Math.max(30,Math.max.apply(null,vals.concat([1]))),n=Math.max(vals.length,3),g='';
+  for(var ring=1;ring<=4;ring++){var pts=[];for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n,rr=R*ring/4;pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}g+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="rgba(255,255,255,.12)"/>';}
+  var data=[];
+  for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n,rr=R*(N(vals[i])/m);data.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)]);g+='<text x="'+(cx+(R+34)*Math.cos(a)).toFixed(1)+'" y="'+(cy+(R+34)*Math.sin(a)+4).toFixed(1)+'" text-anchor="middle" font-size="13" fill="#eee">'+esc(labs[i]||'')+'</text>';}
+  var d='M '+data[0][0].toFixed(1)+' '+data[0][1].toFixed(1);
+  for(var i=0;i<data.length;i++){var p0=data[i],p1=data[(i+1)%data.length],mx=(p0[0]+p1[0])/2,my=(p0[1]+p1[1])/2;d+=' Q '+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' '+mx.toFixed(1)+' '+my.toFixed(1);} 
+  d+=' Z';
+  g+='<path d="'+d+'" fill="rgba(245,185,66,.28)" stroke="#f5b942" stroke-width="5"/>';
+  data.forEach(function(p,i){g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="5" fill="#14110d" stroke="#ffe7a3" stroke-width="3"/><text x="'+p[0].toFixed(1)+'" y="'+(p[1]-10).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#ffe7a3">'+fmt(vals[i])+'</text>';});
+  return frame(W,H,title,g);
+}
+function donut(vals,labs,title){
+  var W=760,H=420,cx=230,cy=230,R=120,total=vals.reduce(function(a,b){return a+N(b);},0),g='',a0=-Math.PI/2;
+  if(!total){g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#333" stroke-width="36"/>';}
+  else vals.forEach(function(v,i){if(N(v)<=0)return;var frac=N(v)/total,a1=a0+frac*Math.PI*2,large=frac>0.5?1:0,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+large+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+'" fill="none" stroke="'+COLORS[i%COLORS.length]+'" stroke-width="40" stroke-linecap="round"/>';a0=a1;});
+  g+='<circle cx="'+cx+'" cy="'+cy+'" r="78" fill="#14110d"/><text x="'+cx+'" y="'+(cy+6)+'" text-anchor="middle" font-size="26" font-weight="900" fill="#fff">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+26)+'" text-anchor="middle" font-size="11" fill="#aaa">min</text>';
+  vals.forEach(function(v,i){var y=90+i*36;g+='<rect x="430" y="'+(y-12)+'" width="14" height="14" rx="4" fill="'+COLORS[i%COLORS.length]+'"/><text x="454" y="'+y+'" font-size="14" fill="#eee">'+esc(labs[i]||'')+'</text><text x="720" y="'+y+'" text-anchor="end" font-size="14" font-weight="800" fill="#ffe7a3">'+fmt(v)+'</text>';});
+  return frame(W,H,title,g);
+}
+function graph(vals,labs,title){var t=type();if(t==='bars')return bars(vals,labs,title);if(t==='line')return line(vals,labs,title);if(t==='heat')return spider(vals,labs,title);return donut(vals,labs,title);}
+function paint(){
+  var card=document.getElementById('vkDaySubjectCard');
+  var stats=document.getElementById('stats');
+  if(!card&&stats){card=document.createElement('div');card.id='vkDaySubjectCard';card.className='card';var anchor=document.getElementById('chart');var host=anchor&&anchor.closest?anchor.closest('.card'):null;if(host&&host.parentNode)host.parentNode.insertBefore(card,host.nextSibling);else stats.appendChild(card);}
+  if(!card)return;
+  card.style.display='block';
+  var keys=week(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(keys.indexOf(day)<0) day=keys.indexOf(keyOf(new Date()))>=0?keyOf(new Date()):keys[0];
+  D().statsSelectedDay=day;
+  var items=subjectsOf(day);
+  var top=items[0];
+  var total=items.reduce(function(a,x){return a+x.value;},0);
+  var strip=keys.map(function(k,i){return '<button class="btn'+(k===day?' on':'')+'" type="button" data-vkday="'+k+'">'+DAYS[i]+'<br>'+k.slice(8)+'</button>';}).join('');
+  var legend=items.map(function(it,i){return '<div class="vkPieRow"><i class="vkPieSwatch" style="background:'+COLORS[i%COLORS.length]+'"></i><span class="vkPieName">'+esc(it.name)+'</span><span class="vkPieVal">'+esc(fmt(it.value))+'</span></div>';}).join('')||'<div class="empty">Is din koi session nahi.</div>';
+  var topHtml=top?'<div class="vkTopStudy"><span>Most studied</span><b>'+esc(top.name)+'</b><strong>'+esc(fmt(top.value))+'</strong></div>':'<div class="vkTopStudy"><span>Most studied</span><b>No session</b><strong>0 min</strong></div>';
+  var pieItems=items.map(function(it,i){return {name:it.name,value:it.value,color:COLORS[i%COLORS.length]};});
+  var pie=window.pieSvg?window.pieSvg(pieItems,'dark'):'';
+  card.innerHTML='<div class="row" style="align-items:flex-start"><div><h2>Subject studied</h2><p class="muted">'+esc(day)+' · pie of saved sessions</p></div><span class="pill">'+esc(fmt(total))+'</span></div>'+topHtml+'<div class="vkDayStrip">'+strip+'</div><div class="vkPieLayout"><div class="vkPieStage">'+pie+'</div><div class="vkPieLegend">'+legend+'</div></div>';
+}
+window.paintDaySubjects=paint;
+window.vkPaintDaySubjects=paint;
+function inject(html){
+  if(typeof html!=='string'||html.indexOf('VELKORE')<0) return html;
+  var mode=html.indexOf('Weekly Report')>=0?'week':'day';
+  var keys=week(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) day=keyOf(new Date());
+  var items=subjectsOf(mode==='week'?keys:day);
+  var top=items[0];
+  var hours=graph(keys.map(function(k){return sessions().filter(function(s){return sDay(s)===k;}).reduce(function(a,s){return a+mins(s);},0);}), DAYS, 'Hours studied — Mon to Sun');
+  var sub=graph(items.map(function(x){return x.value;}), items.map(function(x){return x.name;}), mode==='week'?'Week minutes per subject':'Today — minutes per subject');
+  var note='Selected graph: '+typeName()+(top?' · Most studied: '+top.name+' '+fmt(top.value):'');
+  html=html.replace(/<svg[\s\S]*?<\/svg>/g,'');
+  html=html.replace(/<p class="muted">[^<]*<\/p>/gi,'');
+  html=html.replace(/<div class="graph"[^>]*>\s*<\/div>/g,'');
+  var block='<p class="muted">'+esc(note)+'</p><div class="graph">'+hours+'</div>';
+  var subBlock='<p class="muted">'+esc(note)+'</p><div class="graph">'+sub+'</div>';
+  if(html.indexOf('<h2>Hours each day</h2>')>=0) html=html.replace('<h2>Hours each day</h2>','<h2>Hours each day</h2>'+block);
+  if(html.indexOf('<h2>This week — hours each day</h2>')>=0) html=html.replace('<h2>This week — hours each day</h2>','<h2>This week — hours each day</h2>'+block);
+  if(html.indexOf('<h2>Today — minutes per subject</h2>')>=0) html=html.replace('<h2>Today — minutes per subject</h2>','<h2>Today — minutes per subject</h2>'+subBlock);
+  if(html.indexOf('<h2>Subject totals this week</h2>')>=0) html=html.replace('<h2>Subject totals this week</h2>','<h2>Subject totals this week</h2>'+subBlock);
+  return html;
+}
+var prevOpen=window.open.bind(window);
+var nativeWrite=Document.prototype.write;
+window.open=function(){
+  var w=prevOpen.apply(window, arguments);
+  try{
+    if(w&&w.document){
+      w.document.write=function(html){return nativeWrite.call(w.document, inject(html));};
+    }
+  }catch(e){}
+  return w;
+};
+window.open.__vk20=1;
+document.addEventListener('click', function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('[data-vkday],[data-god-day],[data-cal-day]');
+  if(!t) return;
+  var day=t.getAttribute('data-vkday')||t.getAttribute('data-god-day')||t.getAttribute('data-cal-day');
+  if(day){D().statsSelectedDay=day;D().statsScope='day';setTimeout(paint,0);setTimeout(paint,80);}
+}, true);
+/* subject repaint owned by v23 */
+setTimeout(paint, 300);
+})();
+</script>
+
+
+<!-- VK_V21_PDF_PAPER -->
+<style id="VK_V21_PDF_PAPER">
+#vkDayChips{display:none!important}
+</style>
+<script id="VK_V21_PDF_PAPER_JS">
+(function(){
+'use strict';
+function D(){return window.data||(window.data={});}
+function N(v){v=Number(v);return Number.isFinite(v)?Math.max(0,v):0;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c];});}
+function keyOf(dt){var d=dt instanceof Date?dt:new Date(dt||Date.now());return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function sDay(s){var r=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(r))return r;if(s&&s.startTime){var x=new Date(s.startTime);if(!isNaN(x))return keyOf(x);}return r;}
+function sessions(){return Array.isArray(D().sessions)?D().sessions:[];}
+function mins(s){return Math.round(N(s&&(s.minutes!=null?s.minutes:s.min)));}
+function week(off){off=parseInt(off,10)||0;var d=new Date();d.setHours(12,0,0,0);var dow=d.getDay();d.setDate(d.getDate()-(dow===0?6:dow-1)+off*7);var a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(keyOf(x));}return a;}
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var COLORS=['#c9a227','#5b7fbf','#8a6bb5','#3f9d86','#d4844a','#8a8178','#5f9a62'];
+function fmt(m){m=Math.round(N(m));if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return r?h+'h '+r+'m':h+'h';}
+function type(){var t=D().statsChart||'donut';if(t==='combo'||t==='subjects')t='donut';return t;}
+function typeName(){return type()==='heat'?'Spider graph':type()==='bars'?'Bar graph':type()==='line'?'Line graph':'Donut graph';}
+function dayMins(keys){return keys.map(function(k){return sessions().filter(function(s){return sDay(s)===k;}).reduce(function(a,s){return a+mins(s);},0);});}
+function subjectsOf(day){var map={};sessions().forEach(function(s){if(sDay(s)!==day)return;var n=String(s.subject||'General');map[n]=(map[n]||0)+mins(s);});return Object.keys(map).map(function(n){return {name:n,value:map[n]};}).sort(function(a,b){return b.value-a.value;});}
+function paper(W,H,title,note,inner){
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;background:#fffaf0"><rect width="'+W+'" height="'+H+'" rx="14" fill="#fffaf0" stroke="#e4d4a6"/><text x="24" y="28" font-size="15" font-weight="800" fill="#3a3224">'+esc(title)+'</text><text x="24" y="46" font-size="11" fill="#8a7a58">'+esc(note)+'</text>'+inner+'</svg>';
+}
+function bars(vals,labs,title,note){
+  var W=760,H=360,L=46,R=16,T=68,B=48,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),slot=iw/Math.max(vals.length,1),bw=Math.min(62,slot*0.55),g='';
+  for(var q=0;q<4;q++){var y=T+ih*q/3;g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#e8dfc8"/>';}
+  vals.forEach(function(v,i){v=N(v);var h=ih*v/m,x=L+i*slot+(slot-bw)/2,y=T+ih-h;g+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(5,h).toFixed(1)+'" rx="10" fill="#c9a227"/><text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#3a3224">'+fmt(v)+'</text><text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-18)+'" text-anchor="middle" font-size="12" fill="#3a3224">'+esc(labs[i]||'')+'</text>';});
+  return paper(W,H,title,note,g);
+}
+function line(vals,labs,title,note){
+  var W=760,H=360,L=46,R=16,T=68,B=48,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),n=Math.max(vals.length,1);
+  var pts=vals.map(function(v,i){return [L+(n===1?iw/2:i*iw/(n-1)), T+ih-ih*N(v)/m];});
+  var d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],mx=(a[0]+b[0])/2;d+=' C '+mx.toFixed(1)+' '+a[1].toFixed(1)+', '+mx.toFixed(1)+' '+b[1].toFixed(1)+', '+b[0].toFixed(1)+' '+b[1].toFixed(1);}
+  var g='<path d="'+d+'" fill="none" stroke="#c9a227" stroke-width="6" stroke-linecap="round"/>';
+  pts.forEach(function(p,i){g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="5" fill="#fffaf0" stroke="#8d6b12" stroke-width="3"/><text x="'+p[0].toFixed(1)+'" y="'+(p[1]-12)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#3a3224">'+fmt(vals[i])+'</text><text x="'+p[0].toFixed(1)+'" y="'+(H-18)+'" text-anchor="middle" font-size="12" fill="#3a3224">'+esc(labs[i]||'')+'</text>';});
+  return paper(W,H,title,note,g);
+}
+function spider(vals,labs,title,note){
+  var W=760,H=400,cx=380,cy=230,R=130,m=Math.max(30,Math.max.apply(null,vals.concat([1]))),n=Math.max(vals.length,3),g='';
+  for(var ring=1;ring<=4;ring++){var pts=[];for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n,rr=R*ring/4;pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}g+='<polygon points="'+pts.join(' ')+'" fill="'+(ring===4?'rgba(201,162,39,.08)':'none')+'" stroke="#e4d4a6"/>';}
+  var data=[];
+  for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n;data.push([cx+R*(N(vals[i])/m)*Math.cos(a), cy+R*(N(vals[i])/m)*Math.sin(a)]);g+='<text x="'+(cx+(R+28)*Math.cos(a)).toFixed(1)+'" y="'+(cy+(R+28)*Math.sin(a)+4).toFixed(1)+'" text-anchor="middle" font-size="12" fill="#3a3224">'+esc(labs[i]||'')+'</text>';}
+  var d='M '+data[0][0].toFixed(1)+' '+data[0][1].toFixed(1);
+  for(var i=0;i<data.length;i++){var p0=data[i],p1=data[(i+1)%data.length],mx=(p0[0]+p1[0])/2,my=(p0[1]+p1[1])/2;d+=' Q '+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' '+mx.toFixed(1)+' '+my.toFixed(1);} d+=' Z';
+  g+='<path d="'+d+'" fill="rgba(201,162,39,.28)" stroke="#c9a227" stroke-width="4"/>';
+  data.forEach(function(p,i){g+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]-8).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#3a3224">'+fmt(vals[i])+'</text>';});
+  return paper(W,H,title,note,g);
+}
+function donut(vals,labs,title,note){
+  var W=760,H=360,cx=210,cy=200,R=108,total=vals.reduce(function(a,b){return a+N(b);},0),g='',a0=-Math.PI/2;
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#e4d4a6" stroke-width="34"/>';
+  else vals.forEach(function(v,i){if(N(v)<=0)return;var frac=N(v)/total,a1=a0+frac*Math.PI*2,large=frac>0.5?1:0,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+large+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+'" fill="none" stroke="'+COLORS[i%COLORS.length]+'" stroke-width="34"/>';a0=a1;});
+  g+='<circle cx="'+cx+'" cy="'+cy+'" r="70" fill="#fffaf0"/><text x="'+cx+'" y="'+(cy+6)+'" text-anchor="middle" font-size="24" font-weight="900" fill="#3a3224">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+24)+'" text-anchor="middle" font-size="11" fill="#8a7a58">min</text>';
+  vals.forEach(function(v,i){var y=78+i*34;g+='<rect x="400" y="'+(y-11)+'" width="12" height="12" rx="3" fill="'+COLORS[i%COLORS.length]+'"/><text x="422" y="'+y+'" font-size="13" fill="#3a3224">'+esc(labs[i]||'')+'</text><text x="730" y="'+y+'" text-anchor="end" font-size="13" font-weight="800" fill="#3a3224">'+fmt(v)+'</text>';});
+  return paper(W,H,title,note,g);
+}
+function pie(items,title,note){
+  var W=760,H=360,cx=210,cy=200,R=112,total=items.reduce(function(a,x){return a+N(x.value);},0),g='',a0=-Math.PI/2;
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="#f3ead6" stroke="#e4d4a6"/>';
+  else if(items.length===1) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+COLORS[0]+'"/>';
+  else items.forEach(function(it,i){var frac=N(it.value)/total,a1=a0+frac*Math.PI*2,large=frac>0.5?1:0,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+cx+' '+cy+' L '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+large+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+' Z" fill="'+COLORS[i%COLORS.length]+'" stroke="#fffaf0" stroke-width="2"/>';a0=a1;});
+  items.forEach(function(it,i){var y=78+i*34;g+='<rect x="400" y="'+(y-11)+'" width="12" height="12" rx="3" fill="'+COLORS[i%COLORS.length]+'"/><text x="422" y="'+y+'" font-size="13" fill="#3a3224">'+esc(it.name)+'</text><text x="730" y="'+y+'" text-anchor="end" font-size="13" font-weight="800" fill="#3a3224">'+fmt(it.value)+'</text>';});
+  return paper(W,H,title,note,g);
+}
+function selected(vals,labs,title,note){var t=type();if(t==='bars')return bars(vals,labs,title,note);if(t==='line')return line(vals,labs,title,note);if(t==='heat')return spider(vals,labs,title,note);return donut(vals,labs,title,note);}
+function hideWeekDays(){var c=document.getElementById('vkDayChips'); if(c) c.style.display='none';}
+function inject(html){
+  if(typeof html!=='string'||html.indexOf('VELKORE')<0) return html;
+  var mode=html.indexOf('Weekly Report')>=0?'week':'day';
+  var keys=week(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) day=keyOf(new Date());
+  var items=subjectsOf(day);
+  var top=items[0];
+  var hours=selected(dayMins(keys), DAYS, 'Hours studied — Monday to Sunday', 'From this week graph · '+typeName());
+  var sub=pie(items, 'Today — minutes per subject', 'From Subject studied · '+day+(top?' · most studied '+top.name+' '+fmt(top.value):''));
+  html=html.replace(/<svg[\s\S]*?<\/svg>/g,'');
+  html=html.replace(/<div class="graph"[^>]*>\s*<\/div>/g,'');
+  var hourBlock='<p class="muted">Week hours each day · selected graph: '+esc(typeName())+'</p><div class="graph">'+hours+'</div>';
+  var subBlock='<p class="muted">Subject studied on '+esc(day)+(top?' · most studied: '+esc(top.name)+' '+esc(fmt(top.value)):'')+'</p><div class="graph">'+sub+'</div>';
+  html=html.replace('<h2>Hours each day</h2>','<h2>Hours each day</h2>'+hourBlock);
+  html=html.replace('<h2>This week — hours each day</h2>','<h2>This week — hours each day</h2>'+hourBlock);
+  html=html.replace('<h2>Today — minutes per subject</h2>','<h2>Today — minutes per subject</h2>'+subBlock);
+  html=html.replace('<h2>Subject totals this week</h2>','<h2>Subject totals this week</h2>'+subBlock);
+  return html;
+}
+var prev=window.open.bind(window);
+var native=Document.prototype.write;
+window.open=function(){
+  var w=prev.apply(window, arguments);
+  try{ if(w&&w.document) w.document.write=function(html){return native.call(w.document, inject(html));}; }catch(e){}
+  return w;
+};
+setInterval(hideWeekDays, 500);
+setTimeout(hideWeekDays, 200);
+})();
+</script>
+
+
+<!-- VK_V22_CHART_LOCK -->
+<style id="VK_V22_CHART_LOCK">
+#stats .chartCard .chartBox,#chart{height:470px!important;min-height:470px!important}
+#vkDayChips{display:none!important}
+#vkDaySubjectCard .vkPieStage{width:min(300px,100%)!important}
+</style>
+<script id="VK_V22_CHART_LOCK_JS">
+(function(){
+'use strict';
+function D(){return window.data||(window.data={});}
+function N(v){v=Number(v);return Number.isFinite(v)?Math.max(0,v):0;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c];});}
+function keyOf(dt){var d=dt instanceof Date?dt:new Date(dt||Date.now());return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function sDay(s){var r=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(r))return r;if(s&&s.startTime){var x=new Date(s.startTime);if(!isNaN(x))return keyOf(x);}return r;}
+function sessions(){return Array.isArray(D().sessions)?D().sessions:[];}
+function mins(s){return Math.round(N(s&&(s.minutes!=null?s.minutes:s.min)));}
+function week(off){off=parseInt(off,10)||0;var d=new Date();d.setHours(12,0,0,0);var dow=d.getDay();d.setDate(d.getDate()-(dow===0?6:dow-1)+off*7);var a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(keyOf(x));}return a;}
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var COL=['#f5b942','#8eb8ff','#b68cff','#67d7c4','#ff9f68','#e7e7ea','#7fd38b'];
+function fmt(m){m=Math.round(N(m));if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return r?h+'h '+r+'m':h+'h';}
+function type(){var t=D().statsChart||'donut';if(t==='combo'||t==='subjects')t='donut';return t;}
+function typeName(){return type()==='heat'?'Spider graph':type()==='bars'?'Bar graph':type()==='line'?'Line graph':'Donut graph';}
+function dayVals(){var keys=week(D().statsWeekOffset||0);return {keys:keys, vals:keys.map(function(k){return sessions().filter(function(s){return sDay(s)===k;}).reduce(function(a,s){return a+mins(s);},0);})};}
+function subjectsOf(day){var map={};sessions().forEach(function(s){if(sDay(s)!==day)return;var n=String(s.subject||'General');map[n]=(map[n]||0)+mins(s);});return Object.keys(map).map(function(n){return {name:n,value:map[n]};}).sort(function(a,b){return b.value-a.value;});}
+function darkFrame(W,H,inner,cls){return '<svg class="'+cls+'" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" style="display:block"><rect width="'+W+'" height="'+H+'" rx="16" fill="#14110d"/>'+inner+'</svg>';}
+function appDonut(vals,labs){
+  var W=760,H=430,cx=220,cy=220,R=118,total=vals.reduce(function(a,b){return a+N(b);},0),g='',a0=-Math.PI/2;
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#333" stroke-width="36"/>';
+  else vals.forEach(function(v,i){if(N(v)<=0)return;var f=N(v)/total,a1=a0+f*Math.PI*2,lg=f>0.5?1:0,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+lg+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+'" fill="none" stroke="'+COL[i%7]+'" stroke-width="38" stroke-linecap="round"/>';a0=a1;});
+  g+='<circle cx="'+cx+'" cy="'+cy+'" r="78" fill="#14110d"/><text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+28)+'" text-anchor="middle" font-size="12" fill="#aaa">min</text>';
+  vals.forEach(function(v,i){var y=70+i*42;g+='<rect x="430" y="'+(y-12)+'" width="14" height="14" rx="4" fill="'+COL[i%7]+'"/><text x="454" y="'+y+'" font-size="14" fill="#eee">'+esc(labs[i])+'</text><text x="720" y="'+y+'" text-anchor="end" font-size="14" font-weight="800" fill="#ffe7a3">'+fmt(v)+'</text>';});
+  return darkFrame(W,H,g,'vkDonutSvg');
+}
+function appBars(vals,labs){
+  var W=760,H=430,L=50,T=36,B=46,iw=680,ih=330,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),slot=iw/7,bw=46,g='';
+  vals.forEach(function(v,i){v=N(v);var h=ih*v/m,x=L+i*slot+(slot-bw)/2,y=T+ih-h;g+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw+'" height="'+Math.max(6,h).toFixed(1)+'" rx="12" fill="#f5b942"/><text x="'+(x+bw/2)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#ffe7a3">'+fmt(v)+'</text><text x="'+(x+bw/2)+'" y="'+(H-16)+'" text-anchor="middle" font-size="13" fill="#ddd">'+labs[i]+'</text>';});
+  return darkFrame(W,H,g,'vkBarsSvg');
+}
+function appLine(vals,labs){
+  var W=760,H=430,L=50,T=40,B=46,iw=680,ih=320,m=Math.max(60,Math.max.apply(null,vals.concat([1])));
+  var pts=vals.map(function(v,i){return [L+i*iw/6, T+ih-ih*N(v)/m];});
+  var d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],mx=(a[0]+b[0])/2;d+=' C '+mx.toFixed(1)+' '+a[1].toFixed(1)+', '+mx.toFixed(1)+' '+b[1].toFixed(1)+', '+b[0].toFixed(1)+' '+b[1].toFixed(1);}
+  var g='<path d="'+d+'" fill="none" stroke="#f5b942" stroke-width="7" stroke-linecap="round"/>';
+  pts.forEach(function(p,i){g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="6" fill="#14110d" stroke="#ffe7a3" stroke-width="3"/><text x="'+p[0].toFixed(1)+'" y="'+(H-16)+'" text-anchor="middle" font-size="13" fill="#ddd">'+labs[i]+'</text>';});
+  return darkFrame(W,H,g,'vkLineSvg');
+}
+function appSpider(vals,labs){
+  var W=760,H=430,cx=380,cy=220,R=140,m=Math.max(30,Math.max.apply(null,vals.concat([1]))),g='',data=[];
+  for(var ring=1;ring<=4;ring++){var pts=[];for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7,rr=R*ring/4;pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}g+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="rgba(255,255,255,.12)"/>';}
+  for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7;data.push([cx+R*(N(vals[i])/m)*Math.cos(a), cy+R*(N(vals[i])/m)*Math.sin(a)]);g+='<text x="'+(cx+(R+32)*Math.cos(a)).toFixed(1)+'" y="'+(cy+(R+32)*Math.sin(a)+4).toFixed(1)+'" text-anchor="middle" font-size="13" fill="#eee">'+labs[i]+'</text>';}
+  var d='M '+data[0][0].toFixed(1)+' '+data[0][1].toFixed(1);
+  for(var i=0;i<data.length;i++){var p0=data[i],p1=data[(i+1)%7],mx=(p0[0]+p1[0])/2,my=(p0[1]+p1[1])/2;d+=' Q '+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' '+mx.toFixed(1)+' '+my.toFixed(1);} d+=' Z';
+  g+='<path d="'+d+'" fill="rgba(245,185,66,.28)" stroke="#f5b942" stroke-width="5"/>';
+  return darkFrame(W,H,g,'vkSpiderSvg');
+}
+function drawChart(){
+  var box=document.getElementById('chart'); if(!box) return;
+  var pack=dayVals();
+  var t=type();
+  var svg=t==='bars'?appBars(pack.vals,DAYS):t==='line'?appLine(pack.vals,DAYS):t==='heat'?appSpider(pack.vals,DAYS):appDonut(pack.vals,DAYS);
+  box.innerHTML=svg;
+  var title=document.getElementById('weekChartTitle');
+  if(title) title.textContent='This week · '+typeName();
+  var total=pack.vals.reduce(function(a,b){return a+b;},0);
+  var pill=document.getElementById('weekChartTotal');
+  if(pill) pill.textContent=fmt(total);
+  var heat=document.querySelector('#statsChartSwitcher [data-chart="heat"]');
+  if(heat) heat.textContent='SPIDER';
+  var chips=document.getElementById('vkDayChips'); if(chips) chips.style.display='none';
+}
+function paintSubject(){
+  var card=document.getElementById('vkDaySubjectCard');
+  var stats=document.getElementById('stats');
+  if(!card&&stats){card=document.createElement('div');card.className='card';card.id='vkDaySubjectCard';var anchor=document.getElementById('chart');var host=anchor&&anchor.closest?anchor.closest('.card'):null;if(host&&host.parentNode)host.parentNode.insertBefore(card,host.nextSibling);else stats.appendChild(card);}
+  if(!card) return;
+  card.style.display='block';
+  var keys=week(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(keys.indexOf(day)<0) day=keys.indexOf(keyOf(new Date()))>=0?keyOf(new Date()):keys[0];
+  D().statsSelectedDay=day;
+  var items=subjectsOf(day);
+  var top=items[0];
+  var total=items.reduce(function(a,x){return a+x.value;},0);
+  var strip=keys.map(function(k,i){return '<button class="btn'+(k===day?' on':'')+'" type="button" data-vkday="'+k+'">'+DAYS[i]+'<br>'+k.slice(8)+'</button>';}).join('');
+  var legend=items.map(function(it,i){return '<div class="vkPieRow"><i class="vkPieSwatch" style="background:'+COL[i%7]+'"></i><span class="vkPieName">'+esc(it.name)+'</span><span class="vkPieVal">'+esc(fmt(it.value))+'</span></div>';}).join('')||'<div class="empty">Is din koi session nahi.</div>';
+  var topHtml=top?'<div class="vkTopStudy"><span>Most studied</span><b>'+esc(top.name)+'</b><strong>'+esc(fmt(top.value))+'</strong></div>':'<div class="vkTopStudy"><span>Most studied</span><b>No session</b><strong>0 min</strong></div>';
+  var pie=window.pieSvg?window.pieSvg(items.map(function(it,i){return {name:it.name,value:it.value,color:COL[i%7]};}),'dark'):'';
+  card.innerHTML='<div class="row"><div><h2>Subject studied</h2><p class="muted">'+esc(day)+' · pie chart</p></div><span class="pill">'+esc(fmt(total))+'</span></div>'+topHtml+'<div class="vkDayStrip">'+strip+'</div><div class="vkPieLayout"><div class="vkPieStage">'+pie+'</div><div class="vkPieLegend">'+legend+'</div></div>';
+}
+function paper(W,H,title,note,inner){return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block"><rect width="'+W+'" height="'+H+'" rx="14" fill="#fffaf0" stroke="#e4d4a6"/><text x="24" y="26" font-size="15" font-weight="800" fill="#3a3224">'+esc(title)+'</text><text x="24" y="44" font-size="11" fill="#8a7a58">'+esc(note)+'</text>'+inner+'</svg>';}
+function pdfSelected(vals,labs){
+  var t=type(), W=760,H=380;
+  if(t==='bars'){
+    var L=46,T=64,ih=250,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),slot=680/7,bw=52,g='';
+    vals.forEach(function(v,i){v=N(v);var h=ih*v/m,x=L+i*slot+8,y=T+ih-h;g+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw+'" height="'+Math.max(5,h).toFixed(1)+'" rx="10" fill="#c9a227"/><text x="'+(x+bw/2)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#3a3224">'+fmt(v)+'</text><text x="'+(x+bw/2)+'" y="'+(H-16)+'" text-anchor="middle" font-size="12" fill="#3a3224">'+labs[i]+'</text>';});
+    return paper(W,H,'Hours studied — Monday to Sunday','Selected: Bar graph',g);
+  }
+  if(t==='line'){
+    var pts=vals.map(function(v,i){return [50+i*100, 64+250-250*N(v)/Math.max(60,Math.max.apply(null,vals.concat([1])))];});
+    var d='M '+pts[0][0]+' '+pts[0][1].toFixed(1);
+    for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],mx=(a[0]+b[0])/2;d+=' C '+mx+' '+a[1].toFixed(1)+', '+mx+' '+b[1].toFixed(1)+', '+b[0]+' '+b[1].toFixed(1);}
+    var g='<path d="'+d+'" fill="none" stroke="#c9a227" stroke-width="6"/>';
+    pts.forEach(function(p,i){g+='<circle cx="'+p[0]+'" cy="'+p[1].toFixed(1)+'" r="5" fill="#fffaf0" stroke="#8d6b12" stroke-width="3"/><text x="'+p[0]+'" y="'+(H-16)+'" text-anchor="middle" font-size="12" fill="#3a3224">'+labs[i]+'</text>';});
+    return paper(W,H,'Hours studied — Monday to Sunday','Selected: Line graph',g);
+  }
+  if(t==='heat'){
+    var cx=380,cy=210,R=120,m=Math.max(30,Math.max.apply(null,vals.concat([1]))),g='',data=[];
+    for(var ring=1;ring<=4;ring++){var pts=[];for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7,rr=R*ring/4;pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}g+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e4d4a6"/>';}
+    for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7;data.push([cx+R*N(vals[i])/m*Math.cos(a), cy+R*N(vals[i])/m*Math.sin(a)]);g+='<text x="'+(cx+(R+26)*Math.cos(a)).toFixed(1)+'" y="'+(cy+(R+26)*Math.sin(a)+4).toFixed(1)+'" text-anchor="middle" font-size="12" fill="#3a3224">'+labs[i]+'</text>';}
+    var d='M '+data[0][0].toFixed(1)+' '+data[0][1].toFixed(1);
+    for(var i=0;i<data.length;i++){var p0=data[i],p1=data[(i+1)%7],mx=(p0[0]+p1[0])/2,my=(p0[1]+p1[1])/2;d+=' Q '+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' '+mx.toFixed(1)+' '+my.toFixed(1);} d+=' Z';
+    g+='<path d="'+d+'" fill="rgba(201,162,39,.3)" stroke="#c9a227" stroke-width="4"/>';
+    return paper(W,H,'Hours studied — Monday to Sunday','Selected: Spider graph',g);
+  }
+  var cx=210,cy=200,R=108,total=vals.reduce(function(a,b){return a+N(b);},0),g='',a0=-Math.PI/2;
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#e4d4a6" stroke-width="34"/>';
+  else vals.forEach(function(v,i){if(N(v)<=0)return;var f=N(v)/total,a1=a0+f*Math.PI*2,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+(f>0.5?1:0)+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+'" fill="none" stroke="'+COL[i%7]+'" stroke-width="34"/>';a0=a1;});
+  g+='<circle cx="'+cx+'" cy="'+cy+'" r="70" fill="#fffaf0"/><text x="'+cx+'" y="'+(cy+6)+'" text-anchor="middle" font-size="24" font-weight="900" fill="#3a3224">'+Math.round(total)+'</text>';
+  vals.forEach(function(v,i){var y=78+i*34;g+='<rect x="400" y="'+(y-11)+'" width="12" height="12" rx="3" fill="'+COL[i%7]+'"/><text x="422" y="'+y+'" font-size="13" fill="#3a3224">'+labs[i]+'</text><text x="730" y="'+y+'" text-anchor="end" font-size="13" font-weight="800" fill="#3a3224">'+fmt(v)+'</text>';});
+  return paper(W,H,'Hours studied — Monday to Sunday','Selected: Donut graph',g);
+}
+function pdfPie(items, day){
+  var W=760,H=360,cx=210,cy=200,R=112,total=items.reduce(function(a,x){return a+N(x.value);},0),g='',a0=-Math.PI/2,top=items[0];
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="#f3ead6"/>';
+  else if(items.length===1) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+COL[0]+'"/>';
+  else items.forEach(function(it,i){var f=N(it.value)/total,a1=a0+f*Math.PI*2,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+cx+' '+cy+' L '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+(f>0.5?1:0)+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+' Z" fill="'+COL[i%7]+'" stroke="#fffaf0" stroke-width="2"/>';a0=a1;});
+  items.forEach(function(it,i){var y=78+i*34;g+='<rect x="400" y="'+(y-11)+'" width="12" height="12" rx="3" fill="'+COL[i%7]+'"/><text x="422" y="'+y+'" font-size="13" fill="#3a3224">'+esc(it.name)+'</text><text x="730" y="'+y+'" text-anchor="end" font-size="13" font-weight="800" fill="#3a3224">'+fmt(it.value)+'</text>';});
+  return paper(W,H,'Today — minutes per subject','Subject studied pie · '+day+(top?' · most studied '+top.name+' '+fmt(top.value):''),g);
+}
+function inject(html){
+  if(typeof html!=='string'||html.indexOf('VELKORE')<0) return html;
+  var pack=dayVals();
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) day=keyOf(new Date());
+  var items=subjectsOf(day);
+  html=html.replace(/<svg[\s\S]*?<\/svg>/g,'');
+  var hours='<div class="graph">'+pdfSelected(pack.vals,DAYS)+'</div>';
+  var sub='<div class="graph">'+pdfPie(items, day)+'</div>';
+  html=html.replace('<h2>Hours each day</h2>','<h2>Hours each day</h2>'+hours);
+  html=html.replace('<h2>This week — hours each day</h2>','<h2>This week — hours each day</h2>'+hours);
+  html=html.replace('<h2>Today — minutes per subject</h2>','<h2>Today — minutes per subject</h2>'+sub);
+  html=html.replace('<h2>Subject totals this week</h2>','<h2>Subject totals this week</h2>'+sub);
+  return html;
+}
+var prev=window.open.bind(window);
+var native=Document.prototype.write;
+window.open=function(){var w=prev.apply(window, arguments);try{if(w&&w.document) w.document.write=function(html){return native.call(w.document, inject(html));};}catch(e){}return w;};
+document.addEventListener('click', function(e){
+  var chart=e.target&&e.target.closest&&e.target.closest('#statsChartSwitcher [data-chart]');
+  if(chart){D().statsChart=chart.getAttribute('data-chart');[0,40,120,280,500].forEach(function(ms){setTimeout(drawChart,ms);});return;}
+  var day=e.target&&e.target.closest&&e.target.closest('[data-vkday]');
+  if(day){D().statsSelectedDay=day.getAttribute('data-vkday');setTimeout(paintSubject,0);}
+}, true);
+function vkUnusedInterval(){
+  var box=document.getElementById('chart');
+  var want=type()==='heat'?'vkSpiderSvg':type()==='bars'?'vkBarsSvg':type()==='line'?'vkLineSvg':'vkDonutSvg';
+  if(box && !box.querySelector('.'+want)) drawChart();
+  var card=document.getElementById('vkDaySubjectCard');
+  if(card && !card.querySelector('.vkPieSvg')) paintSubject();
+  var chips=document.getElementById('vkDayChips'); if(chips) chips.style.display='none';
+}, 300);
+setTimeout(function(){drawChart();paintSubject();}, 250);
+})();
+</script>
+
+
+<!-- VK_V23_STABLE -->
+<style id="VK_V23_STABLE">
+#stats .chartCard .chartBox,#chart{height:520px!important;min-height:520px!important}
+#chart svg{filter:drop-shadow(0 0 10px rgba(245,185,66,.28));shape-rendering:geometricPrecision}
+#vkDaySubjectCard .vkSubSwitch{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+#vkDaySubjectCard .vkSubSwitch button.on{border-color:#f5b942;box-shadow:0 0 12px rgba(245,185,66,.35)}
+#vkDaySubjectCard svg{filter:drop-shadow(0 0 12px rgba(245,185,66,.32))}
+#vkGodSheet,#vkGodScroll{text-align:left}
+#vkGodSheet .graph{display:flex;justify-content:center}
+#vkGodSheet .graph svg{width:min(100%,760px)}
+</style>
+<script id="VK_V23_STABLE_JS">
+(function(){
+'use strict';
+function D(){return window.data||(window.data={});}
+function N(v){v=Number(v);return Number.isFinite(v)?Math.max(0,v):0;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c];});}
+function keyOf(dt){var d=dt instanceof Date?dt:new Date(dt||Date.now());return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function sDay(s){var r=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(r))return r;if(s&&s.startTime){var x=new Date(s.startTime);if(!isNaN(x))return keyOf(x);}return r;}
+function sessions(){return Array.isArray(D().sessions)?D().sessions:[];}
+function mins(s){return Math.round(N(s&&(s.minutes!=null?s.minutes:s.min)));}
+function week(off){off=parseInt(off,10)||0;var d=new Date();d.setHours(12,0,0,0);var dow=d.getDay();d.setDate(d.getDate()-(dow===0?6:dow-1)+off*7);var a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(keyOf(x));}return a;}
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var COL=['#f5b942','#8eb8ff','#b68cff','#67d7c4','#ff9f68','#e7e7ea','#7fd38b'];
+function fmt(m){m=Math.round(N(m));if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return r?h+'h '+r+'m':h+'h';}
+function weekType(){var t=D().statsChart||'donut';return t==='combo'||t==='subjects'?'donut':t;}
+function subType(){var t=D().subjectChart||'pie';return t==='bars'||t==='spider'?t:'pie';}
+function dayVals(){var keys=week(D().statsWeekOffset||0);return {keys:keys, vals:keys.map(function(k){return sessions().filter(function(s){return sDay(s)===k;}).reduce(function(a,s){return a+mins(s);},0);})};}
+function subjectsOf(day){var map={};sessions().forEach(function(s){if(sDay(s)!==day)return;var n=String(s.subject||'General');map[n]=(map[n]||0)+mins(s);});return Object.keys(map).map(function(n){return {name:n,value:map[n]};}).sort(function(a,b){return b.value-a.value;});}
+function frame(W,H,inner,cls,paper){var bg=paper?'#fffaf0':'#14110d';return '<svg class="'+cls+'" viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block"><rect width="'+W+'" height="'+H+'" rx="16" fill="'+bg+'"/>'+inner+'</svg>';}
+function donut(vals,labs,paper){
+  var W=760,H=460,cx=230,cy=230,R=128,total=vals.reduce(function(a,b){return a+N(b);},0),g='',a0=-Math.PI/2,ink=paper?'#3a3224':'#fff';
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#c9a227" stroke-width="36" opacity=".35"/>';
+  else vals.forEach(function(v,i){if(N(v)<=0)return;var f=N(v)/total,a1=a0+f*Math.PI*2,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+(f>.5?1:0)+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+'" fill="none" stroke="'+COL[i%7]+'" stroke-width="40" stroke-linecap="round"/>';a0=a1;});
+  g+='<circle cx="'+cx+'" cy="'+cy+'" r="84" fill="'+(paper?'#fffaf0':'#14110d')+'"/><text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" font-size="28" font-weight="900" fill="'+ink+'">'+Math.round(total)+'</text>';
+  vals.forEach(function(v,i){var y=78+i*40;g+='<rect x="430" y="'+(y-12)+'" width="14" height="14" rx="4" fill="'+COL[i%7]+'"/><text x="454" y="'+y+'" font-size="14" fill="'+ink+'">'+esc(labs[i])+'</text><text x="730" y="'+y+'" text-anchor="end" font-size="14" font-weight="800" fill="'+(paper?'#3a3224':'#ffe7a3')+'">'+fmt(v)+'</text>';});
+  return frame(W,H,g,'vkDonutSvg',paper);
+}
+function bars(vals,labs,paper){
+  var W=760,H=460,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),slot=680/Math.max(vals.length,1),bw=Math.min(56,slot*0.55),g='',ink=paper?'#3a3224':'#ffe7a3';
+  vals.forEach(function(v,i){v=N(v);var h=330*v/m,x=40+i*slot+(slot-bw)/2,y=70+330-h;g+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(6,h).toFixed(1)+'" rx="12" fill="#f5b942"/><text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="800" fill="'+ink+'">'+fmt(v)+'</text><text x="'+(x+bw/2).toFixed(1)+'" y="440" text-anchor="middle" font-size="13" fill="'+(paper?'#3a3224':'#ddd')+'">'+esc(labs[i])+'</text>';});
+  return frame(W,H,g,'vkBarsSvg',paper);
+}
+function line(vals,labs,paper){
+  var W=760,H=460,m=Math.max(60,Math.max.apply(null,vals.concat([1]))),n=Math.max(vals.length,1);
+  var pts=vals.map(function(v,i){return [50+(n===1?330:i*660/(n-1)), 70+330-330*N(v)/m];});
+  var d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],mx=(a[0]+b[0])/2;d+=' C '+mx.toFixed(1)+' '+a[1].toFixed(1)+', '+mx.toFixed(1)+' '+b[1].toFixed(1)+', '+b[0].toFixed(1)+' '+b[1].toFixed(1);}
+  var g='<path d="'+d+'" fill="none" stroke="#f5b942" stroke-width="7" stroke-linecap="round"/>';
+  pts.forEach(function(p,i){g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="6" fill="'+(paper?'#fffaf0':'#14110d')+'" stroke="#f5b942" stroke-width="3"/><text x="'+p[0].toFixed(1)+'" y="440" text-anchor="middle" font-size="13" fill="'+(paper?'#3a3224':'#ddd')+'">'+esc(labs[i])+'</text>';});
+  return frame(W,H,g,'vkLineSvg',paper);
+}
+function spider(vals,labs,paper){
+  var W=760,H=460,cx=380,cy=230,R=145,m=Math.max(30,Math.max.apply(null,vals.concat([1]))),n=Math.max(vals.length,3),g='',data=[];
+  for(var ring=1;ring<=4;ring++){var pts=[];for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n,rr=R*ring/4;pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}g+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="'+(paper?'#e4d4a6':'rgba(255,255,255,.14)')+'"/>';}
+  for(var i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n;data.push([cx+R*N(vals[i])/m*Math.cos(a), cy+R*N(vals[i])/m*Math.sin(a)]);g+='<text x="'+(cx+(R+30)*Math.cos(a)).toFixed(1)+'" y="'+(cy+(R+30)*Math.sin(a)+4).toFixed(1)+'" text-anchor="middle" font-size="13" fill="'+(paper?'#3a3224':'#eee')+'">'+esc(labs[i])+'</text>';}
+  var d='M '+data[0][0].toFixed(1)+' '+data[0][1].toFixed(1);
+  for(var i=0;i<data.length;i++){var p0=data[i],p1=data[(i+1)%n],mx=(p0[0]+p1[0])/2,my=(p0[1]+p1[1])/2;d+=' Q '+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' '+mx.toFixed(1)+' '+my.toFixed(1);} d+=' Z';
+  g+='<path d="'+d+'" fill="rgba(245,185,66,.28)" stroke="#f5b942" stroke-width="5"/>';
+  return frame(W,H,g,'vkSpiderSvg',paper);
+}
+function pie(items,paper){
+  var W=760,H=420,cx=210,cy=210,R=120,total=items.reduce(function(a,x){return a+N(x.value);},0),g='',a0=-Math.PI/2,ink=paper?'#3a3224':'#fff';
+  if(!total) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+(paper?'#f3ead6':'#222')+'"/>';
+  else if(items.length===1) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+COL[0]+'"/>';
+  else items.forEach(function(it,i){var f=N(it.value)/total,a1=a0+f*Math.PI*2,x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0),x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);g+='<path d="M '+cx+' '+cy+' L '+x1.toFixed(1)+' '+y1.toFixed(1)+' A '+R+' '+R+' 0 '+(f>.5?1:0)+' 1 '+x2.toFixed(1)+' '+y2.toFixed(1)+' Z" fill="'+COL[i%7]+'" stroke="'+(paper?'#fffaf0':'#14110d')+'" stroke-width="2"/>';a0=a1;});
+  items.forEach(function(it,i){var y=80+i*36;g+='<rect x="400" y="'+(y-11)+'" width="12" height="12" rx="3" fill="'+COL[i%7]+'"/><text x="422" y="'+y+'" font-size="14" fill="'+ink+'">'+esc(it.name)+'</text><text x="730" y="'+y+'" text-anchor="end" font-size="14" font-weight="800" fill="'+(paper?'#3a3224':'#ffe7a3')+'">'+fmt(it.value)+'</text>';});
+  return frame(W,H,g,'vkPieSvg',paper);
+}
+function weekSvg(paper){var p=dayVals(),t=weekType();if(t==='bars')return bars(p.vals,DAYS,paper);if(t==='line')return line(p.vals,DAYS,paper);if(t==='heat')return spider(p.vals,DAYS,paper);return donut(p.vals,DAYS,paper);}
+function subjectSvg(items,paper){var t=subType();if(t==='bars')return bars(items.map(function(x){return x.value;}),items.map(function(x){return x.name;}),paper);if(t==='spider')return spider(items.map(function(x){return x.value;}),items.map(function(x){return x.name;}),paper);return pie(items,paper);}
+var lastChart='', lastSub='';
+function drawChart(){
+  var box=document.getElementById('chart'); if(!box) return;
+  var sig=weekType()+'|'+dayVals().vals.join(',');
+  if(sig===lastChart && box.querySelector('svg')) return;
+  lastChart=sig;
+  box.style.height='520px';box.style.minHeight='520px';box.innerHTML=weekSvg(false);
+  var title=document.getElementById('weekChartTitle'); if(title) title.textContent='This week · '+(weekType()==='heat'?'Spider':weekType());
+  var pill=document.getElementById('weekChartTotal'); if(pill) pill.textContent=fmt(dayVals().vals.reduce(function(a,b){return a+b;},0));
+  var heat=document.querySelector('#statsChartSwitcher [data-chart="heat"]'); if(heat) heat.textContent='SPIDER';
+}
+function paintSubject(){
+  var card=document.getElementById('vkDaySubjectCard');
+  var stats=document.getElementById('stats');
+  if(!card&&stats){card=document.createElement('div');card.className='card';card.id='vkDaySubjectCard';var host=document.getElementById('chart');host=host&&host.closest?host.closest('.card'):null;if(host&&host.parentNode)host.parentNode.insertBefore(card,host.nextSibling);else stats.appendChild(card);}
+  if(!card) return;
+  var keys=week(D().statsWeekOffset||0);
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(keys.indexOf(day)<0) day=keys.indexOf(keyOf(new Date()))>=0?keyOf(new Date()):keys[0];
+  D().statsSelectedDay=day;
+  var items=subjectsOf(day);
+  var top=items[0];
+  var sig=day+'|'+subType()+'|'+items.map(function(x){return x.name+x.value;}).join(',');
+  if(sig===lastSub && card.querySelector('svg')) return;
+  lastSub=sig;
+  var strip=keys.map(function(k,i){return '<button class="btn'+(k===day?' on':'')+'" type="button" data-vkday="'+k+'">'+DAYS[i]+'<br>'+k.slice(8)+'</button>';}).join('');
+  var sw=[{id:'pie',n:'PIE'},{id:'bars',n:'BARS'},{id:'spider',n:'SPIDER'}].map(function(x){return '<button class="btn'+(subType()===x.id?' on':'')+'" type="button" data-subchart="'+x.id+'">'+x.n+'</button>';}).join('');
+  var topHtml=top?'<div class="vkTopStudy"><span>Most studied</span><b>'+esc(top.name)+'</b><strong>'+esc(fmt(top.value))+'</strong></div>':'<div class="vkTopStudy"><span>Most studied</span><b>No session</b><strong>0 min</strong></div>';
+  card.innerHTML='<div class="row"><div><h2>Subject studied</h2><p class="muted">'+esc(day)+' · selected graph goes to PDF</p></div><span class="pill">'+esc(fmt(items.reduce(function(a,x){return a+x.value;},0)))+'</span></div>'+topHtml+'<div class="vkDayStrip">'+strip+'</div><div class="vkSubSwitch">'+sw+'</div><div class="vkPieStage">'+subjectSvg(items,false)+'</div>';
+}
+function inject(html){
+  if(typeof html!=='string'||html.indexOf('VELKORE')<0) return html;
+  var day=String(D().statsSelectedDay||'').slice(0,10);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) day=keyOf(new Date());
+  var items=subjectsOf(day);
+  var top=items[0];
+  html=html.replace(/<svg[\s\S]*?<\/svg>/g,'');
+  var hours='<div class="graph" style="text-align:center">'+weekSvg(true)+'</div>';
+  var sub='<div class="graph" style="text-align:center">'+subjectSvg(items,true)+'</div><p class="muted">Subject studied '+esc(day)+(top?' · most studied '+esc(top.name)+' '+esc(fmt(top.value)):'')+'</p>';
+  html=html.replace('<h2>Hours each day</h2>','<h2>Hours each day</h2>'+hours);
+  html=html.replace('<h2>This week — hours each day</h2>','<h2>This week — hours each day</h2>'+hours);
+  html=html.replace('<h2>Today — minutes per subject</h2>','<h2>Today — minutes per subject</h2>'+sub);
+  html=html.replace('<h2>Subject totals this week</h2>','<h2>Subject totals this week</h2>'+sub);
+  return html;
+}
+var prev=window.open.bind(window), native=Document.prototype.write;
+window.open=function(){var w=prev.apply(window, arguments);try{if(w&&w.document) w.document.write=function(html){return native.call(w.document, inject(html));};}catch(e){}return w;};
+document.addEventListener('click', function(e){
+  var c=e.target&&e.target.closest&&e.target.closest('#statsChartSwitcher [data-chart]');
+  if(c){D().statsChart=c.getAttribute('data-chart');lastChart='';setTimeout(drawChart,30);return;}
+  var s=e.target&&e.target.closest&&e.target.closest('[data-subchart]');
+  if(s){D().subjectChart=s.getAttribute('data-subchart');lastSub='';setTimeout(paintSubject,20);return;}
+  var d=e.target&&e.target.closest&&e.target.closest('[data-vkday]');
+  if(d){D().statsSelectedDay=d.getAttribute('data-vkday');lastSub='';setTimeout(paintSubject,20);}
+}, true);
+var heldSubject='';
+setInterval(function(){
+  var sel=document.getElementById('sessionSubject');
+  if(!sel) return;
+  if(sel.value) heldSubject=sel.value;
+  else if(heldSubject) sel.value=heldSubject;
+}, 1000);
+window.__vk23Draw=drawChart;window.__vk23Sub=paintSubject;setTimeout(function(){drawChart();paintSubject();}, 400);setTimeout(function(){lastChart="";lastSub="";drawChart();paintSubject();}, 1200);
+var locking=false;
+function lockSubject(){if(locking)return;var c=document.getElementById('vkDaySubjectCard');if(c&&!c.querySelector('[data-subchart]')){locking=true;lastSub='';paintSubject();locking=false;}}
+setInterval(lockSubject, 900);
+new MutationObserver(lockSubject).observe(document.body,{childList:true,subtree:true});
+
+})();
+</script>
+
 </body>
 </html>
 <!-- VELKORE FINAL INTEGRATION PATCH -->
@@ -5022,18 +6008,10 @@ function renderFinalChapterStats(){
 
 /* ================= PREMIUM STATS OVERVIEW ================= */
 function renderFinalStatsOverview(){
-  const stats=Q('#stats');if(!stats)return;
-  let card=Q('#vkFinalStatsOverview');
-  if(!card){card=document.createElement('div');card.id='vkFinalStatsOverview';card.className='card';const first=stats.querySelector('.statgrid');if(first)first.parentNode.insertBefore(card,first.nextSibling);else stats.prepend(card);}
-  const today=typeof todayTimed==='function'?todayTimed():0, week=typeof weekMins==='function'?weekMins():0, streak=typeof getStreak==='function'?getStreak():0;
-  const tasks=data.tasks||[], td=tasks.filter(x=>x.done).length, tp=tasks.length?Math.round(td/tasks.length*100):0;
-  const goal=Number(data.goal?.minutes||0), gp=goal?Math.min(100,Math.round(today/goal*100)):0;
-  card.innerHTML=`<div class="vkFinalStatsHead"><div><span class="eyebrow">STUDY COMMAND CENTER</span><h2>Performance Snapshot</h2></div></div><div class="vkFinalMetricGrid">
-    <div class="vkFinalMetric"><span>Today</span><b>${today}m</b><small>${gp}% of daily goal</small></div>
-    <div class="vkFinalMetric"><span>This Week</span><b>${week}m</b><small>Completed focus time</small></div>
-    <div class="vkFinalMetric"><span>Streak</span><b>${streak}</b><small>consecutive study days</small></div>
-    <div class="vkFinalMetric"><span>Tasks</span><b>${td}/${tasks.length}</b><small>${tasks.length?tp:0}% completed</small></div>
-  </div><div class="vkFinalGoal"><div><b>Today's Goal</b><span>${today} / ${goal||0} min</span></div><div class="vkFinalProgress"><i style="width:${gp}%"></i></div></div>`;
+  /* Removed: duplicate "STUDY COMMAND CENTER / Performance Snapshot" card.
+     The live-data Performance Snapshot is kept by the V14 stats engine below. */
+  const card=Q('#vkFinalStatsOverview');
+  if(card) card.remove();
 }
 
 /* ================= REFRESH HOOKS ================= */
@@ -5240,7 +6218,7 @@ if(typeof window.renderStats==='function'&&!window.renderStats.__vkMasterStats){
 
 /* ---------- PDF: include selected topics beside Subject ---------- */
 const pdf=Q('#exportPdfBtn');
-if(pdf&&!pdf.dataset.vkTopicPdf){pdf.dataset.vkTopicPdf='1';pdf.onclick=function(){const d=chartWeekData(),st=getStreak(),xp=data.xpTotal||0,map={};d.days.forEach(day=>data.sessions.filter(s=>s.day===day).forEach(s=>{const k=s.subject||'General';map[k]??={min:0,topics:new Set};map[k].min+=Number(s.minutes||0);const ts=Array.isArray(s.topicList)?s.topicList:(s.topics?String(s.topics).split(',').map(x=>x.trim()).filter(Boolean):[]);ts.forEach(t=>map[k].topics.add(t))}));const rows=Object.entries(map).sort((a,b)=>b[1].min-a[1].min).map(([s,v])=>'<tr><td><b>'+esc(s)+'</b></td><td>'+v.min+' min</td><td><small>'+esc([...v.topics].join(' · ')||'—')+'</small></td></tr>').join('')||'<tr><td colspan="3">0 min</td></tr>';const days=d.days.map((day,i)=>'<tr><td>'+d.names[i]+' · '+day+'</td><td>'+d.vals[i]+' min</td></tr>').join('');const svg=reportGraphSvg();const html='<!DOCTYPE html><html><head><title>VELKORE Weekly Report</title><style>@page{size:A4;margin:16mm}body{font-family:system-ui;color:#161616;max-width:780px;margin:auto}table{width:100%;border-collapse:collapse;margin:10px 0 18px}th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:top}th{background:#f2f2f2}small,.muted{color:#666}.graph svg{width:100%}</style></head><body><h1>VELKORE Study Report</h1><p class="muted">Student: <b>'+esc(data.profile.displayName||'Student')+'</b><br>Week: '+esc(d.range)+'<br>Generated: '+new Date().toLocaleString('en-IN')+'</p><table><tr><th>Metric</th><th>Value</th></tr><tr><td>Week focus</td><td>'+d.total+' min</td></tr><tr><td>Today focus</td><td>'+todayTimed()+' min</td></tr><tr><td>Streak</td><td>'+st+' days</td></tr><tr><td>XP / Level</td><td>'+xp+' XP / Level '+levelOf(xp)+'</td></tr></table><h2>Weekly graph</h2><div class="graph">'+svg+'</div><h2>Daily breakdown</h2><table><tr><th>Day</th><th>Minutes</th></tr>'+days+'</table><h2>Subject breakdown</h2><table><tr><th>Subject</th><th>Minutes</th><th>Selected topic(s)</th></tr>'+rows+'</table><p class="muted">Study help report — not an official CBSE document.</p><script>onload=function(){print()}<\\/script></body></html>';const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();return}const blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='VELKORE-Weekly-Report.html';a.click();toast('Popup blocked — report file downloaded')}}
+if(pdf&&!pdf.dataset.vkTopicPdf){pdf.dataset.vkTopicPdf='1';pdf.onclick=function(){const d=chartWeekData(),st=getStreak(),xp=data.xpTotal||0,map={};d.days.forEach(day=>data.sessions.filter(s=>s.day===day).forEach(s=>{const k=s.subject||'General';map[k]??={min:0,topics:new Set};map[k].min+=Number(s.minutes||0);const ts=Array.isArray(s.topicList)?s.topicList:(s.topics?String(s.topics).split(',').map(x=>x.trim()).filter(Boolean):[]);ts.forEach(t=>map[k].topics.add(t))}));const rows=Object.entries(map).sort((a,b)=>b[1].min-a[1].min).map(([s,v])=>'<tr><td><b>'+esc(s)+'</b></td><td>'+v.min+' min</td><td><small>'+esc([...v.topics].join(' · ')||'—')+'</small></td></tr>').join('')||'<tr><td colspan="3">0 min</td></tr>';const days=d.days.map((day,i)=>'<tr><td>'+d.names[i]+' · '+day+'</td><td>'+d.vals[i]+' min</td></tr>').join('');const svg=reportGraphSvg();const html='<!DOCTYPE html><html><head><title>VELKORE Weekly Report</title><style>@page{size:A4;margin:16mm}body{font-family:system-ui;color:#161616;max-width:780px;margin:auto}table{width:100%;border-collapse:collapse;margin:10px 0 18px}th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:top}th{background:#f2f2f2}small,.muted{color:#666}.graph svg{width:100%}</style></head><body><h1>VELKORE Study Report</h1><p class="muted">Student: <b>'+esc(data.profile.displayName||'Student')+'</b><br>Week: '+esc(d.range)+'<br>Generated: '+new Date().toLocaleString('en-IN')+'</p><table><tr><th>Metric</th><th>Value</th></tr><tr><td>Week focus</td><td>'+d.total+' min</td></tr><tr><td>Today focus</td><td>'+todayTimed()+' min</td></tr><tr><td>Streak</td><td>'+st+' days</td></tr><tr><td>XP / Level</td><td>'+xp+' XP / Level '+levelOf(xp)+'</td></tr></table><h2>Weekly graph</h2><div class="graph">'+svg+'</div><h2>Daily breakdown</h2><table><tr><th>Day</th><th>Minutes</th></tr>'+days+'</table><h2>Subject breakdown</h2><table><tr><th>Subject</th><th>Minutes</th><th>Selected topic(s)</th></tr>'+rows+'</table><p class="muted">Study help report — not an official CBSE document.</p><script>onload=function(){print()}<\\/script>';const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();return}const blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='VELKORE-Weekly-Report.html';a.click();toast('Popup blocked — report file downloaded')}}
 
 /* ---------- initial refresh ---------- */
 try{if(typeof refreshAllCurriculumSelectors==='function')refreshAllCurriculumSelectors();window.renderTodayQueue?.();setQueueLock(activeQueue());render30();renderChapterStats();persist(true)}catch(e){console.warn('VELKORE master update',e)}
@@ -5494,7 +6472,7 @@ function richPdf(){
   const rows=Object.entries(map).sort((a,b)=>b[1].min-a[1].min).map(([s,v])=>'<tr><td><b>'+E(s)+'</b></td><td>'+v.min+' min</td><td>'+E([...v.ch].join(', ')||'No chapters logged')+'</td><td>'+E([...v.tp].join(' · ')||'No topics logged')+'</td></tr>').join('')||'<tr><td colspan="4">0 min</td></tr>';
   const days=d.days.map((day,i)=>'<tr><td>'+d.names[i]+' · '+day+'</td><td>'+d.vals[i]+' min</td></tr>').join('');
   const svg=reportGraphSvg();
-  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>VELKORE Report</title><style>@page{size:A4;margin:14mm}body{font-family:system-ui;max-width:820px;margin:auto}table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:top}th{background:#f3f3f3}.muted{color:#666}</style></head><body><h1>VELKORE Study Report</h1><p class="muted">'+E(data.profile.displayName||'Student')+' · '+E(d.range)+' · '+new Date().toLocaleString('en-IN')+'</p><table><tr><th>Week focus</th><td>'+d.total+' min</td></tr><tr><th>Sessions</th><td>'+(data.sessions||[]).filter(s=>d.days.includes(s.day)).length+'</td></tr><tr><th>Streak</th><td>'+getStreak()+'</td></tr></table><h2>Graph</h2>'+svg+'<h2>Daily</h2><table><tr><th>Day</th><th>Minutes</th></tr>'+days+'</table><h2>Subject + chapters + topics</h2><table><tr><th>Subject</th><th>Minutes</th><th>Chapters / poems / stories</th><th>Topics</th></tr>'+rows+'</table><p class="muted">Study help — not official CBSE.</p><script>onload=function(){print()}<\\/script></body></html>';
+  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>VELKORE Report</title><style>@page{size:A4;margin:14mm}body{font-family:system-ui;max-width:820px;margin:auto}table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:top}th{background:#f3f3f3}.muted{color:#666}</style></head><body><h1>VELKORE Study Report</h1><p class="muted">'+E(data.profile.displayName||'Student')+' · '+E(d.range)+' · '+new Date().toLocaleString('en-IN')+'</p><table><tr><th>Week focus</th><td>'+d.total+' min</td></tr><tr><th>Sessions</th><td>'+(data.sessions||[]).filter(s=>d.days.includes(s.day)).length+'</td></tr><tr><th>Streak</th><td>'+getStreak()+'</td></tr></table><h2>Graph</h2>'+svg+'<h2>Daily</h2><table><tr><th>Day</th><th>Minutes</th></tr>'+days+'</table><h2>Subject + chapters + topics</h2><table><tr><th>Subject</th><th>Minutes</th><th>Chapters / poems / stories</th><th>Topics</th></tr>'+rows+'</table><p class="muted">Study help — not official CBSE.</p><script>onload=function(){print()}<\\/script>';
   const w=window.open('','_blank'); if(w){w.document.write(html);w.document.close();return;}
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([html],{type:'text/html'})); a.download='VELKORE-Weekly-Report.html'; a.click();
 }
@@ -7150,7 +8128,7 @@ function vkExportPdf(){
     '<h2>Subject → Chapter → Topics (all saved sessions)</h2>'+treeHtml(academicTree(allSess))+
     '<h2>Session history</h2><table><tr><th>Date</th><th>Subject</th><th>Chapter</th><th>Topics</th><th>Min</th><th>Status</th></tr>'+
     allSess.slice(-60).reverse().map(s=>'<tr><td>'+E(s.day)+'</td><td>'+E(s.subject||'')+'</td><td>'+E(s.chapter||'')+'</td><td>'+E((s.topicList||[]).join(', ')||s.topics||'')+'</td><td>'+num(s.minutes)+'</td><td>'+E(s.status||'completed')+'</td></tr>').join('')+
-    '</table><p class="muted">Study help report — not an official CBSE document.</p><script>onload=function(){print()}<\\/script></body></html>';
+    '</table><p class="muted">Study help report — not an official CBSE document.</p><script>onload=function(){print()}<\\/script>';
   const w=window.open('','_blank');
   if(w){ w.document.write(html); w.document.close(); return; }
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([html],{type:'text/html'})); a.download='VELKORE-Study-Report.html'; a.click();
@@ -8226,7 +9204,7 @@ function vkCenteredPdf(){
     '<h2>Session history</h2><table><tr><th>Date</th><th>Subject</th><th>Chapter</th><th>Min</th><th>Status</th></tr>'+
     allSess.slice(-50).reverse().map(s=>'<tr><td>'+E(s.day)+'</td><td>'+E(s.subject||'')+'</td><td>'+E(s.chapter||'')+'</td><td>'+num(s.minutes)+'</td><td>'+E(s.status||'completed')+'</td></tr>').join('')+
     '</table><p class="muted">Study help report — not an official CBSE document.</p></div>'+
-    '<script>onload=function(){print()}<\\/script></body></html>';
+    '<script>onload=function(){print()}<\\/script>';
   const w=window.open('','_blank');
   if(w){ w.document.write(html); w.document.close(); return; }
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([html],{type:'text/html'})); a.download='VELKORE-Study-Report.html'; a.click();
@@ -10228,7 +11206,7 @@ function openCenteredPdf(title, bodyHtml){
     'h1{font-size:22px;margin:0 0 6px}h2{font-size:14px;margin:16px 0 8px;border-bottom:1px solid #ddd;padding-bottom:4px}'+
     'p{color:#555;margin:0 0 10px}.graph{display:flex;justify-content:center;margin:12px 0}'+
     'table{width:88%;margin:0 auto;border-collapse:collapse;text-align:left}th,td{border:1px solid #ddd;padding:6px}th{background:#f4f4f4}'+
-    '</style></head><body><div class="sheet">'+bodyHtml+'</div></body></html>';
+    '</style></head><body><div class="sheet">'+bodyHtml+'</div>';
   const w=window.open('','_blank','width=820,height=1000');
   if(!w){ alert('Popup blocked'); return; }
   w.document.write(html); w.document.close();
@@ -10393,7 +11371,7 @@ function openCenteredPdf(title, bodyHtml){
     'h1{font-size:22px;margin:0 0 6px}h2{font-size:14px;margin:16px 0 8px;border-bottom:1px solid #ddd;padding-bottom:4px}'+
     'p{color:#555}.graph{display:flex;justify-content:center;margin:12px 0}'+
     'table{width:90%;margin:0 auto;border-collapse:collapse;text-align:left}th,td{border:1px solid #ddd;padding:6px;font-size:12px}th{background:#f4f4f4}'+
-    '</style></head><body><div class="sheet">'+bodyHtml+'</div></body></html>';
+    '</style></head><body><div class="sheet">'+bodyHtml+'</div>';
   const w=window.open('','_blank','width=820,height=1000');
   if(!w){alert('Popup blocked');return;}
   w.document.write(html); w.document.close(); w.focus();
@@ -10613,7 +11591,7 @@ function exportSelectedWeekPdf(){
   });
   svg+='</svg>';
   const rows=sess.length?sess.map(s=>'<tr><td>'+dayOf(s)+'</td><td>'+(s.subject||'General')+'</td><td>'+(s.chapter||'—')+'</td><td>'+topicOf(s)+'</td><td>'+(s.minutes||s.min)+'m</td></tr>').join(''):'<tr><td colspan="5">Is week ki koi session nahi</td></tr>';
-  const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>VELKORE Week PDF</title><style>@page{size:A4;margin:16mm}body{margin:0;display:flex;justify-content:center;font-family:Georgia,serif}.sheet{width:170mm;margin:0 auto;text-align:center;padding:8mm 0}table{width:92%;margin:12px auto;border-collapse:collapse;text-align:left}th,td{border:1px solid #ddd;padding:6px;font-size:12px}th{background:#f3f3f3}.graph{display:flex;justify-content:center}</style></head><body><div class="sheet"><h1>'+pos+'</h1><p>'+keys[0]+' – '+keys[6]+'</p><div class="graph">'+svg+'</div><p><b>'+total+' min</b> · '+sess.length+' sessions</p><table><tr><th>Date</th><th>Subject</th><th>Chapter</th><th>Topic</th><th>Min</th></tr>'+rows+'</table></div></body></html>';
+  const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>VELKORE Week PDF</title><style>@page{size:A4;margin:16mm}body{margin:0;display:flex;justify-content:center;font-family:Georgia,serif}.sheet{width:170mm;margin:0 auto;text-align:center;padding:8mm 0}table{width:92%;margin:12px auto;border-collapse:collapse;text-align:left}th,td{border:1px solid #ddd;padding:6px;font-size:12px}th{background:#f3f3f3}.graph{display:flex;justify-content:center}</style></head><body><div class="sheet"><h1>'+pos+'</h1><p>'+keys[0]+' – '+keys[6]+'</p><div class="graph">'+svg+'</div><p><b>'+total+' min</b> · '+sess.length+' sessions</p><table><tr><th>Date</th><th>Subject</th><th>Chapter</th><th>Topic</th><th>Min</th></tr>'+rows+'</table></div>';
   const w=window.open('','_blank','width=820,height=1000');
   if(!w){alert('Popup blocked');return;}
   w.document.write(html); w.document.close(); w.focus();
@@ -12246,7 +13224,7 @@ function openSlide(title, htmlBody){
   if(modal) modal.classList.remove('open');
   const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+esc(title)+'</title>'+
     '<style>@page{size:A4;margin:16mm}body{font-family:system-ui,Segoe UI,Arial,sans-serif;color:#161616;max-width:780px;margin:24px auto;padding:0 16px}h1{font-size:28px;margin:0 0 6px}h2{font-size:16px;margin:22px 0 8px}.muted{color:#666}table{width:100%;border-collapse:collapse;margin:10px 0 18px}th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:top}th{background:#f2f2f2}.graph{border:1px solid #e4d4a6;background:#fffaf0;border-radius:14px;padding:10px;margin:8px 0 16px}.graph svg{width:100%;height:auto}</style></head><body>'+htmlBody+
-    '<script>window.onload=function(){try{window.focus()}catch(e){}}<\/script></body></html>';
+    '<script>window.onload=function(){try{window.focus()}catch(e){}}<\/script>';
   const w=window.open('','_blank','width=900,height=1100,scrollbars=yes');
   if(!w){ alert('Allow popups to open the PDF slide'); return; }
   w.document.open(); w.document.write(html); w.document.close(); w.focus();
@@ -13025,7 +14003,7 @@ function makeCleanPdf(mode){
   html+='</table><div style="margin-top:24px;padding-top:10px;border-top:1px solid #d8d0c0;font-size:10px;color:#8a7a58;display:flex;justify-content:space-between"><span>VELKORE · Class 10 CBSE Study Report</span><span>'+new Date().toLocaleDateString('en-IN')+'</span></div>';
   wrap.innerHTML=html; document.body.appendChild(wrap);
   var opt={ margin:[10,10,10,10], filename:'VELKORE_'+(mode==='day'?'Daily':'Weekly')+'_'+range.replace(/\s/g,'_')+'.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2,useCORS:true,logging:false}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
-  if(typeof html2pdf==='undefined'){ wrap.style.left='0';wrap.style.position='static'; var w=window.open('','_blank'); if(w){w.document.write('<html><head><title>'+title+'</title></head><body>'+wrap.innerHTML+'</body></html>');w.document.close();w.print();} document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF library loading…'); return; }
+  if(typeof html2pdf==='undefined'){ wrap.style.left='0';wrap.style.position='static'; var w=window.open('','_blank'); if(w){w.document.write('<html><head><title>'+title+'</title></head><body>'+wrap.innerHTML+'');w.document.close();w.print();} document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF library loading…'); return; }
   html2pdf().set(opt).from(wrap).save().then(function(){ document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF downloaded ✓'); }).catch(function(err){ console.error(err); document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF failed'); });
 }
 window.vkWeeklyPdf=function(){ makeCleanPdf('week'); };
@@ -14568,7 +15546,7 @@ function openPrintWindow(html, title){
   var w = window.open('', '_blank', 'width=860,height=1100');
   if(!w){
     // popup blocked — try download as HTML
-    var blob = new Blob(['<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title></head><body style="background:#fff">'+html+'</body></html>'], {type:'text/html'});
+    var blob = new Blob(['<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title></head><body style="background:#fff">'+html+''], {type:'text/html'});
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = (title||'VELKORE-Report').replace(/\s+/g,'_')+'.html';
@@ -14581,7 +15559,7 @@ function openPrintWindow(html, title){
     '<style>@page{size:A4;margin:14mm}html,body{margin:0;padding:0;background:#fff}</style></head>'+
     '<body style="background:#fff;margin:0;padding:0">'+html+
     '<script>setTimeout(function(){try{window.focus();window.print()}catch(e){}},350)<\\/script>'+
-    '</body></html>');
+    '');
   w.document.close();
   return w;
 }
@@ -14826,7 +15804,7 @@ function openCenteredReport(title, bodyHtml){
     '@media print{body{background:#fff}.sheet{box-shadow:none;margin:0;width:100%;max-width:none}}'+
     '</style></head><body><div class="sheet">'+bodyHtml+'</div>'+
     '<script>window.onload=function(){try{window.focus();}catch(e){}}<\/script>'+
-    '</body></html>';
+    '';
   var w = window.open('','_blank','width=820,height=1000,scrollbars=yes');
   if(!w){
     alert('Allow popups to view the report');
@@ -14836,6 +15814,36 @@ function openCenteredReport(title, bodyHtml){
   w.document.write(html);
   w.document.close();
   w.focus();
+}
+
+/* ===== SELECTED GRAPH TYPE -> BOTH DAILY + WEEKLY PDF ===== */
+function vkSelectedPdfGraph(vals, labels, type, title){
+  vals=(vals||[]).map(function(x){var n=Number(x);return Number.isFinite(n)?Math.max(0,n):0;});
+  labels=labels||[]; type=String(type||'donut').toLowerCase();
+  if(['donut','bars','line','heat'].indexOf(type)<0) type='donut';
+  var W=760,H=300,L=58,R=24,T=42,B=52,iw=W-L-R,ih=H-T-B;
+  var max=Math.max(1,...vals), colors=['#e8c15a','#63d8ff','#b78cff','#63e6a1','#ff9b68','#ff6fae','#8fa8ff'];
+  function escx(x){return esc(String(x==null?'':x));}
+  function y(v){return T+ih-(v/max)*ih;}
+  var out='<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300"><rect width="760" height="300" rx="14" fill="#fffaf0"/>';
+  out+='<text x="'+L+'" y="23" font-size="13" font-weight="800" fill="#5b4a25">'+escx(title||('Selected chart · '+type.toUpperCase()))+'</text>';
+  if(type==='donut'){
+    var total=vals.reduce(function(a,b){return a+b;},0),cx=220,cy=164,r=92,circ=2*Math.PI*r,off=0;
+    if(total<=0) out+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#e5dfd0" stroke-width="38"/>';
+    else vals.forEach(function(v,i){if(v<=0)return;var len=v/total*circ;out+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+colors[i%colors.length]+'" stroke-width="38" stroke-dasharray="'+len+' '+(circ-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 220 164)"/>';off+=len;});
+    out+='<circle cx="'+cx+'" cy="'+cy+'" r="60" fill="#fffdf8"/><text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="24" font-weight="900" fill="#222">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+24)+'" text-anchor="middle" font-size="10" fill="#777">minutes</text>';
+    labels.slice(0,7).forEach(function(l,i){var yy=60+i*30;out+='<rect x="430" y="'+(yy-10)+'" width="11" height="11" rx="3" fill="'+colors[i%colors.length]+'"/><text x="449" y="'+yy+'" font-size="10" fill="#444">'+escx(l).slice(0,30)+'</text><text x="725" y="'+yy+'" text-anchor="end" font-size="10" font-weight="800" fill="#333">'+Math.round(vals[i]||0)+' min</text>';});
+  }else if(type==='heat'){
+    var slot=iw/Math.max(1,vals.length);
+    vals.forEach(function(v,i){var x=L+i*slot+5,alpha=.12+.82*(v/max);out+='<rect x="'+x+'" y="'+T+'" width="'+Math.max(8,slot-10)+'" height="150" rx="12" fill="'+colors[i%colors.length]+'" fill-opacity="'+alpha.toFixed(2)+'"/><text x="'+(x+(slot-10)/2)+'" y="'+(T+82)+'" text-anchor="middle" font-size="18" font-weight="900" fill="#222">'+Math.round(v)+'</text><text x="'+(x+(slot-10)/2)+'" y="'+(H-20)+'" text-anchor="middle" font-size="10" fill="#666">'+escx(labels[i]).slice(0,12)+'</text>';});
+  }else{
+    for(var q=0;q<=4;q++){var gy=T+ih*q/4,gv=Math.round(max*(1-q/4));out+='<line x1="'+L+'" y1="'+gy+'" x2="'+(W-R)+'" y2="'+gy+'" stroke="#ddd" stroke-dasharray="3 4"/><text x="'+(L-8)+'" y="'+(gy+3)+'" text-anchor="end" font-size="9" fill="#777">'+gv+'</text>';}
+    var pts=vals.map(function(v,i){return [L+(vals.length===1?iw/2:i*iw/Math.max(1,vals.length-1)),y(v)];});
+    if(type==='bars') vals.forEach(function(v,i){var bw=Math.min(52,iw/Math.max(1,vals.length)*.62),x=pts[i][0]-bw/2,h=T+ih-y(v);out+='<rect x="'+x+'" y="'+y(v)+'" width="'+bw+'" height="'+Math.max(2,h)+'" rx="8" fill="'+colors[i%colors.length]+'"/><text x="'+pts[i][0]+'" y="'+Math.max(30,y(v)-8)+'" text-anchor="middle" font-size="10" font-weight="800" fill="#333">'+Math.round(v)+'</text>';});
+    if(type==='line'&&pts.length){var path=pts.map(function(p,i){return(i?'L':'M')+p[0]+' '+p[1];}).join(' ');out+='<path d="'+path+'" fill="none" stroke="#d49b25" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>';pts.forEach(function(p,i){out+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="#fff" stroke="'+colors[i%colors.length]+'" stroke-width="3"/><text x="'+p[0]+'" y="'+Math.max(30,p[1]-10)+'" text-anchor="middle" font-size="10" font-weight="800" fill="#333">'+Math.round(vals[i])+'</text>';});}
+    vals.forEach(function(v,i){out+='<text x="'+pts[i][0]+'" y="'+(H-20)+'" text-anchor="middle" font-size="10" fill="#666">'+escx(labels[i]).slice(0,12)+'</text>';});
+  }
+  return out+'</svg>';
 }
 
 function idealDaily(){
@@ -14866,7 +15874,7 @@ function idealDaily(){
       '<tr><td>Day focus</td><td><b>'+total+' min</b> ('+esc(fmtHours(total))+')</td></tr>'+
       '<tr><td>Sessions</td><td>'+sess.length+'</td></tr></table>'+
     '<h2>Day graph — time per subject</h2>'+
-    '<div class="graph">'+(gVals.length?lineGraph(gVals,gLabs,'Minutes per subject'):'<p class="muted">No sessions</p>')+'</div>'+
+    '<div class="graph">'+(gVals.length?vkSelectedPdfGraph(gVals,gLabs,d.statsChart||'donut','Selected graph · daily subject time'):'<p class="muted">No sessions</p>')+'</div>'+
     '<h2>Subject · Chapter · Topics / Subtopics</h2>'+
     '<table><tr><th>Subject / Chapter</th><th>Time</th><th>Topics &amp; Subtopics</th></tr>'+subRows+'</table>'+
     '<h2>Study log</h2>'+
@@ -14883,11 +15891,11 @@ function idealWeekly(){
   var total = sess.reduce(function(a,s){ return a+whole(s.minutes||s.min); },0);
   var name = (d.profile && d.profile.displayName) || 'Student';
 
-  // Week hours graph — ONLY days with study (user request)
+  // Week graph: always Mon–Sun so the PDF matches the Stats graph exactly.
   var weekVals = [], weekLabs = [];
   keys.forEach(function(k,i){
     var m = sess.filter(function(s){ return sDay(s)===k; }).reduce(function(a,s){ return a+whole(s.minutes||s.min); },0);
-    if(m > 0){ weekVals.push(m); weekLabs.push(dayNames[i]); }
+    weekVals.push(m); weekLabs.push(dayNames[i]);
   });
 
   // Subject graph
@@ -14914,9 +15922,9 @@ function idealWeekly(){
       '<tr><td>Sessions</td><td>'+sess.length+'</td></tr>'+
       '<tr><td>Days studied</td><td>'+weekVals.length+' / 7</td></tr></table>'+
     '<h2>Week graph — hours studied each day</h2>'+
-    '<div class="graph">'+barGraph(weekVals, weekLabs)+'</div>'+
+    '<div class="graph">'+vkSelectedPdfGraph(weekVals, weekLabs,d.statsChart||'donut','This week · hours each day')+'</div>'+
     '<h2>Subject graph — time per subject</h2>'+
-    '<div class="graph">'+(gVals.length?lineGraph(gVals,gLabs,'Minutes per subject'):'<p class="muted">No sessions</p>')+'</div>'+
+    '<div class="graph">'+(gVals.length?vkSelectedPdfGraph(gVals,gLabs,d.statsChart||'donut','Selected graph · subject time'):'<p class="muted">No sessions</p>')+'</div>'+
     '<h2>Subject · Chapter · Topics / Subtopics</h2>'+
     '<table><tr><th>Subject / Chapter</th><th>Time</th><th>Topics &amp; Subtopics</th></tr>'+subRows+'</table>'+
     '<h2>Study log</h2>'+
@@ -15086,7 +16094,7 @@ function openReport(title, body){
     'td.num{text-align:right;white-space:nowrap}.meta{font-size:10px;color:#777}'+
     '.graph{border:1px solid #e4d4a6;background:#fffaf0;border-radius:12px;padding:8px;margin:6px 0 12px}'+
     '@media print{body{background:#fff}.sheet{box-shadow:none;margin:0;width:100%}}'+
-    '</style></head><body><div class="sheet">'+body+'</div></body></html>';
+    '</style></head><body><div class="sheet">'+body+'</div>';
   var w=window.open('','_blank','width=840,height=1020,scrollbars=yes');
   if(!w){ alert('Please allow popups for PDF report'); return; }
   w.document.open(); w.document.write(html); w.document.close(); w.focus();
@@ -15480,7 +16488,7 @@ function openReport(title, body){
     'th,td{border:1px solid #ddd;padding:5px 7px;text-align:left;vertical-align:top}th{background:#f3efe6}'+
     'td.num{text-align:right;white-space:nowrap}.meta{font-size:10px;color:#777}'+
     '@media print{body{background:#fff}.sheet{width:100%}}'+
-    '</style></head><body><div class="sheet">'+body+'</div></body></html>';
+    '</style></head><body><div class="sheet">'+body+'</div>';
   var w=window.open('','_blank','width=900,height=1040,scrollbars=yes');
   if(!w){ alert('Allow popups to open the report'); return; }
   w.document.open(); w.document.write(html); w.document.close(); w.focus();
@@ -15674,8 +16682,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #stats #chart svg.vkStatsSvg,#stats #vkCompareChart svg.vkStatsSvg{display:block;width:100%;height:100%;}
 #stats #vkDeepChart svg.vkLargeDeepSvg{display:block;width:100%;height:100%;}
 #stats .chartCard h2{letter-spacing:-.025em;}
-#stats .statsSwitcher{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-#stats .statsSwitcher .btn{min-height:38px;border-radius:12px;font-weight:850;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+#stats .statsSwitcher{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+#stats .statsSwitcher .btn{min-height:46px;min-width:92px;padding:11px 18px;border-radius:14px;font-size:12px;font-weight:900;letter-spacing:.04em;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
 #stats .statsSwitcher .btn.active{border-color:rgba(245,185,66,.55);box-shadow:0 0 0 1px rgba(245,185,66,.14),0 8px 22px rgba(245,185,66,.10);}
 #stats .chartMeta{margin-top:12px;}
 #stats #vkCompareChart{min-height:300px;}
@@ -15685,14 +16693,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 @media(max-width:520px){
   #stats .chartCard .chartWrap{padding:8px 5px 5px;border-radius:20px;}
   #stats .chartCard .chartBox,#stats .chartCard .hqTall .chartBox{height:285px!important;min-height:285px!important;}
-  #stats .statsSwitcher{gap:6px;}
-  #stats .statsSwitcher .btn{flex:1 1 calc(50% - 6px);}
+  #stats .statsSwitcher{gap:8px;}
+  #stats .statsSwitcher .btn{flex:1 1 calc(50% - 8px);min-height:44px;padding:10px 14px;font-size:11px;}
 }
 </style>
 <style id="VELKORE_V14_GRAPH_UPGRADE">
 /* V14 — visual upgrade only; original layout/data architecture preserved */
 #stats .chartCard .chartWrap{min-height:390px!important;padding:14px 10px 10px!important;border-radius:26px!important;background:radial-gradient(circle at 50% 8%,rgba(245,185,66,.10),transparent 46%),linear-gradient(145deg,rgba(255,255,255,.035),rgba(245,185,66,.018))!important;border:1px solid rgba(245,185,66,.18)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 50px rgba(0,0,0,.30),0 0 34px rgba(245,185,66,.055)!important}
-#stats .chartCard .chartBox{height:390px!important;min-height:390px!important}
+#stats .chartCard .chartBox{height:440px!important;min-height:440px!important}
 #stats #chart,#stats #vkCompareChart,#stats #vkDeepChart{width:100%!important;height:100%!important;min-height:100%!important}
 #stats svg.vkV14Svg{display:block;width:100%!important;height:100%!important;overflow:visible}
 #stats .statsSwitcher .btn{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease!important}
@@ -15725,7 +16733,7 @@ function grid(W,H,L,R,T,B,m){var ih=H-T-B,g='';for(var q=0;q<=4;q++){var y=T+ih*
 function bars(v){var W=760,H=420,L=55,R=24,T=48,B=62,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,v.concat([120]))),slot=iw/7,bw=Math.min(66,slot*.58),g=defs('b14')+grid(W,H,L,R,T,B,m);v.forEach(function(x,i){var h=ih*x/m,X=L+i*slot+(slot-bw)/2,Y=T+ih-h;g+='<rect x="'+(X-8)+'" y="'+(Y-10)+'" width="'+(bw+16)+'" height="'+(h+20)+'" rx="18" fill="rgba(245,185,66,.14)" filter="url(#b14s)"/><rect x="'+X+'" y="'+Y+'" width="'+bw+'" height="'+Math.max(6,h)+'" rx="13" fill="url(#b14gold)" filter="url(#b14g)"/><text x="'+(X+bw/2)+'" y="'+Math.max(27,Y-14)+'" text-anchor="middle" font-size="13" font-weight="900" fill="'+GOLD2+'">'+Math.round(x)+'</text><text x="'+(X+bw/2)+'" y="'+(H-27)+'" text-anchor="middle" font-size="12" font-weight="850" fill="'+MUTED+'">'+labels[i]+'</text>';});return svg(W,H,g,'vkV14GlowGraph');}
 function line(v){var W=760,H=420,L=55,R=24,T=48,B=62,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,v.concat([120]))),pts=v.map(function(x,i){return[L+i*iw/6,T+ih-ih*x/m]}),g=defs('l14')+grid(W,H,L,R,T,B,m),area='M'+pts[0][0]+' '+(T+ih)+' L'+pts.map(function(p){return p[0]+' '+p[1]}).join(' L')+' L'+pts[6][0]+' '+(T+ih)+' Z';g+='<path d="'+area+'" fill="rgba(245,185,66,.12)"/>';g+='<polyline points="'+pts.map(function(p){return p.join(',')}).join(' ')+'" fill="none" stroke="#f5b942" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" filter="url(#l14g)"/>';pts.forEach(function(p,i){g+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="14" fill="rgba(245,185,66,.13)" filter="url(#l14s)"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="6" fill="#17171b" stroke="'+GOLD2+'" stroke-width="3"/><text x="'+p[0]+'" y="'+Math.max(27,p[1]-20)+'" text-anchor="middle" font-size="13" font-weight="900" fill="'+GOLD2+'">'+Math.round(v[i])+'</text><text x="'+p[0]+'" y="'+(H-27)+'" text-anchor="middle" font-size="12" font-weight="850" fill="'+MUTED+'">'+labels[i]+'</text>';});return svg(W,H,g,'vkV14GlowGraph');}
 function heat(v){var W=760,H=370,L=55,R=24,T=62,iw=W-L-R,m=Math.max(1,Math.max.apply(null,v.concat([120]))),slot=iw/7,g=defs('h14')+'<text x="'+L+'" y="35" font-size="14" font-weight="850" fill="'+MUTED+'">Focus intensity by weekday</text>';v.forEach(function(x,i){var X=L+i*slot+5,a=x?(.16+.80*x/m):.035,fill=x?'rgba(245,185,66,'+Math.min(.96,a).toFixed(3)+')':'rgba(255,255,255,.035)';g+='<rect x="'+X+'" y="'+T+'" width="'+(slot-10)+'" height="185" rx="22" fill="'+fill+'" stroke="rgba(245,185,66,.18)" filter="url(#h14g)"/><text x="'+(X+(slot-10)/2)+'" y="'+(T+92)+'" text-anchor="middle" font-size="25" font-weight="900" fill="#fff">'+Math.round(x)+'</text><text x="'+(X+(slot-10)/2)+'" y="'+(T+119)+'" text-anchor="middle" font-size="11" fill="'+MUTED+'">minutes</text><text x="'+(X+(slot-10)/2)+'" y="'+(H-45)+'" text-anchor="middle" font-size="12" font-weight="850" fill="'+MUTED+'">'+labels[i]+'</text>';});return svg(W,H,g,'vkV14GlowGraph');}
-function donut(v){var W=760,H=420,cx=245,cy=210,r=132,total=v.reduce(function(a,b){return a+b;},0),cols=[GOLD,'#d4d4d8','#9ea2ab','#888b94','#b7b9bf','#777a82','#ececef'],g=defs('d14');if(!total)g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="48"/>';else{var a=-Math.PI/2;v.forEach(function(x,i){if(x<=0)return;var z=x/total*Math.PI*2,b=a+z,x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b);g+='<path d="M '+x1+' '+y1+' A '+r+' '+r+' 0 '+(z>Math.PI?1:0)+' 1 '+x2+' '+y2+'" fill="none" stroke="'+cols[i]+'" stroke-width="48" stroke-linecap="round" filter="url(#d14g)"/>';a=b;});}g+='<circle cx="'+cx+'" cy="'+cy+'" r="94" fill="#17171b" stroke="rgba(255,255,255,.05)"/><text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" font-size="35" font-weight="900" fill="#fff">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+35)+'" text-anchor="middle" font-size="13" font-weight="800" fill="'+MUTED+'">focus minutes</text>';v.forEach(function(x,i){var y=72+i*43;g+='<rect x="475" y="'+(y-12)+'" width="16" height="16" rx="5" fill="'+cols[i]+'" filter="url(#d14g)"/><text x="502" y="'+y+'" font-size="14" font-weight="850" fill="#eee">'+labels[i]+'</text><text x="720" y="'+y+'" text-anchor="end" font-size="14" font-weight="900" fill="'+(i===0?GOLD2:'#dedee2')+'">'+Math.round(x)+' min</text>';});return svg(W,H,g,'vkV14GlowGraph');}
+function donut(v){var W=760,H=420,cx=245,cy=210,r=132,total=v.reduce(function(a,b){return a+b;},0),cols=[GOLD,'#63d8ff','#b78cff','#63e6a1','#ff9b68','#ff6fae','#8fa8ff'],g=defs('d14');if(!total)g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="48"/>';else{var a=-Math.PI/2;v.forEach(function(x,i){if(x<=0)return;var z=x/total*Math.PI*2,b=a+z,x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b);g+='<path d="M '+x1+' '+y1+' A '+r+' '+r+' 0 '+(z>Math.PI?1:0)+' 1 '+x2+' '+y2+'" fill="none" stroke="'+cols[i]+'" stroke-width="48" stroke-linecap="round" filter="url(#d14g)"/>';a=b;});}g+='<circle cx="'+cx+'" cy="'+cy+'" r="94" fill="#17171b" stroke="rgba(255,255,255,.05)"/><text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" font-size="35" font-weight="900" fill="#fff">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+35)+'" text-anchor="middle" font-size="13" font-weight="800" fill="'+MUTED+'">focus minutes</text>';v.forEach(function(x,i){var y=72+i*43;g+='<rect x="475" y="'+(y-12)+'" width="16" height="16" rx="5" fill="'+cols[i]+'" filter="url(#d14g)"/><text x="502" y="'+y+'" font-size="14" font-weight="850" fill="#eee">'+labels[i]+'</text><text x="720" y="'+y+'" text-anchor="end" font-size="14" font-weight="900" fill="'+(i===0?GOLD2:'#dedee2')+'">'+Math.round(x)+' min</text>';});return svg(W,H,g,'vkV14GlowGraph');}
 function renderMain(){var box=document.getElementById('chart');if(!box)return;var v=vals(D().statsWeekOffset||0),t=D().statsChart||'donut';if(t==='combo'||t==='subjects')t='donut';if(['donut','bars','line','heat'].indexOf(t)<0)t='donut';D().statsChart=t;box.innerHTML=t==='bars'?bars(v):t==='line'?line(v):t==='heat'?heat(v):donut(v);var title=document.getElementById('weekChartTitle');if(title)title.textContent='This week · '+t.toUpperCase();var total=document.getElementById('weekChartTotal');if(total)total.textContent=Math.round(v.reduce(function(a,b){return a+b;},0))+' min';document.querySelectorAll('#statsChartSwitcher [data-chart]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-chart')===t);});}
 function compare(){var box=document.getElementById('vkCompareChart');if(!box)return;var off=signed(D().statsWeekOffset||0),a=vals(off),b=vals(off-1),ta=a.reduce(function(x,y){return x+y;},0),tb=b.reduce(function(x,y){return x+y;},0),delta=ta-tb,W=760,H=420,L=55,R=24,T=65,B=62,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,a.concat(b,[120]))),slot=iw/7,bw=Math.min(29,slot*.22),g=defs('c14');for(var q=0;q<=4;q++){var gy=T+ih*q/4;g+='<line x1="'+L+'" y1="'+gy+'" x2="'+(W-R)+'" y2="'+gy+'" stroke="'+GRID+'"/><text x="10" y="'+(gy+4)+'" font-size="11" fill="'+MUTED+'">'+Math.round(m*(1-q/4))+'</text>';}for(var i=0;i<7;i++){var cx=L+i*slot+slot/2,h1=ih*a[i]/m,h2=ih*b[i]/m,y1=T+ih-h1,y2=T+ih-h2;g+='<rect x="'+(cx-bw-7)+'" y="'+(y1-9)+'" width="'+(bw+14)+'" height="'+(h1+18)+'" rx="14" fill="rgba(245,185,66,.14)" filter="url(#c14s)"/><rect x="'+(cx-bw)+'" y="'+y1+'" width="'+bw+'" height="'+Math.max(6,h1)+'" rx="10" fill="url(#c14gold)" filter="url(#c14g)"/><rect x="'+(cx+7)+'" y="'+(y2-7)+'" width="'+(bw+14)+'" height="'+(h2+14)+'" rx="14" fill="rgba(212,212,216,.12)" filter="url(#c14s)"/><rect x="'+(cx+7)+'" y="'+y2+'" width="'+bw+'" height="'+Math.max(6,h2)+'" rx="10" fill="url(#c14silver)" filter="url(#c14g)"/><text x="'+(cx-bw/2)+'" y="'+Math.max(45,y1-13)+'" text-anchor="middle" font-size="10" font-weight="900" fill="'+GOLD2+'">'+Math.round(a[i])+'</text><text x="'+(cx+7+bw/2)+'" y="'+Math.max(45,y2-13)+'" text-anchor="middle" font-size="10" font-weight="900" fill="'+SILVER2+'">'+Math.round(b[i])+'</text><text x="'+cx+'" y="'+(H-28)+'" text-anchor="middle" font-size="12" font-weight="850" fill="'+MUTED+'">'+labels[i]+'</text>';}box.innerHTML=svg(W,H,g,'vkV14GlowGraph');var card=document.getElementById('vkCompareCard');if(card){var h=card.querySelector('.vkV14CompareHead');if(!h){h=document.createElement('div');h.className='vkV14CompareHead';var wrap=card.querySelector('.chartWrap');card.insertBefore(h,wrap);}h.innerHTML='<div class="vkV14Chip gold"><span>THIS WEEK</span><b>'+Math.round(ta)+' min</b></div><div class="vkV14Delta">'+(delta>=0?'+':'')+Math.round(delta)+' min</div><div class="vkV14Chip silver"><span>LAST WEEK</span><b>'+Math.round(tb)+' min</b></div>';}}
 function performance(){var stats=document.getElementById('stats');if(!stats)return;var card=document.getElementById('vkV14Performance');if(!card){card=document.createElement('div');card.id='vkV14Performance';var h=stats.querySelector('h1');if(h&&h.parentNode)h.parentNode.insertBefore(card,h.nextSibling);else stats.insertBefore(card,stats.firstChild);}var today=mins(key(new Date())),week=vals(0).reduce(function(a,b){return a+b;},0),prev=vals(-1).reduce(function(a,b){return a+b;},0),delta=week-prev,goal=N(D().goal&&D().goal.minutes)||120,pct=goal?Math.min(100,Math.round(today/goal*100)):0,streak=0,x=new Date();for(var i=0;i<365;i++){var k=key(x);if(mins(k)>0)streak++;else if(i>0)break;x.setDate(x.getDate()-1);}card.innerHTML='<div class="vkV14Head"><div><span class="vkV14Eyebrow">STUDY COMMAND CENTER</span><h2>Performance Snapshot</h2><p class="muted" style="margin:2px 0 0">Live from saved focus sessions</p></div><span class="vkV14Live">● LIVE DATA</span></div><div class="vkV14Metrics"><div class="vkV14Metric"><span>Today</span><b>'+Math.round(today)+' min</b><small>'+pct+'% of daily goal</small></div><div class="vkV14Metric"><span>This Week</span><b>'+Math.round(week)+' min</b><small>Monday–Sunday</small></div><div class="vkV14Metric"><span>Last Week</span><b>'+Math.round(prev)+' min</b><small>previous Monday–Sunday</small></div><div class="vkV14Metric"><span>Streak</span><b>'+streak+' day'+(streak===1?'':'s')+'</b><small>consecutive study days</small></div></div><div class="vkV14Progress"><i style="width:'+pct+'%"></i></div><div class="mini" style="margin-top:8px">Weekly change: <b style="color:'+(delta>=0?GOLD2:SILVER2)+'">'+(delta>=0?'+':'')+Math.round(delta)+' min</b></div>';}
@@ -15733,12 +16741,12 @@ function refresh(){try{renderMain();compare();performance();}catch(e){console.wa
 /* disable only known legacy chart painters; no other app systems are replaced */
 ['paintLockedCharts','safePaint','vkPaint3DWeek','vk100x','renderUltraAll','finalPaintBurst','paintHeatIfNeeded'].forEach(function(k){if(typeof window[k]==='function')window[k]=function(){};});
 var sw=document.getElementById('statsChartSwitcher');if(sw&&!sw.dataset.vk14){sw.dataset.vk14='1';sw.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-chart]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();var t=b.getAttribute('data-chart');D().statsChart=(t==='combo'||t==='subjects')?'donut':t;try{if(typeof persist==='function')persist(true);}catch(_){}refresh();},true);}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(refresh,80);});else setTimeout(refresh,80);setTimeout(refresh,600);setTimeout(refresh,1600);setTimeout(refresh,3000);window.addEventListener('resize',function(){clearTimeout(window.__vk14r);window.__vk14r=setTimeout(refresh,120);},{passive:true});setInterval(function(){var s=document.getElementById('stats');if(s&&s.classList.contains('active'))refresh();},2500);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(refresh,80);});else setTimeout(refresh,80);setTimeout(refresh,600);setTimeout(refresh,1600);setTimeout(refresh,3000);window.addEventListener('resize',function(){clearTimeout(window.__vk14r);window.__vk14r=setTimeout(refresh,120);},{passive:true});/* vk stable: no repeating chart refresh */
 window.__VELKORE_V14_REFRESH=refresh;
 })();
 </script>
 
-</body></html>
+
 
 
 <style id="vk-v15-real-polish">
@@ -15932,3 +16940,104 @@ try{
 /* V16 graph finish: richer depth/glow without changing data/render logic. */
 #chart,#vkCompareChart,#vkAuxChart,.vkChartCard,.vk-graph-card,[id*="Graph"],[class*="graph-card"]{border-radius:18px}
 </style>
+
+<style id="vk-v16-request-fixes">
+/* Keep only the LIVE DATA Performance Snapshot. */
+#vkFinalStatsOverview{display:none!important}
+/* Larger graph selector controls. */
+#stats #statsChartSwitcher{gap:10px!important}
+#stats #statsChartSwitcher .btn{min-height:46px!important;min-width:92px!important;padding:11px 18px!important;font-size:12px!important;font-weight:900!important;letter-spacing:.04em!important}
+@media(max-width:520px){#stats #statsChartSwitcher{gap:8px!important}#stats #statsChartSwitcher .btn{min-height:44px!important;min-width:0!important;flex:1 1 calc(50% - 8px)!important;padding:10px 12px!important;font-size:11px!important}}
+</style>
+
+<style id="VK_V18_SMOOTH_GRAPH_UI">
+/* V18 — smoother graph controls + Subject/Chapter-matched Topic/Subtopic lists */
+#statsChartSwitcher{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px!important;width:100%!important}
+#statsChartSwitcher .btn{min-height:42px!important;padding:10px 9px!important;border-radius:13px!important;font-size:11px!important;font-weight:950!important;letter-spacing:.04em!important}
+#sessionTopicsPicker .topicChip,#taskTopicsPicker .topicChip,#planTopicsPicker .topicChip,
+#sessionSubtopicsPicker .topicChip,#taskSubtopicsPicker .topicChip,#planSubtopicsPicker .topicChip{
+  min-height:48px!important;padding:11px 42px 11px 13px!important;border-radius:14px!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 88%,transparent),var(--in))!important;
+  border:1px solid var(--line)!important;box-shadow:0 5px 18px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  font-size:12px!important;font-weight:800!important;
+}
+#sessionTopicsPicker .topicChip:hover,#taskTopicsPicker .topicChip:hover,#planTopicsPicker .topicChip:hover,
+#sessionSubtopicsPicker .topicChip:hover,#taskSubtopicsPicker .topicChip:hover,#planSubtopicsPicker .topicChip:hover{
+  transform:none!important;border-color:color-mix(in srgb,var(--p) 60%,var(--line))!important;
+}
+#sessionTopicsPicker .topicChip.selected,#taskTopicsPicker .topicChip.selected,#planTopicsPicker .topicChip.selected,
+#sessionSubtopicsPicker .topicChip.selected,#taskSubtopicsPicker .topicChip.selected,#planSubtopicsPicker .topicChip.selected,
+#sessionTopicsPicker .topicChip:has(input:checked),#taskTopicsPicker .topicChip:has(input:checked),#planTopicsPicker .topicChip:has(input:checked),
+#sessionSubtopicsPicker .topicChip:has(input:checked),#taskSubtopicsPicker .topicChip:has(input:checked),#planSubtopicsPicker .topicChip:has(input:checked){
+  background:linear-gradient(145deg,color-mix(in srgb,var(--p) 13%,var(--card2)),var(--in))!important;
+  border-color:color-mix(in srgb,var(--p) 62%,var(--line))!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--p) 9%,transparent),0 8px 22px color-mix(in srgb,var(--p) 10%,transparent)!important;
+}
+</style>
+<script id="VK_V18_SMOOTH_GRAPH_ENGINE">
+(function(){'use strict';
+function D(){return window.data||(window.data={});}
+function num(x){x=Number(x);return Number.isFinite(x)?Math.max(0,x):0;}
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function chartType(){var t=D().statsChart||'donut';return t==='bars'||t==='line'||t==='heat'||t==='donut'?t:'donut';}
+function labels7(){return ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];}
+function gradDefs(id){return '<defs><linearGradient id="'+id+'g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe8a6"/><stop offset=".45" stop-color="#f5b942"/><stop offset="1" stop-color="#9f731c"/></linearGradient><filter id="'+id+'s"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';}
+function smoothBar(v,labs){var W=760,H=420,L=58,R=24,T=62,B=62,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,v.concat([120]))),slot=iw/Math.max(1,v.length),bw=Math.min(62,slot*.55),g=gradDefs('sb');for(var q=0;q<=4;q++){var y=T+ih*q/4;g+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="rgba(255,255,255,.08)"/>';}
+v.forEach(function(x,i){var h=ih*x/m,X=L+i*slot+(slot-bw)/2,Y=T+ih-h;g+='<rect x="'+(X-5)+'" y="'+(Y-6)+'" width="'+(bw+10)+'" height="'+(h+12)+'" rx="16" fill="rgba(245,185,66,.11)" filter="url(#sbs)"/><rect x="'+X+'" y="'+Y+'" width="'+bw+'" height="'+Math.max(5,h)+'" rx="13" fill="url(#sbg)" filter="url(#sbs)"/><text x="'+(X+bw/2)+'" y="'+Math.max(28,Y-14)+'" text-anchor="middle" font-size="12" font-weight="900" fill="#ffe7a3">'+Math.round(x)+'</text><text x="'+(X+bw/2)+'" y="'+(H-28)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">'+esc(labs[i])+'</text>';});return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';}
+function smoothLine(v,labs){var W=760,H=420,L=58,R=24,T=62,B=62,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,v.concat([120]))),pts=v.map(function(x,i){return [L+(v.length===1?iw/2:i*iw/(v.length-1)),T+ih-ih*x/m];}),g='';for(var q=0;q<=4;q++){var y=T+ih*q/4;g+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="rgba(255,255,255,.08)"/>';}
+var d='M '+pts[0][0]+' '+pts[0][1];for(var i=1;i<pts.length;i++){var p0=pts[i-1],p=pts[i],mx=(p0[0]+p[0])/2;d+=' C '+mx+' '+p0[1]+', '+mx+' '+p[1]+', '+p[0]+' '+p[1];}
+var area=d+' L '+pts[pts.length-1][0]+' '+(T+ih)+' L '+pts[0][0]+' '+(T+ih)+' Z';
+g+='<defs><linearGradient id="lf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5b942" stop-opacity=".32"/><stop offset="1" stop-color="#f5b942" stop-opacity="0"/></linearGradient><filter id="ls"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="'+area+'" fill="url(#lf)"/><path d="'+d+'" fill="none" stroke="#f5b942" stroke-width="7" stroke-linecap="round" filter="url(#ls)"/>';
+pts.forEach(function(p,i){g+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="10" fill="rgba(245,185,66,.13)"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="#17171b" stroke="#ffe7a3" stroke-width="3"/><text x="'+p[0]+'" y="'+Math.max(30,p[1]-18)+'" text-anchor="middle" font-size="12" font-weight="900" fill="#ffe7a3">'+Math.round(v[i])+'</text><text x="'+p[0]+'" y="'+(H-28)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">'+esc(labs[i])+'</text>';});return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';}
+function spider(v,labs){var W=760,H=440,cx=380,cy=218,R=145,m=Math.max(1,Math.max.apply(null,v.concat([120]))),g='';for(var r=1;r<=4;r++){var rr=R*r/4,pts=[];for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7;pts.push((cx+rr*Math.cos(a))+','+(cy+rr*Math.sin(a)));}g+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="rgba(255,255,255,.08)"/>';}var dataPts=[];for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7;dataPts.push([cx+R*(v[i]/m)*Math.cos(a),cy+R*(v[i]/m)*Math.sin(a)]);g+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(a))+'" y2="'+(cy+R*Math.sin(a))+'" stroke="rgba(255,255,255,.08)"/><text x="'+(cx+(R+30)*Math.cos(a))+'" y="'+(cy+(R+30)*Math.sin(a)+4)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">'+esc(labs[i])+'</text>';}var smooth='M '+dataPts[0][0]+' '+dataPts[0][1];for(i=1;i<dataPts.length;i++){var p0=dataPts[i-1],p=dataPts[i],mx=(p0[0]+p[0])/2;smooth+=' Q '+mx+' '+p0[1]+' '+p[0]+' '+p[1];}smooth+=' Q '+((dataPts[6][0]+dataPts[0][0])/2)+' '+dataPts[6][1]+' '+dataPts[0][0]+' '+dataPts[0][1];g+='<defs><filter id="rs"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="'+smooth+'" fill="rgba(245,185,66,.20)" stroke="#f5b942" stroke-width="5" filter="url(#rs)"/>';dataPts.forEach(function(p){g+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="6" fill="#17171b" stroke="#ffe7a3" stroke-width="3"/>';});return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';}
+function smoothDonut(v,labs){var W=760,H=430,cx=245,cy=215,R=118,total=v.reduce(function(a,b){return a+b;},0),cols=['#f5b942','#8eb8ff','#b68cff','#67d7c4','#ff9f68','#cbd0d8','#7fd38b','#e08bd7'],g='<defs><filter id="ds"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';if(!total)g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="42"/>';else{var a=-Math.PI/2;v.forEach(function(x,i){if(x<=0)return;var z=x/total*Math.PI*2,b=a+z,x1=cx+R*Math.cos(a),y1=cy+R*Math.sin(a),x2=cx+R*Math.cos(b),y2=cy+R*Math.sin(b);g+='<path d="M '+x1+' '+y1+' A '+R+' '+R+' 0 '+(z>Math.PI?1:0)+' 1 '+x2+' '+y2+'" fill="none" stroke="'+cols[i%cols.length]+'" stroke-width="42" stroke-linecap="round" filter="url(#ds)"/>';a=b;});}g+='<circle cx="'+cx+'" cy="'+cy+'" r="83" fill="#17171b"/><text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="30" font-weight="900" fill="#fff">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+29)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">focus minutes</text>';v.forEach(function(x,i){var y=66+i*42;if(i>7)return;g+='<rect x="485" y="'+(y-11)+'" width="14" height="14" rx="4" fill="'+cols[i%cols.length]+'"/><text x="510" y="'+y+'" font-size="13" font-weight="800" fill="#eee">'+esc(labs[i])+'</text><text x="720" y="'+y+'" text-anchor="end" font-size="13" font-weight="900" fill="#d9d9dd">'+Math.round(x)+' min</text>';});return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';}
+function sessions(){return Array.isArray(D().sessions)?D().sessions:[];}
+function dayKey(s){var x=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(x))return x;if(s&&s.startTime){var d=new Date(s.startTime);if(!isNaN(d))return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}return x;}
+function weekDates(){var now=new Date();now.setHours(12,0,0,0);var dow=now.getDay();now.setDate(now.getDate()-(dow===0?6:dow-1)+(num(D().statsWeekOffset)||0)*7);var a=[];for(var i=0;i<7;i++){var d=new Date(now);d.setDate(now.getDate()+i);a.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'));}return a;}
+function selectedWeek(){return weekDates();}
+function minsDay(k){return sessions().filter(function(s){return dayKey(s)===k;}).reduce(function(a,s){return a+num(s.minutes!=null?s.minutes:s.min);},0);}
+function subjectTotals(dayOrKeys){var rows={};sessions().forEach(function(s){var k=dayKey(s),ok=Array.isArray(dayOrKeys)?dayOrKeys.indexOf(k)>=0:k===dayOrKeys;if(!ok)return;var sub=String(s.subject||'General');rows[sub]=(rows[sub]||0)+num(s.minutes!=null?s.minutes:s.min);});var a=Object.keys(rows).map(function(k){return [k,rows[k]];}).sort(function(x,y){return y[1]-x[1];});return {v:a.map(function(x){return x[1];}),l:a.map(function(x){return x[0];})};}
+function pdfGraph(mode){var t=chartType();var keys=selectedWeek(), labs=labels7();if(mode==='week'){var v=keys.map(minsDay);if(t==='line')return smoothLine(v,labs);if(t==='bars')return smoothBar(v,labs);if(t==='heat')return spider(v,labs);var s=subjectTotals(keys);return smoothDonut(s.v,s.l);}var day=String(D().statsSelectedDay||'').slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(day))day=dayKey({startTime:new Date().toISOString()});var s=subjectTotals(day);if(t==='donut')return smoothDonut(s.v,s.l);if(t==='bars')return smoothBar(s.v,s.l);if(t==='line')return smoothLine(s.v,s.l);return spider(s.v.slice(0,7),s.l.slice(0,7));}
+function pdfGraphName(){return chartType()==='bars'?'Bar Graph':chartType()==='line'?'Line Graph':chartType()==='heat'?'Spider Graph':'Donut Graph';}
+function patchReports(){
+  if(typeof window.vkDailyPdf!=='function'||typeof window.vkWeeklyPdf!=='function')return;
+  window.vkDailyPdf=function(day){if(day)D().statsSelectedDay=day;var old=window.__vkReportGraphOverride;window.__vkReportGraphOverride={type:pdfGraphName(),svg:pdfGraph('day')};try{if(typeof window.__vkOriginalDaily==='function')window.__vkOriginalDaily();}finally{window.__vkReportGraphOverride=old;}};
+  window.vkWeeklyPdf=function(){var old=window.__vkReportGraphOverride;window.__vkReportGraphOverride={type:pdfGraphName(),svg:pdfGraph('week')};try{if(typeof window.__vkOriginalWeekly==='function')window.__vkOriginalWeekly();}finally{window.__vkReportGraphOverride=old;}};
+}
+/* Capture the currently active report functions before the final override. */
+window.__vkOriginalDaily=window.vkDailyPdf;window.__vkOriginalWeekly=window.vkWeeklyPdf;
+/* Patch the active report source by replacing the graph block at call-time. */
+function reportWithSelectedGraph(original,mode){return function(arg){var d=D(),old=window.open;var opened=null;window.open=function(){opened=old.apply(window,arguments);return opened;};try{original(arg);}finally{window.open=old;}/* original report uses openReport HTML; replace selected graph in the opened report */if(opened&&opened.document){var root=opened.document;var headings=root.querySelectorAll('h2');for(var i=0;i<headings.length;i++){var h=headings[i];if((h.textContent||'').indexOf(mode==='week'?'Subject totals this week':'Today — minutes per subject')>=0){var g=h.nextElementSibling;if(g){g.innerHTML='<div style="font-size:11px;font-weight:900;color:#6f5a25;margin:0 0 7px">Selected graph: '+esc(pdfGraphName())+'</div>'+pdfGraph(mode);}}}}};}
+/* More reliable final wrapper: rebuild the report graph after the existing report opens. */
+if(window.__vkOriginalDaily) window.vkDailyPdf=reportWithSelectedGraph(window.__vkOriginalDaily,'day');
+if(window.__vkOriginalWeekly) window.vkWeeklyPdf=reportWithSelectedGraph(window.__vkOriginalWeekly,'week');
+window.vkExportPdf=window.vkWeeklyPdf;
+/* Ensure the visible switcher uses the requested name. */
+var heatBtn=document.querySelector('#statsChartSwitcher [data-chart="heat"]');if(heatBtn)heatBtn.textContent='SPIDER';
+/* Re-render with the upgraded smooth visual engine when the existing renderer runs. */
+window.addEventListener('load',function(){var b=document.querySelector('#statsChartSwitcher [data-chart="heat"]');if(b)b.textContent='SPIDER';},false);
+})();
+</script>
+
+
+<script id="VK_V18_RENDER_BIND">
+(function(){'use strict';
+function D(){return window.data||(window.data={});} function N(x){x=Number(x);return Number.isFinite(x)?Math.max(0,x):0;}
+function key(s){var x=String(s&&s.day||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(x))return x;if(s&&s.startTime){var d=new Date(s.startTime);if(!isNaN(d))return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}return x;}
+function dates(){var d=new Date();d.setHours(12,0,0,0);var dow=d.getDay();d.setDate(d.getDate()-(dow===0?6:dow-1)+(N(D().statsWeekOffset)||0)*7);var a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'));}return a;}
+function vals(){var ss=Array.isArray(D().sessions)?D().sessions:[],ds=dates();return ds.map(function(k){return ss.filter(function(s){return key(s)===k;}).reduce(function(a,s){return a+N(s.minutes!=null?s.minutes:s.min);},0);});}
+function esc(x){return String(x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function svgWrap(W,H,g){return '<svg class="vkStatsSvg vkV18Smooth" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet"><rect x="8" y="8" width="'+(W-16)+'" height="'+(H-16)+'" rx="26" fill="rgba(255,255,255,.018)" stroke="rgba(245,185,66,.12)"/>'+g+'</svg>';}
+function bar(v){var W=760,H=420,L=58,R=24,T=60,B=60,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,v.concat([120]))),slot=iw/7,bw=Math.min(62,slot*.55),g='<defs><linearGradient id="v18bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe8a6"/><stop offset=".5" stop-color="#f5b942"/><stop offset="1" stop-color="#9f731c"/></linearGradient><filter id="v18bg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';for(var q=0;q<=4;q++){var y=T+ih*q/4;g+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="rgba(255,255,255,.075)"/>';}
+v.forEach(function(x,i){var h=ih*x/m,X=L+i*slot+(slot-bw)/2,Y=T+ih-h;g+='<rect x="'+(X-5)+'" y="'+(Y-6)+'" width="'+(bw+10)+'" height="'+(h+12)+'" rx="17" fill="rgba(245,185,66,.12)" filter="url(#v18bg)"/><rect x="'+X+'" y="'+Y+'" width="'+bw+'" height="'+Math.max(5,h)+'" rx="13" fill="url(#v18bar)"/><text x="'+(X+bw/2)+'" y="'+Math.max(28,Y-14)+'" text-anchor="middle" font-size="12" font-weight="900" fill="#ffe7a3">'+Math.round(x)+'</text><text x="'+(X+bw/2)+'" y="'+(H-26)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]+'</text>';});return svgWrap(W,H,g);}
+function line(v){var W=760,H=420,L=58,R=24,T=60,B=60,iw=W-L-R,ih=H-T-B,m=Math.max(60,Math.max.apply(null,v.concat([120]))),p=v.map(function(x,i){return [L+i*iw/6,T+ih-ih*x/m];}),g='<defs><linearGradient id="v18lf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5b942" stop-opacity=".32"/><stop offset="1" stop-color="#f5b942" stop-opacity="0"/></linearGradient><filter id="v18lg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';for(var q=0;q<=4;q++){var y=T+ih*q/4;g+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="rgba(255,255,255,.075)"/>';}
+var d='M '+p[0][0]+' '+p[0][1];for(var i=1;i<p.length;i++){var a=p[i-1],b=p[i],mx=(a[0]+b[0])/2;d+=' C '+mx+' '+a[1]+', '+mx+' '+b[1]+', '+b[0]+' '+b[1];}var area=d+' L '+p[6][0]+' '+(T+ih)+' L '+p[0][0]+' '+(T+ih)+' Z';g+='<path d="'+area+'" fill="url(#v18lf)"/><path d="'+d+'" fill="none" stroke="#f5b942" stroke-width="7" stroke-linecap="round" filter="url(#v18lg)"/>';p.forEach(function(a,i){g+='<circle cx="'+a[0]+'" cy="'+a[1]+'" r="10" fill="rgba(245,185,66,.13)"/><circle cx="'+a[0]+'" cy="'+a[1]+'" r="5" fill="#17171b" stroke="#ffe7a3" stroke-width="3"/><text x="'+a[0]+'" y="'+Math.max(28,a[1]-18)+'" text-anchor="middle" font-size="12" font-weight="900" fill="#ffe7a3">'+Math.round(v[i])+'</text><text x="'+a[0]+'" y="'+(H-26)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]+'</text>';});return svgWrap(W,H,g);}
+function spider(v){var W=760,H=440,cx=380,cy=218,R=150,m=Math.max(1,Math.max.apply(null,v.concat([120]))),g='';for(var r=1;r<=4;r++){var rr=R*r/4,ps=[];for(var i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7;ps.push((cx+rr*Math.cos(a))+','+(cy+rr*Math.sin(a)));}g+='<polygon points="'+ps.join(' ')+'" fill="none" stroke="rgba(255,255,255,.075)"/>';}var p=[];for(i=0;i<7;i++){var a=-Math.PI/2+i*2*Math.PI/7;p.push([cx+R*(v[i]/m)*Math.cos(a),cy+R*(v[i]/m)*Math.sin(a)]);g+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(a))+'" y2="'+(cy+R*Math.sin(a))+'" stroke="rgba(255,255,255,.075)"/><text x="'+(cx+(R+30)*Math.cos(a))+'" y="'+(cy+(R+30)*Math.sin(a)+4)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]+'</text>';}var d='M '+p[0][0]+' '+p[0][1];for(i=1;i<p.length;i++){var a=p[i-1],b=p[i],mx=(a[0]+b[0])/2;d+=' Q '+mx+' '+a[1]+' '+b[0]+' '+b[1];}d+=' Q '+((p[6][0]+p[0][0])/2)+' '+p[6][1]+' '+p[0][0]+' '+p[0][1];g+='<defs><filter id="v18rg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="'+d+'" fill="rgba(245,185,66,.20)" stroke="#f5b942" stroke-width="5" filter="url(#v18rg)"/>';p.forEach(function(a){g+='<circle cx="'+a[0]+'" cy="'+a[1]+'" r="6" fill="#17171b" stroke="#ffe7a3" stroke-width="3"/>';});return svgWrap(W,H,g);}
+function donut(v){var W=760,H=420,cx=245,cy=210,R=116,total=v.reduce(function(a,b){return a+b;},0),cols=['#f5b942','#8eb8ff','#b68cff','#67d7c4','#ff9f68','#cbd0d8','#7fd38b'],g='<defs><filter id="v18dg"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';if(!total)g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="42"/>';else{var a=-Math.PI/2;v.forEach(function(x,i){if(x<=0)return;var z=x/total*Math.PI*2,b=a+z,x1=cx+R*Math.cos(a),y1=cy+R*Math.sin(a),x2=cx+R*Math.cos(b),y2=cy+R*Math.sin(b);g+='<path d="M '+x1+' '+y1+' A '+R+' '+R+' 0 '+(z>Math.PI?1:0)+' 1 '+x2+' '+y2+'" fill="none" stroke="'+cols[i%cols.length]+'" stroke-width="42" stroke-linecap="round" filter="url(#v18dg)"/>';a=b;});}g+='<circle cx="'+cx+'" cy="'+cy+'" r="82" fill="#17171b"/><text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="30" font-weight="900" fill="#fff">'+Math.round(total)+'</text><text x="'+cx+'" y="'+(cy+29)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#aaa6b0">focus minutes</text>';return svgWrap(W,H,g);}
+function render(){var box=document.getElementById('chart');if(!box)return;var t=D().statsChart||'donut',v=vals();if(t==='heat')box.innerHTML=spider(v);else if(t==='line')box.innerHTML=line(v);else if(t==='bars')box.innerHTML=bar(v);else box.innerHTML=donut(v);var title=document.getElementById('weekChartTitle');if(title)title.textContent='This week · '+(t==='heat'?'SPIDER':t==='bars'?'BAR':t.toUpperCase());document.querySelectorAll('#statsChartSwitcher [data-chart]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-chart')===t);});}
+window.__vkV18Render=render;
+var sw=document.getElementById('statsChartSwitcher');if(sw&&!sw.dataset.vk18){sw.dataset.vk18='1';sw.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-chart]');if(!b)return;setTimeout(render,0);setTimeout(render,90);},true);}window.addEventListener('load',function(){var b=document.querySelector('#statsChartSwitcher [data-chart="heat"]');if(b)b.textContent='SPIDER';setTimeout(render,120);});
+})();
+</script>
+
+</body></html>
