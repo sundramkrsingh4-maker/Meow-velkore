@@ -17282,3 +17282,586 @@ setInterval(fix, 500);
 setTimeout(fix, 200);
 })();
 </script>
+
+<script id="VK_SUBTOPIC_PDF_ROOT_FIX_FINAL_V2">
+(function(){
+'use strict';
+if(window.__VK_SUBTOPIC_PDF_ROOT_FIX_FINAL_V2__) return;
+window.__VK_SUBTOPIC_PDF_ROOT_FIX_FINAL_V2__=true;
+function arr(v){
+  if(Array.isArray(v)) return v.map(function(x){return String(x==null?'':x).trim();}).filter(Boolean);
+  if(typeof v==='string') return v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  return [];
+}
+function checked(id){var r=document.getElementById(id);return r?Array.prototype.map.call(r.querySelectorAll('input[type="checkbox"]:checked'),function(x){return String(x.value||'').trim();}).filter(Boolean):[];}
+function data(){return window.data||{};}
+function source(kind,id){
+  var d=data(), list=kind==='plan'?(d.planBlocks||[]):(d.tasks||[]);
+  return list.find(function(x){return x&&String(x.id)===String(id);})||null;
+}
+function hierarchy(prefix){return {topics:checked(prefix+'TopicsPicker'),subs:checked(prefix+'SubtopicsPicker')};}
+function stampItem(item,h){
+  if(!item||!h)return;
+  if(h.topics.length){item.mainTopics=h.topics.slice();item.topicList=h.topics.slice();item.topics=h.topics.join(', ');item.topic=h.topics[0];}
+  if(h.subs.length){item.subtopics=h.subs.slice();item.subtopicList=h.subs.slice();}
+}
+function hookSave(id,collection,prefix){
+  var b=document.getElementById(id); if(!b||b.__vkSubtopicV2)return;
+  b.__vkSubtopicV2=1;
+  b.addEventListener('click',function(){
+    var h=hierarchy(prefix), d=data(), list=Array.isArray(d[collection])?d[collection]:[];
+    var ids={};list.forEach(function(x){if(x&&x.id!=null)ids[String(x.id)]=1;});
+    /* Capture BEFORE the original handler can rebuild/clear the selectors. */
+    setTimeout(function(){
+      try{
+        var now=Array.isArray(d[collection])?d[collection]:[];
+        var item=now.find(function(x){return x&&x.id!=null&&!ids[String(x.id)];});
+        if(item){stampItem(item,h);if(typeof persist==='function')persist(true);}
+      }catch(e){console.error('[VELKORE Subtopic V2] save',e);}
+    },0);
+  },true);
+}
+function snapshotTimer(){
+  var t=data().timer||{};
+  return {subject:t.subject,chapter:t.chapter,mainTopics:arr(t.mainTopics||t.topicList||t.topics),subtopics:arr(t.subtopics||t.subtopicList),queueKind:t.queueKind,queueId:t.queueId,sessionId:t.sessionId};
+}
+function enrichSnap(s){
+  s=s||snapshotTimer();
+  var src=source(s.queueKind,s.queueId);
+  if(src){
+    if(!s.subject&&src.subject)s.subject=src.subject;
+    if(!s.chapter&&src.chapter)s.chapter=src.chapter;
+    if(!s.mainTopics.length)s.mainTopics=arr(src.mainTopics||src.topicList||src.topics);
+    if(!s.subtopics.length)s.subtopics=arr(src.subtopics||src.subtopicList);
+  }
+  return s;
+}
+function stampSession(rec,s){
+  if(!rec)return;
+  s=enrichSnap(s);
+  if(s.subject)rec.subject=s.subject;if(s.chapter)rec.chapter=s.chapter;
+  if(s.mainTopics.length){rec.mainTopics=s.mainTopics.slice();rec.topicList=s.mainTopics.slice();rec.topics=s.mainTopics.join(', ');rec.topic=s.mainTopics[0];}
+  if(s.subtopics.length){rec.subtopics=s.subtopics.slice();rec.subtopicList=s.subtopics.slice();}
+  if(s.queueKind!=null)rec.queueKind=s.queueKind;
+  if(s.queueId!=null)rec.queueId=s.queueId;
+}
+function hookQueue(){
+  var prev=window.vkGo;if(typeof prev!=='function'||prev.__vkSubtopicV2)return;
+  function wrap(kind,id,mins){
+    var src=source(kind,id), d=data();
+    var before=src?{subject:src.subject,chapter:src.chapter,mainTopics:arr(src.mainTopics||src.topicList||src.topics),subtopics:arr(src.subtopics||src.subtopicList),queueKind:kind,queueId:id}:null;
+    var r=prev.apply(this,arguments);
+    try{var t=d.timer||{};if(before){if(before.subject)t.subject=before.subject;if(before.chapter)t.chapter=before.chapter;t.mainTopics=before.mainTopics.slice();t.topicList=before.mainTopics.slice();t.topics=before.mainTopics.slice();t.subtopics=before.subtopics.slice();t.subtopicList=before.subtopics.slice();t.queueKind=kind;t.queueId=id;}if(typeof persist==='function')persist(true);}catch(e){console.error('[VELKORE Subtopic V2] queue',e);}
+    return r;
+  }
+  wrap.__vkSubtopicV2=1;window.vkGo=wrap;try{vkGo=wrap;}catch(e){}
+}
+function hookStart(){
+  var prev=window.startCountdown;if(typeof prev!=='function'||prev.__vkSubtopicV2)return;
+  function wrap(){
+    var d=data(),t=d.timer||{},topics=checked('sessionTopicsPicker'),subs=checked('sessionSubtopicsPicker');
+    var src=source(t.queueKind,t.queueId);
+    if(!topics.length)topics=arr(t.mainTopics||t.topicList||t.topics);if(!subs.length)subs=arr(t.subtopics||t.subtopicList);
+    if(src){if(!topics.length)topics=arr(src.mainTopics||src.topicList||src.topics);if(!subs.length)subs=arr(src.subtopics||src.subtopicList);}
+    if(topics.length){t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();}
+    if(subs.length){t.subtopics=subs.slice();t.subtopicList=subs.slice();}
+    var r=prev.apply(this,arguments);try{if(typeof persist==='function')persist(true);}catch(e){}return r;
+  }
+  wrap.__vkSubtopicV2=1;window.startCountdown=wrap;try{startCountdown=wrap;}catch(e){}
+}
+function hookPush(){
+  var list=data().sessions;if(!Array.isArray(list)||list.__vkSubtopicV2)return;
+  var orig=list.push.bind(list);
+  list.push=function(){var snap=enrichSnap(snapshotTimer());for(var i=0;i<arguments.length;i++)stampSession(arguments[i],snap);return orig.apply(null,arguments);};
+  list.__vkSubtopicV2=1;
+}
+function hookComplete(){
+  var prev=window.completeSession;if(typeof prev!=='function'||prev.__vkSubtopicV2)return;
+  function wrap(reason){
+    var d=data(),before=(d.sessions||[]).length,snap=enrichSnap(snapshotTimer()),beforeIds={};
+    (d.sessions||[]).forEach(function(x){if(x&&x.id!=null)beforeIds[String(x.id)]=1;});
+    var r=prev.apply(this,arguments);
+    try{
+      var list=Array.isArray(d.sessions)?d.sessions:[], rec=null;
+      for(var i=list.length-1;i>=0;i--){if(list[i]&&list[i].id!=null&&!beforeIds[String(list[i].id)]){rec=list[i];break;}}
+      if(!rec&&snap.sessionId)rec=list.find(function(x){return x&&String(x.id)===String(snap.sessionId);});
+      if(!rec&&list.length>before)rec=list[list.length-1];
+      if(rec)stampSession(rec,snap);
+      if(typeof persist==='function')persist(true);
+    }catch(e){console.error('[VELKORE Subtopic V2] complete',e);}
+    return r;
+  }
+  wrap.__vkSubtopicV2=1;window.completeSession=wrap;try{completeSession=wrap;}catch(e){}
+}
+/* Make every report use the same strict resolver: Topic and Sub-topic stay separate.
+   If an old session lacks subtopics, recover ONLY from its linked To-Do/Plan source. */
+function resolve(s){
+  s=s||{};var topics=arr(s.mainTopics||s.topicList||s.topics),subs=arr(s.subtopics||s.subtopicList);
+  if(!subs.length){
+    var src=source(s.queueKind,s.queueId);
+    if(src)subs=arr(src.subtopics||src.subtopicList);
+  }
+  return {topics:topics,subs:subs};
+}
+function patchSplit(){
+  if(typeof window.splitSession!=='function'||window.splitSession.__vkSubtopicV2)return;
+  function split(s){return resolve(s);}
+  split.__vkSubtopicV2=1;window.splitSession=split;try{splitSession=split;}catch(e){}
+}
+function patchFinalWeekly(){
+  /* The active final weekly renderer reads session fields directly. Wrap it so
+     legacy sessions can still recover their exact linked Sub-topic. */
+  var fn=window.__vkFinalWeeklyPdf;if(typeof fn!=='function'||fn.__vkSubtopicV2)return;
+  function wrap(){
+    var d=data(), sessions=Array.isArray(d.sessions)?d.sessions:[], backups=[];
+    sessions.forEach(function(s){var r=resolve(s);if(r.subs.length&&!arr(s.subtopics).length){backups.push([s,s.subtopics,s.subtopicList]);s.subtopics=r.subs.slice();s.subtopicList=r.subs.slice();}});
+    try{return fn.apply(this,arguments);}finally{backups.forEach(function(b){b[0].subtopics=b[1];b[0].subtopicList=b[2];});}
+  }
+  wrap.__vkSubtopicV2=1;window.__vkFinalWeeklyPdf=wrap;window.vkWeeklyPdf=wrap;window.vkExportPdf=wrap;
+}
+function boot(){
+  hookSave('addTask','tasks','task');hookSave('addPlanBlock','planBlocks','plan');hookQueue();hookStart();hookPush();hookComplete();patchSplit();patchFinalWeekly();
+}
+boot();setTimeout(boot,100);setTimeout(boot,500);setTimeout(boot,1200);setTimeout(boot,2500);
+})();
+</script>
+
+<script id="VK_TIMER_QUEUE_PDF_ROOT_FINAL">
+(function(){
+'use strict';
+if(window.__VK_TIMER_QUEUE_PDF_ROOT_FINAL__) return;
+window.__VK_TIMER_QUEUE_PDF_ROOT_FINAL__=true;
+
+function D(){ return window.data || {}; }
+function arr(v){
+  if(Array.isArray(v)) return v.map(function(x){return String(x==null?'':x).trim();}).filter(Boolean);
+  if(typeof v==='string') return v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  return [];
+}
+function checked(id){
+  var e=document.getElementById(id);
+  return e ? Array.prototype.map.call(e.querySelectorAll('input[type="checkbox"]:checked'),function(x){return String(x.value||'').trim();}).filter(Boolean) : [];
+}
+function source(kind,id){
+  var d=D(), list=kind==='plan'?(d.planBlocks||[]):(d.tasks||[]);
+  return list.find(function(x){return x && String(x.id)===String(id);}) || null;
+}
+function topicFields(x){
+  x=x||{};
+  return arr(x.mainTopics && x.mainTopics.length ? x.mainTopics : (x.topicList && x.topicList.length ? x.topicList : x.topics));
+}
+function subtopicFields(x){
+  x=x||{};
+  return arr(x.subtopics && x.subtopics.length ? x.subtopics : x.subtopicList);
+}
+function selectedAcademic(prefix){
+  return {topics:checked(prefix+'TopicsPicker'),subs:checked(prefix+'SubtopicsPicker')};
+}
+
+/* ---------- ONE authoritative active-session record ---------- */
+function activeFromTimer(t){
+  t=t||{};
+  return {
+    sessionId:t.sessionId||null,
+    status:t.status||'IDLE',
+    subject:String(t.subject||'').trim(),
+    chapter:String(t.chapter||'').trim(),
+    topics:topicFields(t),
+    subtopics:subtopicFields(t),
+    plannedMinutes:Number(t.plannedMinutes||0),
+    remainingSeconds:Number(t.remainingSeconds||0),
+    accumulatedMs:Number(t.accumulatedMs||0),
+    startedAt:t.startedAt||null,
+    segmentStartedAt:t.segmentStartedAt||null,
+    queueKind:t.queueKind||null,
+    queueId:t.queueId||null
+  };
+}
+function syncActive(reason){
+  var d=D(),t=d.timer||{};
+  if(!d) return;
+  var a=activeFromTimer(t);
+  a.reason=reason||'';
+  if(t.mode!=='stopwatch'){
+    var done=Number(t.accumulatedMs||0);
+    if(t.status==='RUNNING'&&t.segmentStartedAt) done+=Math.max(0,Date.now()-Number(t.segmentStartedAt));
+    a.remainingSeconds=Math.max(0,Math.round((Number(t.plannedMinutes||0)*60000-done)/1000));
+  }
+  d.activeStudySession=a;
+  try{ if(typeof persist==='function') persist(true); }catch(e){}
+}
+function restoreActive(){
+  var d=D(),a=d.activeStudySession,t=d.timer;
+  if(!a || !t) return;
+  if(a.sessionId && (!t.sessionId || String(t.sessionId)!==String(a.sessionId))){
+    t.sessionId=a.sessionId;
+  }
+  if(a.subject) t.subject=a.subject;
+  if(a.chapter) t.chapter=a.chapter;
+  if(a.topics.length) { t.mainTopics=a.topics.slice();t.topicList=a.topics.slice();t.topics=a.topics.slice(); }
+  if(a.subtopics.length) { t.subtopics=a.subtopics.slice();t.subtopicList=a.subtopics.slice(); }
+  if(a.queueKind!=null) t.queueKind=a.queueKind;
+  if(a.queueId!=null) t.queueId=a.queueId;
+}
+
+/* ---------- Stable metadata: one DOM node, never rebuilt by the ticker ---------- */
+function ensureMeta(){
+  var time=document.getElementById('time');
+  if(!time) return null;
+  var box=document.getElementById('vkActiveSessionMeta');
+  if(!box){
+    box=document.createElement('div');
+    box.id='vkActiveSessionMeta';
+    box.innerHTML='<span data-k="subject"></span><span class="sep"> • </span><span data-k="chapter"></span><span class="sep"> • </span><span data-k="topic"></span><span class="sep"> • </span><span data-k="subtopic"></span>';
+    time.insertAdjacentElement('afterend',box);
+  }
+  return box;
+}
+function metaValue(v){return String(v==null?'':v).trim() || '—';}
+var lastMetaKey='';
+function renderMeta(force){
+  var box=ensureMeta(); if(!box) return;
+  var d=D(),t=d.timer||{};
+  var active=t.status==='RUNNING'||t.status==='PAUSED';
+  if(!active){
+    if(force || lastMetaKey!=='idle'){
+      box.style.display='none';
+      lastMetaKey='idle';
+    }
+    return;
+  }
+  var topics=topicFields(t),subs=subtopicFields(t);
+  var vals=[metaValue(t.subject),metaValue(t.chapter),metaValue(topics.join(' · ')),metaValue(subs.join(' · '))];
+  var key=vals.join('\u001f')+'|'+t.status;
+  if(!force && key===lastMetaKey) return;
+  ['subject','chapter','topic','subtopic'].forEach(function(k,i){
+    var el=box.querySelector('[data-k="'+k+'"]');
+    if(el) el.textContent=vals[i];
+  });
+  box.style.display='block';
+  box.dataset.state=t.status;
+  lastMetaKey=key;
+}
+function installMetaStyle(){
+  if(document.getElementById('VK_TIMER_QUEUE_META_STYLE')) return;
+  var st=document.createElement('style');st.id='VK_TIMER_QUEUE_META_STYLE';
+  st.textContent='#vkActiveSessionMeta{display:none;margin:9px auto 4px;max-width:100%;padding:8px 10px;text-align:center;color:#f5c95b;font-weight:900;font-size:12px;line-height:1.45;letter-spacing:.02em;border:1px solid rgba(245,201,91,.20);border-radius:12px;background:linear-gradient(180deg,rgba(245,201,91,.07),rgba(245,201,91,.025));box-shadow:0 0 18px rgba(245,201,91,.07),inset 0 1px 0 rgba(255,255,255,.035);box-sizing:border-box}#vkActiveSessionMeta .sep{opacity:.55;padding:0 2px}@media(max-width:520px){#vkActiveSessionMeta{font-size:11px;padding:7px 6px}}';
+  document.head.appendChild(st);
+}
+
+/* ---------- Queue source normalization ---------- */
+function normalizeQueueItem(item){
+  if(!item) return;
+  var topics=topicFields(item),subs=subtopicFields(item);
+  if(topics.length){item.mainTopics=topics.slice();item.topicList=topics.slice();item.topics=topics.join(', ');item.topic=topics[0];}
+  if(subs.length){item.subtopics=subs.slice();item.subtopicList=subs.slice();}
+}
+function normalizeAllSources(){
+  var d=D();
+  (d.tasks||[]).forEach(normalizeQueueItem);
+  (d.planBlocks||[]).forEach(normalizeQueueItem);
+  (d.sessions||[]).forEach(function(s){
+    var src=source(s.queueKind,s.queueId);
+    if(src){
+      var subs=subtopicFields(s); if(!subs.length) subs=subtopicFields(src);
+      var tops=topicFields(s); if(!tops.length) tops=topicFields(src);
+      if(tops.length){s.mainTopics=tops.slice();s.topicList=tops.slice();s.topics=tops.join(', ');s.topic=tops[0];}
+      if(subs.length){s.subtopics=subs.slice();s.subtopicList=subs.slice();}
+    }
+  });
+}
+
+/* Capture exact To-Do/Plan hierarchy at the moment Save is clicked. */
+function hookSave(id,collection,prefix){
+  var b=document.getElementById(id);if(!b||b.__vkFinalTimerSave)return;
+  b.__vkFinalTimerSave=true;
+  b.addEventListener('click',function(){
+    var h=selectedAcademic(prefix),d=D(),before={};
+    (d[collection]||[]).forEach(function(x){if(x&&x.id!=null)before[String(x.id)]=true;});
+    setTimeout(function(){
+      var list=d[collection]||[],item=null;
+      for(var i=list.length-1;i>=0;i--){if(list[i]&&list[i].id!=null&&!before[String(list[i].id)]){item=list[i];break;}}
+      if(item){
+        if(h.topics.length){item.mainTopics=h.topics.slice();item.topicList=h.topics.slice();item.topics=h.topics.join(', ');item.topic=h.topics[0];}
+        if(h.subs.length){item.subtopics=h.subs.slice();item.subtopicList=h.subs.slice();}
+        try{persist(true);}catch(e){}
+      }
+    },0);
+  },true);
+}
+
+/* ---------- Authoritative queue start/resume ---------- */
+var oldGo=window.vkGo;
+function finalGo(kind,id,minsArg){
+  var d=D(),raw=source(kind,id);
+  if(!raw) return typeof oldGo==='function' ? oldGo.apply(this,arguments) : undefined;
+  normalizeQueueItem(raw);
+  var left=raw.remainingSeconds!=null ? Number(raw.remainingSeconds)/60 : (raw.remaining!=null ? Number(raw.remaining) : Number(raw.est||raw.minutes||raw.mins||minsArg||25));
+  if(!Number.isFinite(left)||left<=0) left=Number(raw.est||raw.minutes||raw.mins||minsArg||25)||25;
+  left=Math.max(1,Math.min(240,left));
+  var topics=topicFields(raw),subs=subtopicFields(raw);
+  try{if(typeof stopTicker==='function')stopTicker();}catch(e){}
+  if(typeof ensureIdleTimer==='function') ensureIdleTimer('flow',left,'focus');
+  var t=d.timer||{};
+  t.mode='flow';t.phase='focus';t.status='IDLE';t.plannedMinutes=left;
+  t.subject=String(raw.subject||'General');t.chapter=String(raw.chapter||'Focus');t.lockSubject=t.subject;
+  t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();
+  t.subtopics=subs.slice();t.subtopicList=subs.slice();
+  t.queueKind=kind;t.queueId=id;t.goal='';t.accumulatedMs=0;t.segmentStartedAt=null;t.startedAt=null;
+  t.sessionId=(typeof uid==='function'?uid():('s'+Date.now()));
+  d.focusQueue={taskId:id,kind:kind};
+  var fm=document.getElementById('flowMins');if(fm)fm.value=String(Math.round(left));
+  try{persist(true);}catch(e){}
+  if(typeof setPage==='function')setPage('focus');
+  /* Call the existing timer start once. It updates only countdown state. */
+  if(typeof window.startCountdown==='function') window.startCountdown();
+  /* Reassert the captured academic snapshot after legacy handlers return. */
+  d.timer.subject=t.subject;d.timer.chapter=t.chapter;d.timer.lockSubject=t.lockSubject;
+  d.timer.mainTopics=topics.slice();d.timer.topicList=topics.slice();d.timer.topics=topics.slice();
+  d.timer.subtopics=subs.slice();d.timer.subtopicList=subs.slice();d.timer.queueKind=kind;d.timer.queueId=id;
+  if(d.timer.status==='RUNNING'||d.timer.status==='PAUSED') syncActive('queue-start');
+  renderMeta(true);
+  return undefined;
+}
+window.vkGo=finalGo;try{vkGo=finalGo;}catch(e){}
+window.startQueueFocus=function(it){if(it)finalGo(it.kind,it.id,it.mins);};
+
+/* ---------- Start/pause/resume: metadata captured once, not every tick ---------- */
+var oldStart=window.startCountdown;
+function finalStart(){
+  var d=D(),t=d.timer||{};
+  if(t.status==='IDLE'){
+    var topics=topicFields(t),subs=subtopicFields(t),src=source(t.queueKind,t.queueId);
+    if(src){normalizeQueueItem(src);if(!topics.length)topics=topicFields(src);if(!subs.length)subs=subtopicFields(src);}
+    var picked=selectedAcademic('session');
+    if(picked.topics.length)topics=picked.topics;
+    if(picked.subs.length)subs=picked.subs;
+    t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();
+    t.subtopics=subs.slice();t.subtopicList=subs.slice();
+    if(!t.subject)t.subject=document.getElementById('sessionSubject')?.value||'General';
+    if(!t.chapter)t.chapter=document.getElementById('sessionChapter')?.value||'Focus';
+    t.lockSubject=t.subject;
+  }
+  var r=typeof oldStart==='function'?oldStart.apply(this,arguments):undefined;
+  if(d.timer){
+    d.timer.mainTopics=topicFields(t).slice();d.timer.topicList=topicFields(t).slice();d.timer.topics=topicFields(t).slice();
+    d.timer.subtopics=subtopicFields(t).slice();d.timer.subtopicList=subtopicFields(t).slice();
+    if(d.timer.status==='RUNNING'||d.timer.status==='PAUSED') syncActive('start-or-pause');
+  }
+  renderMeta(true);
+  return r;
+}
+window.startCountdown=finalStart;try{startCountdown=finalStart;}catch(e){}
+
+/* ---------- Correct interrupted-session accounting ---------- */
+function elapsedSeconds(snap){
+  var ms=Number(snap.accumulatedMs||0);
+  if(snap.status==='RUNNING'&&snap.segmentStartedAt)ms+=Math.max(0,Date.now()-Number(snap.segmentStartedAt));
+  return Math.max(0,Math.floor(ms/1000));
+}
+function finalizeQueueFromSnapshot(snap,usedSec,startLeftSec){
+  var raw=source(snap.queueKind,snap.queueId);if(!raw)return;
+  /* IMPORTANT: use the queue remainder captured BEFORE legacy completion runs.
+     Several older wrappers also update remaining during completeSession(); reading
+     raw.remaining afterwards would subtract the same study time twice. */
+  var plannedSec=Number(startLeftSec);
+  if(!Number.isFinite(plannedSec)||plannedSec<=0) plannedSec=Number(snap.plannedMinutes||raw.est||raw.minutes||raw.mins||0)*60;
+  if(!Number.isFinite(plannedSec)||plannedSec<0) plannedSec=0;
+  var left=Math.max(0,Math.round(plannedSec-Math.max(0,usedSec)));
+  raw.lastStudiedMin=Math.floor(Math.max(0,usedSec)/60);
+  if(left<=0){raw.done=true;raw.remaining=0;raw.remainingSeconds=0;raw.completedAt=Date.now();}
+  else {raw.done=false;raw.remainingSeconds=left;raw.remaining=Math.ceil(left/60);}
+  try{persist(true);}catch(e){}
+  try{if(typeof renderTodayQueue==='function')renderTodayQueue();}catch(e){}
+  try{if(typeof renderTasks==='function')renderTasks();}catch(e){}
+  try{if(typeof renderPlan==='function')renderPlan();}catch(e){}
+}
+var oldComplete=window.completeSession;
+function finalComplete(reason){
+  var d=D(),t=d.timer||{},snap=JSON.parse(JSON.stringify({sessionId:t.sessionId,status:t.status,plannedMinutes:t.plannedMinutes,accumulatedMs:t.accumulatedMs,segmentStartedAt:t.segmentStartedAt,startedAt:t.startedAt,subject:t.subject,chapter:t.chapter,mainTopics:topicFields(t),subtopics:subtopicFields(t),queueKind:t.queueKind,queueId:t.queueId}));
+  var usedSec=elapsedSeconds(snap);
+  var rawBefore=source(snap.queueKind,snap.queueId);
+  var startLeftSec=0;
+  if(rawBefore){
+    startLeftSec=Number(rawBefore.remainingSeconds!=null?rawBefore.remainingSeconds:(rawBefore.remaining!=null?Number(rawBefore.remaining)*60:(snap.plannedMinutes||rawBefore.est||rawBefore.minutes||rawBefore.mins||0)*60));
+    if(!Number.isFinite(startLeftSec)||startLeftSec<0)startLeftSec=0;
+  }
+  var r=typeof oldComplete==='function'?oldComplete.apply(this,arguments):undefined;
+  /* Re-apply the exact queue arithmetic after every legacy wrapper has run. */
+  if(snap.queueId!=null)finalizeQueueFromSnapshot(snap,usedSec,startLeftSec);
+  /* Ensure the just-created session carries Topic + Sub-topic exactly. */
+  var list=d.sessions||[],rec=null;
+  for(var i=list.length-1;i>=0;i--){if(list[i]&&String(list[i].id)===String(snap.sessionId)){rec=list[i];break;}}
+  if(!rec && list.length)rec=list[list.length-1];
+  if(rec){
+    if(snap.subject)rec.subject=snap.subject;
+    if(snap.chapter)rec.chapter=snap.chapter;
+    if(snap.mainTopics.length){rec.mainTopics=snap.mainTopics.slice();rec.topicList=snap.mainTopics.slice();rec.topics=snap.mainTopics.join(', ');rec.topic=snap.mainTopics[0];}
+    if(snap.subtopics.length){rec.subtopics=snap.subtopics.slice();rec.subtopicList=snap.subtopics.slice();}
+    if(snap.queueKind!=null)rec.queueKind=snap.queueKind;if(snap.queueId!=null)rec.queueId=snap.queueId;
+    try{persist(true);}catch(e){}
+  }
+  if(!d.timer || d.timer.status==='IDLE') d.activeStudySession=null;
+  renderMeta(true);
+  try{if(typeof persist==='function')persist(true);}catch(e){}
+  return r;
+}
+window.completeSession=finalComplete;try{completeSession=finalComplete;}catch(e){}
+
+/* ---------- Resume after reload / tab switch ---------- */
+function recover(){
+  var d=D();restoreActive();var t=d.timer||{};
+  if(t.status==='RUNNING'||t.status==='PAUSED'){
+    var src=source(t.queueKind,t.queueId);if(src){normalizeQueueItem(src);if(!subtopicFields(t).length){t.subtopics=subtopicFields(src);t.subtopicList=subtopicFields(src);}if(!topicFields(t).length){t.mainTopics=topicFields(src);t.topicList=topicFields(src);t.topics=topicFields(src);}}
+    renderMeta(true);syncActive('recover');
+  } else renderMeta(true);
+}
+installMetaStyle();ensureMeta();normalizeAllSources();recover();
+
+/* Save exact selected Sub-topic on every new Task/Plan record. */
+hookSave('addTask','tasks','task');hookSave('addPlanBlock','planBlocks','plan');
+
+/* Metadata is deliberately NOT updated by the 250ms ticker. Only lifecycle changes call renderMeta(). */
+var oldPaint=window.paintTimeDisplay;
+if(typeof oldPaint==='function'&&!oldPaint.__vkTimerMetaFinal){
+  function paint(){return oldPaint.apply(this,arguments);}
+  paint.__vkTimerMetaFinal=true;window.paintTimeDisplay=paint;try{paintTimeDisplay=paint;}catch(e){}
+}
+
+/* Background-safe lifecycle persistence.
+   IMPORTANT: leaving VELKORE must NEVER pause a running timer.
+   The active segment keeps its original segmentStartedAt timestamp, so
+   elapsed wall-clock time continues while the page is hidden, backgrounded,
+   the phone is locked, or the browser is temporarily closed. On return,
+   recover()/paintTimeDisplay() calculate the remaining time from that
+   timestamp. Only the user's explicit Pause control may change RUNNING to
+   PAUSED. */
+function persistActiveLifecycle(reason){
+  var d=D(),t=d.timer||{};
+  if(t.status==='RUNNING' && !t.segmentStartedAt) t.segmentStartedAt=Date.now();
+  try{if(typeof persist==='function')persist(true);}catch(e){}
+}
+document.addEventListener('visibilitychange',function(){
+  /* Never pause/freeze here. Persist the unchanged RUNNING timestamp only. */
+  persistActiveLifecycle(document.hidden?'hidden':'visible');
+  if(!document.hidden){
+    recover();
+    try{if(typeof paintTimeDisplay==='function')paintTimeDisplay();}catch(e){}
+  }
+});
+window.addEventListener('pagehide',function(){persistActiveLifecycle('pagehide');});
+window.addEventListener('beforeunload',function(){persistActiveLifecycle('beforeunload');});
+
+/* Queue button fallback: finalGo is the single launch path. */
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest&&e.target.closest('#todayQueue [data-vkq],#todayQueue [data-start]');
+  if(!b)return;
+  var key=b.getAttribute('data-vkq')||b.getAttribute('data-start')||'';
+  if(!key)return;
+  e.preventDefault();e.stopPropagation();
+  var p=String(key).split(':'),kind=p.shift(),id=p.join(':'),mins=Number(b.getAttribute('data-mins'));
+  finalGo(kind,id,mins);
+},true);
+
+/* ---------- PDF source of truth ---------- */
+function normalizeSessionsForReports(){
+  var d=D();(d.sessions||[]).forEach(function(s){
+    var src=source(s.queueKind,s.queueId);
+    if(!src)return;
+    var subs=subtopicFields(s);if(!subs.length)subs=subtopicFields(src);
+    var tops=topicFields(s);if(!tops.length)tops=topicFields(src);
+    if(tops.length){s.mainTopics=tops.slice();s.topicList=tops.slice();s.topics=tops.join(', ');s.topic=tops[0];}
+    if(subs.length){s.subtopics=subs.slice();s.subtopicList=subs.slice();}
+  });
+}
+function withReportData(fn){
+  return function(){normalizeSessionsForReports();return fn.apply(this,arguments);};
+}
+var wk=window.vkWeeklyPdf;if(typeof wk==='function'&&!wk.__vkTimerPdfFinal){var wkw=withReportData(wk);wkw.__vkTimerPdfFinal=true;window.vkWeeklyPdf=wkw;window.vkExportPdf=wkw;}
+var dy=window.vkDailyPdf;if(typeof dy==='function'&&!dy.__vkTimerPdfFinal){var dyw=withReportData(dy);dyw.__vkTimerPdfFinal=true;window.vkDailyPdf=dyw;}
+if(typeof window.__vkFinalWeeklyPdf==='function'&&!window.__vkFinalWeeklyPdf.__vkTimerPdfFinal){var f=withReportData(window.__vkFinalWeeklyPdf);f.__vkTimerPdfFinal=true;window.__vkFinalWeeklyPdf=f;window.vkWeeklyPdf=f;window.vkExportPdf=f;}
+
+/* Late boot: other legacy wrappers may finish installing before this runs. */
+setTimeout(function(){normalizeAllSources();recover();hookSave('addTask','tasks','task');hookSave('addPlanBlock','planBlocks','plan');},100);
+setTimeout(function(){normalizeAllSources();recover();},500);
+setTimeout(function(){normalizeAllSources();recover();},1200);
+})();
+</script>
+
+<script id="VK_SINGLE_TIMER_METADATA_FINAL">
+(function(){
+'use strict';
+/* ONE authoritative timer metadata display.  This is deliberately isolated
+   to the timer metadata UI; timer/queue/session data is not modified. */
+function hideDuplicateMetadata(){
+  var ids=['vkTimerHierarchy','focusNowCard'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){
+      el.setAttribute('hidden','');
+      el.style.setProperty('display','none','important');
+    }
+  });
+  /* timerStatus is a status indicator, not an academic metadata renderer.
+     While a session is active, keep it visually out of the metadata stack so
+     Subject/Chapter cannot appear a second time. */
+  var st=document.getElementById('timerStatus');
+  if(st){
+    st.style.setProperty('display','none','important');
+  }
+}
+function ensureSingleGoldMeta(){
+  var time=document.getElementById('time');
+  if(!time)return null;
+  var box=document.getElementById('vkActiveSessionMeta');
+  if(!box){
+    box=document.createElement('div');
+    box.id='vkActiveSessionMeta';
+    time.insertAdjacentElement('afterend',box);
+  }
+  return box;
+}
+function arr(v){return Array.isArray(v)?v.filter(function(x){return String(x||'').trim();}):[];}
+function val(v){var s=String(v==null?'':v).trim();return s||'—';}
+function renderOne(){
+  hideDuplicateMetadata();
+  var box=ensureSingleGoldMeta();
+  if(!box)return;
+  var d=window.data||{},t=d.timer||{};
+  var active=t.status==='RUNNING'||t.status==='PAUSED';
+  if(!active){
+    box.style.setProperty('display','none','important');
+    return;
+  }
+  var subject=String(t.lockSubject||t.subject||'').trim();
+  var chapter=String(t.chapter||'').trim();
+  var topics=arr(t.mainTopics&&t.mainTopics.length?t.mainTopics:t.topicList&&t.topicList.length?t.topicList:t.topics);
+  var subs=arr(t.subtopics&&t.subtopics.length?t.subtopics:t.subtopicList);
+  var values=[val(subject),val(chapter),val(topics.join(' · ')),val(subs.join(' · '))];
+  var key=values.join('\u001f');
+  if(box.dataset.vkMetaKey!==key){
+    box.textContent=values.join(' • ');
+    box.dataset.vkMetaKey=key;
+  }
+  box.style.setProperty('display','block','important');
+}
+function style(){
+  if(document.getElementById('VK_SINGLE_TIMER_METADATA_STYLE'))return;
+  var s=document.createElement('style');
+  s.id='VK_SINGLE_TIMER_METADATA_STYLE';
+  s.textContent='#vkActiveSessionMeta{display:none!important;margin:9px auto 4px;max-width:100%;padding:8px 10px;text-align:center;color:#f5c95b!important;font-weight:900;font-size:12px;line-height:1.45;letter-spacing:.02em;border:1px solid rgba(245,201,91,.20);border-radius:12px;background:linear-gradient(180deg,rgba(245,201,91,.07),rgba(245,201,91,.025));box-shadow:0 0 18px rgba(245,201,91,.07),inset 0 1px 0 rgba(255,255,255,.035);box-sizing:border-box}#vkTimerHierarchy,#focusNowCard,#timerStatus{display:none!important}@media(max-width:520px){#vkActiveSessionMeta{font-size:11px;padding:7px 6px}}';
+  document.head.appendChild(s);
+}
+function boot(){style();renderOne();}
+boot();
+setTimeout(boot,50);setTimeout(boot,250);setTimeout(boot,800);setTimeout(boot,1500);
+/* Lifecycle-only refresh: this does not rebuild the metadata every countdown
+   tick. It only reacts when the timer state/academic snapshot actually changes. */
+var last='';
+setInterval(function(){
+  var t=(window.data&&window.data.timer)||{};
+  var k=[t.status,t.sessionId,t.subject,t.chapter,JSON.stringify(t.mainTopics||t.topicList||t.topics||[]),JSON.stringify(t.subtopics||t.subtopicList||[])].join('|');
+  if(k!==last){last=k;renderOne();}
+},300);
+})();
+</script>
