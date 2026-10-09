@@ -72,7 +72,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--p)}label{display:bloc
 .check{width:24px;height:24px;border-radius:7px;border:1px solid color-mix(in srgb,var(--muted) 55%,transparent);background:var(--in);flex-shrink:0}.check.done{background:var(--p);border-color:var(--p)}
 .pill{font-size:9px;padding:4px 7px;border-radius:20px;background:color-mix(in srgb,var(--p) 14%,var(--btn));color:var(--s);font-weight:900}
 .mini{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.35}.empty{text-align:center;padding:22px;color:var(--muted);font-size:12px}
-nav{position:fixed;bottom:0;left:0;right:0;height:74px;background:var(--nav);border-top:1px solid var(--line);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(7,minmax(0,1fr));z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+nav{position:fixed;bottom:0;left:0;right:0;height:74px;background:var(--nav);border-top:1px solid var(--line);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(6,1fr);z-index:10;padding-bottom:env(safe-area-inset-bottom)}
 nav button{background:none;color:var(--muted);font-size:7px;font-weight:900;padding:6px 1px}nav button.active{color:var(--text)}nav .ico{display:block;font-size:15px;margin-bottom:2px}nav button.active .ico{filter:drop-shadow(0 0 6px var(--p))}
 .row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.linkbtn{background:none;color:var(--s);font-size:11px;font-weight:900;min-height:36px}
 .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(12px);background:var(--card2);border:1px solid color-mix(in srgb,var(--p) 45%,transparent);padding:10px 14px;border-radius:12px;font-size:11px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:40;color:var(--text);max-width:90vw;text-align:center}
@@ -95,7 +95,7 @@ nav button{background:none;color:var(--muted);font-size:7px;font-weight:900;padd
 .goalRing{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--p) 0deg,#281326 0deg);position:relative;flex-shrink:0}
 .goalRing:after{content:"";position:absolute;inset:8px;background:var(--in);border-radius:50%}.goalRing span{position:relative;z-index:1;font-weight:900;font-size:14px}
 .chartBox{height:220px}.chartSvg{width:100%;height:100%}.chartGrid{stroke:color-mix(in srgb,var(--text) 8%,transparent)}.chartLine{fill:none;stroke:var(--s);stroke-width:3;stroke-linecap:round}.dot{fill:var(--text);stroke:var(--p);stroke-width:2}.axis{font-size:9px;fill:var(--muted)}
-@media(min-width:760px){main{padding:22px 22px 32px}.grid{grid-template-columns:repeat(3,1fr)}nav{position:relative;order:-1;height:50px;border-top:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(7,100px);justify-content:center;padding:0}nav button{font-size:8px}.app{flex-direction:column}header{order:-2}.modal{align-items:center}}
+@media(min-width:760px){main{padding:22px 22px 32px}.grid{grid-template-columns:repeat(3,1fr)}nav{position:relative;order:-1;height:50px;border-top:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(6,110px);justify-content:center;padding:0}nav button{font-size:8px}.app{flex-direction:column}header{order:-2}.modal{align-items:center}}
 .page.chiWide{max-width:1100px}
 .chiHero{position:relative;overflow:hidden;padding:18px 18px 16px;margin-bottom:12px}
 .chiHero:before{content:"";position:absolute;inset:-40% -10% auto auto;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--p) 35%,transparent),transparent 70%);pointer-events:none}
@@ -195,7 +195,7 @@ nav{padding:4px 2px env(safe-area-inset-bottom);height:auto;min-height:74px}
 nav button{font-size:8px;letter-spacing:0;padding:8px 2px 10px;min-width:0}
 nav .ico{font-size:16px}
 @media(max-width:420px){
-  nav{grid-template-columns:repeat(7,minmax(0,1fr));gap:0}
+  nav{grid-template-columns:repeat(6,minmax(0,1fr));gap:0}
   nav button{font-size:7px;padding:7px 0 9px}
   nav .ico{font-size:15px}
 }
@@ -332,23 +332,6 @@ main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<style id="VK_MUSIC_SANCTUARY_STYLE">
-.vkMusicPage{max-width:1000px!important}
-.vkMusicHero{display:flex;align-items:center;gap:13px;padding:16px 2px 18px;flex-wrap:wrap}
-.vkMusicMark{width:52px;height:52px;display:grid;place-items:center;flex:0 0 auto;border-radius:17px;color:var(--accent);font-size:29px;font-weight:900;background:linear-gradient(145deg,color-mix(in srgb,var(--p) 24%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));box-shadow:0 0 24px color-mix(in srgb,var(--p) 16%,transparent),inset 0 1px 0 rgba(255,255,255,.09)}
-.vkMusicHeading{min-width:160px;flex:1}.vkMusicHeading h1{margin:0;font-size:clamp(23px,4vw,30px);letter-spacing:-.6px}.vkMusicHeading p{margin:5px 0 0;color:var(--muted);font-size:12px}
-.vkMusicStatus,.vkMusicLive{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:900;letter-spacing:1px;color:var(--s);border:1px solid var(--line);background:color-mix(in srgb,var(--card) 85%,transparent);padding:8px 10px;border-radius:999px}
-.vkMusicStatus span,.vkMusicLive span{width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 9px var(--good)}
-.vkMusicFrameShell{overflow:hidden;border-radius:22px;border:1px solid color-mix(in srgb,var(--p) 24%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 94%,var(--p)),var(--bg));box-shadow:0 16px 44px rgba(0,0,0,.25),0 0 28px color-mix(in srgb,var(--p) 8%,transparent);}
-.vkMusicFrameTop{min-height:58px;display:flex;align-items:center;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,color-mix(in srgb,var(--p) 10%,var(--card)),var(--card));}
-.vkMusicFrameTop strong{display:block;font-size:10px;letter-spacing:1.25px;color:var(--text)}.vkMusicFrameTop small{display:block;margin-top:4px;font-size:9px;letter-spacing:.8px;color:var(--muted)}
-.vkMusicEqualizer{height:23px;display:flex;align-items:center;gap:3px;padding:0 4px}.vkMusicEqualizer i{display:block;width:3px;border-radius:5px;background:var(--accent);box-shadow:0 0 7px color-mix(in srgb,var(--accent) 60%,transparent);animation:vkEq 1s ease-in-out infinite alternate}.vkMusicEqualizer i:nth-child(1){height:8px}.vkMusicEqualizer i:nth-child(2){height:17px;animation-delay:.15s}.vkMusicEqualizer i:nth-child(3){height:12px;animation-delay:.3s}.vkMusicEqualizer i:nth-child(4){height:21px;animation-delay:.08s}.vkMusicEqualizer i:nth-child(5){height:10px;animation-delay:.22s}@keyframes vkEq{to{transform:scaleY(.48);opacity:.65}}
-.vkMusicLive{margin-left:auto;font-size:8px;padding:6px 8px}.vkMusicFoot{display:flex;align-items:center;gap:8px;margin:12px 3px 0;font-size:8px;letter-spacing:1.15px;font-weight:900;color:var(--muted)}.vkMusicFoot>span:first-child{color:var(--accent);font-size:14px}.vkMusicFootLine{height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent)}
-@media(max-width:520px){.vkMusicHero{padding-top:12px}.vkMusicStatus{width:100%;justify-content:center}.vkMusicFrameTop{padding:11px 12px}.vkMusicFrameTop strong{font-size:9px}.vkMusicLive{font-size:7px}.vkMusicFrameShell{border-radius:17px}.vkMusicFoot{font-size:7px}}
-@media(prefers-reduced-motion:reduce){.vkMusicEqualizer i{animation:none}}
-</style>
-
 </head>
 <body>
 <div class="app">
@@ -706,38 +689,11 @@ main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}
 <p class="hqHint" id="vkGoalCoach" style="margin-top:10px"></p>
 </div>
 </section>
-
-<style id="VK_MUSIC_NATIVE_MATCH_FIX">
-/* Keep the Music page visually inside the active VELKORE theme. */
-.vkMusicPage{padding-top:8px!important;padding-bottom:18px!important;background:transparent!important}
-.vkMusicPage>.eyebrow{color:var(--accent)!important;letter-spacing:1.6px!important;font-weight:900!important}
-.vkMusicHero{margin:0 0 8px!important;padding:12px!important;border:1px solid var(--line)!important;border-radius:18px!important;background:linear-gradient(135deg,color-mix(in srgb,var(--card) 94%,var(--p)),var(--card2))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 8px 24px rgba(0,0,0,.14)!important}
-.vkMusicMark{background:linear-gradient(145deg,var(--card2),var(--bg))!important;border-color:color-mix(in srgb,var(--accent) 40%,var(--line))!important}
-.vkMusicFrameShell{border-radius:18px!important;border:1px solid var(--line)!important;background:var(--card)!important;box-shadow:0 10px 28px rgba(0,0,0,.18)!important}
-.vkMusicFrameTop{background:var(--card2)!important;border-bottom:1px solid var(--line)!important}
-.vkMusicFoot{color:var(--muted)!important;font-weight:800!important;letter-spacing:.7px!important;font-size:9px!important}
-#vkHarmoniqFrame{display:block!important;width:100%!important;max-width:100%!important;border:0!important;background:var(--bg)!important;border-radius:0 0 17px 17px!important}
-@media(max-width:600px){.vkMusicHero{gap:10px!important;padding:11px!important}.vkMusicStatus{display:none!important}#vkHarmoniqFrame{height:calc(100dvh - 270px)!important;min-height:390px!important}}
-</style>
-<section class="page vkMusicPage" id="harmoniq">
-<div class="eyebrow">VELKORE • AUDIO SANCTUARY</div>
-<div class="vkMusicHero">
-  <div class="vkMusicMark" aria-hidden="true">♫</div>
-  <div class="vkMusicHeading"><h1>Music Sanctuary</h1><p>One space. One focus. Your soundtrack.</p></div>
-  <div class="vkMusicStatus"><span></span> MUSIC ROOM</div>
+<section class="page" id="songs">
+<div class="eyebrow">Focus sanctuary</div><h1>Songs</h1>
+<div class="card" id="vkSongsPlayerCard" style="padding:8px;overflow:hidden;border-radius:18px">
+  <iframe id="vkSongsFrame" title="Songs" data-src="https://hq.cinemaz.workers.dev" style="display:block;width:100%;height:min(72vh,760px);min-height:520px;border:0;border-radius:12px;background:var(--bg)" loading="lazy" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
 </div>
-<div class="vkSongLockCard" id="vkSongLockCard" role="status" aria-live="polite">
-  <div class="vkSongLockIcon">♫</div><div class="vkSongLockEyebrow">EARN YOUR SOUNDTRACK</div>
-  <h2>Complete Today’s Goal</h2><p>Music Sanctuary unlocks after you complete your daily study goal. Finish your target first — your soundtrack will be waiting.</p>
-  <div class="vkSongLockProgress"><span id="vkSongLockProgressFill"></span></div>
-  <div class="vkSongLockMeta" id="vkSongLockProgressText">Checking today’s progress…</div>
-  <button class="vkSongLockButton" id="vkSongGoGoal" type="button">VIEW DAILY GOAL <span>↗</span></button>
-</div>
-<div class="vkMusicFrameShell" id="vkHarmoniqFrameCard" hidden>
-  <div class="vkMusicFrameTop"><div class="vkMusicEqualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div><strong>VELKORE SOUND MODULE</strong><small>INTEGRATED MUSIC SPACE</small></div><div class="vkMusicLive"><span></span> READY</div></div>
-  <iframe id="vkHarmoniqFrame" title="VELKORE Music Sanctuary" data-vk-src="https://hq.cinemaz.workers.dev" loading="lazy" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" style="display:block;width:100%;height:calc(100dvh - 290px);min-height:430px;border:0;background:transparent"></iframe>
-</div>
-<div class="vkMusicFoot"><span>♫</span> YOUR VELKORE • YOUR SOUND • YOUR SPACE <span class="vkMusicFootLine"></span></div>
 </section>
 <section class="page" id="more">
 <div class="eyebrow">Control room</div><h1>More</h1>
@@ -865,7 +821,7 @@ main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}
 <button data-page="goal" type="button"><span class="ico">◎</span>GOAL</button>
 <button data-page="todo" type="button"><span class="ico">✓</span>TO-DO</button>
 <button data-page="plan" type="button"><span class="ico">▣</span>PLAN</button>
-<button data-page="harmoniq" type="button"><span class="ico">♫</span>SONGS</button>
+<button data-page="songs" type="button"><span class="ico">♫</span>SONGS</button>
 <button data-page="more" type="button"><span class="ico">⚙</span>MORE</button>
 </nav>
 <div class="vkOverlay" id="onboardOverlay" style="display:none">
@@ -4945,7 +4901,6 @@ try{afterBootFixes();}catch(e){console.warn(e);}
   #vkDaySubjectCard .vkPieStage{width:min(200px,70vw)}
 }
 </style>
-
 <!-- VK_V20_PDF_MATCH -->
 <style id="VK_V20_PDF_MATCH">
 #stats .chartCard .chartBox,#stats .chartCard .chartWrap{height:460px!important;min-height:460px!important}
@@ -5189,7 +5144,6 @@ setTimeout(hideWeekDays, 200);
 #vkDayChips{display:none!important}
 #vkDaySubjectCard .vkPieStage{width:min(300px,100%)!important}
 </style>
-
 <!-- VK_V23_STABLE -->
 <style id="VK_V23_STABLE">
 #stats .chartCard .chartBox,#chart{height:520px!important;min-height:520px!important}
@@ -5201,8 +5155,6 @@ setTimeout(hideWeekDays, 200);
 #vkGodSheet .graph{display:flex;justify-content:center}
 #vkGodSheet .graph svg{width:min(100%,760px)}
 </style>
-
-
 <style id="VK_STABLE_GRAPH_V8_CSS">
 /* V8: one stable graph renderer; no competing chart painters */
 #stats .chartCard .chartWrap,
@@ -5321,7 +5273,6 @@ function timerSchedule(){cancelAnimationFrame(timerSchedule.raf);timerSchedule.r
 setInterval(timerSchedule,500);timerSchedule();
 })();
 </script>
-
 <style id="VK_FINAL_TIMER_HIERARCHY_CSS">
 #vkTimerHierarchy{display:block;margin:9px auto 0;max-width:520px;text-align:left;padding:10px 12px;border:1px solid color-mix(in srgb,var(--p) 42%,var(--line));border-radius:14px;background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 92%,transparent),color-mix(in srgb,var(--in) 94%,transparent));box-shadow:0 0 0 1px color-mix(in srgb,var(--p) 8%,transparent),0 0 18px color-mix(in srgb,var(--p) 10%,transparent),inset 0 1px 0 rgba(255,255,255,.04)}
 #vkTimerHierarchy .vkTHTitle{font-size:9px;font-weight:950;letter-spacing:.12em;color:var(--p);margin-bottom:6px}
@@ -5396,7 +5347,6 @@ document.addEventListener('click',function(e){var w=e.target&&e.target.closest&&
 setTimeout(rerender,250);setTimeout(rerender,900);
 })();
 </script>
-
 <script id="VK_SELECTED_WEEK_ALL_STATS_V1">
 (function(){
 'use strict';
@@ -5616,8 +5566,6 @@ setTimeout(()=>{trackerFilter();renderTracker();renderFinalStatsOverview();rende
 window.__VELKORE_FINAL_INTEGRATION__={version:'2026.09.24-final',renderTracker,renderFinalChapterStats,renderFinalStatsOverview};
 })();
 </script>
-
-
 <!-- VELKORE FINAL MASTER UPDATE -->
 <style>
 .vkQueueTopics{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.45}.vkQueueItem{padding:12px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--card) 94%,var(--p) 6%);margin:8px 0}.vkQueueItem.locked{opacity:.58}.vkQueueItem.active{border-color:var(--p);box-shadow:0 0 0 1px color-mix(in srgb,var(--p) 35%,transparent)}.vkQueueLock{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:6px}.vkFocusLock{display:none;margin:8px 0 0;padding:9px 11px;border-radius:11px;background:color-mix(in srgb,var(--p) 10%,var(--card));font-size:11px;color:var(--muted)}.vkFocusLock.show{display:block}.vkLockedField{opacity:.6}.vkExtraStatsCard .chartBox{min-height:210px}.vkMiniBars{display:grid;gap:9px;margin-top:8px}.vkMiniBarTop{display:flex;justify-content:space-between;gap:8px;font-size:12px}.vkMiniTrack{height:9px;border-radius:99px;background:color-mix(in srgb,var(--in) 65%,#000);overflow:hidden;margin-top:5px}.vkMiniTrack i{display:block;height:100%;border-radius:inherit;background:var(--p);transition:width .55s ease}.vkEmptyGraph{padding:55px 12px;text-align:center;color:var(--muted);font-size:12px}</style>
@@ -8277,7 +8225,7 @@ console.info('[VELKORE] Godfather 7.0 consolidation active');
 .hqLegRow{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800}
 .hqSwatch{width:12px;height:12px;border-radius:4px;flex:0 0 12px;box-shadow:0 0 10px color-mix(in srgb,var(--p) 35%,transparent)}
 .hqClockWrap{height:280px}
-.hqMonthCal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin-top:8px}
+.hqMonthCal{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:8px}
 .hqMonthCal .vkDow{text-align:center;font-size:9px;font-weight:900;letter-spacing:.7px;color:var(--muted);padding:4px 0}
 .hqCell{min-height:68px;border:1px solid var(--line);border-radius:14px;background:
   linear-gradient(180deg,color-mix(in srgb,var(--text) 4%,transparent),transparent 40%),var(--in);
@@ -9666,7 +9614,7 @@ setTimeout(paintChiStats, 500);
 <style id="vk-premium-pack-css">
 .hqGlass{position:relative;overflow:hidden}
 .hqGlass:before{content:"";position:absolute;inset:auto -20% 60% auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--p) 28%,transparent),transparent 70%);pointer-events:none}
-.vkHitDay{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.vkHitDay{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .vkHitDay i{display:grid;place-items:center;min-height:54px;border-radius:12px;border:1px solid var(--line);background:var(--btn);font-size:10px;font-weight:800;text-align:center;line-height:1.2}
 .vkHitDay i.on{background:linear-gradient(180deg,color-mix(in srgb,var(--good) 35%,transparent),var(--card));border-color:color-mix(in srgb,var(--good) 50%,var(--line));color:var(--good)}
 .vkHitDay i.today{box-shadow:0 0 0 1px var(--accent)}
@@ -10252,13 +10200,13 @@ setTimeout(finalPaint, 1800);
 <style id="vk-nav6-fix">
 nav{
   display:grid !important;
-  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
   gap:2px;
   padding:0 6px env(safe-area-inset-bottom);
 }
 @media(min-width:760px){
   nav{
-    grid-template-columns:repeat(7,110px) !important;
+    grid-template-columns:repeat(6,120px) !important;
     justify-content:center !important;
     gap:8px !important;
   }
@@ -10279,7 +10227,7 @@ section.page.active{display:block !important;}
 (function(){
   document.querySelectorAll('[data-page="chikara"],#chikara,#chiStatStrip').forEach(el=>el.remove());
   const n=document.querySelector('nav');
-  if(n) n.style.gridTemplateColumns='repeat(7,minmax(0,1fr))';
+  if(n) n.style.gridTemplateColumns='repeat(6,minmax(0,1fr))';
 })();
 </script>
 <style>
@@ -12495,7 +12443,6 @@ window.completeSession=function(reason){
 try{ completeSession=window.completeSession; }catch(e){}
 })();
 </script>
-
 <style id="VK_TYPE_GOLD_V1">
 #todo .smartSelectWrap,#plan .smartSelectWrap,#goal .smartSelectWrap,#focus .smartSelectWrap{width:100%}
 #todo .smartSelectFace,#plan .smartSelectFace,#goal .smartSelectFace,#focus .smartSelectFace{
@@ -12798,7 +12745,6 @@ window.vkDailyPdf=classicDaily;
 #vkDaySubjectCard.is-on{display:block!important}
 #vkScopeBar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 </style>
-
 <script id="VK_STATS_REPAIR_V1">
 
 (function(){
@@ -15452,7 +15398,6 @@ document.addEventListener('click', function(e){
 }, true);
 })();
 </script>
-
 <!-- VK_DEMAND_LOCK_V9 -->
 <style id="VK_DEMAND_LOCK_CSS">
 #sessionSetupCard,#sessionSetupCard .field,#focus .card{overflow:visible!important}
@@ -15855,7 +15800,6 @@ document.addEventListener('click', function(e){
 }, true);
 })();
 </script>
-
 <style id="VELKORE_BASE_GRAPH_REPAIR_CSS">
 /* VELKORE graph polish — visual upgrade only, no layout rebuild */
 #stats .chartCard .chartWrap{margin-top:14px;padding:10px 8px 6px;border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.025),rgba(245,185,66,.025));border:1px solid rgba(245,185,66,.10);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 14px 35px rgba(0,0,0,.18);}
@@ -15897,7 +15841,6 @@ document.addEventListener('click', function(e){
 #stats .vkV14GlowGraph rect,#stats .vkV14GlowGraph path,#stats .vkV14GlowGraph circle{filter:drop-shadow(0 0 6px rgba(245,185,66,.30))}
 @media(max-width:680px){#stats .chartCard .chartWrap{min-height:350px!important;padding:10px 5px 7px!important}.#stats .chartCard .chartBox{height:350px!important;min-height:350px!important}.vkV14Metrics{grid-template-columns:repeat(2,1fr)}.vkV14CompareHead{grid-template-columns:1fr 1fr}.vkV14Delta{grid-column:1/-1;grid-row:2}.vkV14Metric b{font-size:1.25rem}}
 </style>
-
 <style id="vk-v15-real-polish">
 /* Topic/Subtopic: use the same visual language as the premium Subject/Chapter selectors */
 #sessionTopicsPicker .topicPicker,#taskTopicsPicker .topicPicker,#planTopicsPicker .topicPicker,
@@ -16119,8 +16062,6 @@ try{
   box-shadow:0 0 0 2px color-mix(in srgb,var(--p) 9%,transparent),0 8px 22px color-mix(in srgb,var(--p) 10%,transparent)!important;
 }
 </style>
-
-
 <style id="VK_FINAL_4_FIXES_CSS">
 /* Final targeted fixes — do not alter the rest of VELKORE UI */
 #vkScopeBar{display:none!important}
@@ -16398,7 +16339,6 @@ setTimeout(syncFinalSelectedWeek,150);setTimeout(syncFinalSelectedWeek,700);setT
 setInterval(stabilizeTimerSubject,350);
 })();
 </script>
-
 <script id="VK_WEEKLY_PDF_FINAL_AUTHORITY_V2">
 (function(){
 'use strict';
@@ -16457,7 +16397,6 @@ setTimeout(function(){
 },500);
 })();
 </script>
-
 <script id="VK_WEEK_SUM_PDF_AUTHORITY_V5">
 (function(){
 'use strict';
@@ -16470,7 +16409,6 @@ setTimeout(function(){if(typeof window.__vkFinalWeeklyPdf==='function'){window.v
 setTimeout(function(){if(typeof window.__vkFinalWeeklyPdf==='function'){window.vkWeeklyPdf=window.__vkFinalWeeklyPdf;window.vkExportPdf=window.__vkFinalWeeklyPdf;}},500);
 })();
 </script>
-
 <style id="VK_LAST_GRAPH_FIX_CSS">
 #stats .vkLastGlowCard{filter:drop-shadow(0 0 10px rgba(245,185,66,.14));}
 #stats #vkCompareChart svg,#stats #vkDeepChart svg,#stats #chart svg,#stats #vkDaySubjectCard svg{filter:drop-shadow(0 0 8px rgba(245,185,66,.10));}
@@ -16587,7 +16525,6 @@ setTimeout(repaint,100);setTimeout(repaint,700);setTimeout(repaint,1600);
   setTimeout(glow,120);setTimeout(glow,500);setTimeout(glow,1200);
 })();
 </script>
-
 <style id="VK_ULTIMATE_STATS_GLOW_CSS">
 #stats #chart, #stats #vkDaySubjectCard, #stats #vkCompareChart, #stats #vkDeepChart{
   filter:drop-shadow(0 0 13px rgba(245,185,66,.22)) !important;
@@ -16631,7 +16568,6 @@ function normalizeSubject(){
 window.vkSubjectPdfType=normalizeSubject;
 })();
 </script>
-
 <style id="VK_TRUE_FINAL_SUBJECT_GRAPH_FIX">
 #vkDaySubjectCard .vkStableSubjectSwitch{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important}
 #vkDaySubjectCard .vkStableSubjectSwitch .btn{min-height:44px!important;border-radius:14px!important;font-weight:950!important}
@@ -16693,7 +16629,6 @@ function repaintAll(){try{render();['chart','vkDaySubjectCard','vkCompareChart',
 setTimeout(repaintAll,150);setTimeout(repaintAll,700);setTimeout(repaintAll,1600);
 })();
 </script>
-
 <style id="VK_SUBJECT_GRAPH_FINAL">
 #vkDaySubjectCard .vkStableSubjectStage{min-height:320px!important;height:320px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
 #vkDaySubjectCard .vkStableSubjectStage svg{width:100%!important;height:100%!important;display:block!important;overflow:visible!important;filter:drop-shadow(0 0 10px rgba(245,185,66,.35))}
@@ -16865,7 +16800,6 @@ setInterval(function(){installOpen(); paint();}, 350);
 setTimeout(paint, 80); setTimeout(paint, 400); setTimeout(paint, 1200);
 })();
 </script>
-
 <style id="VK_STATS_SMOOTH_GLOW">
 #stats svg{filter:drop-shadow(0 0 10px rgba(245,185,66,.34)) drop-shadow(0 0 18px rgba(245,185,66,.16));overflow:visible}
 #stats svg path,#stats svg polyline,#stats svg polygon,#stats svg circle,#stats svg rect{
@@ -16950,7 +16884,6 @@ setInterval(polish, 400);
 setTimeout(polish, 150); setTimeout(polish, 800);
 })();
 </script>
-
 <script id="VK_WEEK_HOUR_PDF_MATCH">
 (function(){
 'use strict';
@@ -17009,7 +16942,6 @@ window.vkWeekHourPdfGraph=function(vals, labels, type){
 };
 })();
 </script>
-
 <style id="VK_ALL_STATS_GLOW_SMOOTH">
 #stats svg{overflow:visible!important;filter:drop-shadow(0 0 8px rgba(245,185,66,.55)) drop-shadow(0 0 18px rgba(245,185,66,.28))!important}
 #stats .chartBox,#stats .chartWrap,#stats .vkStableSubjectStage,#stats #chart,#stats #vkCompareChart,#stats #vkDeepChart,#stats #vkDaySubjectCard{
@@ -17087,7 +17019,6 @@ setInterval(polish, 450);
 setTimeout(polish, 120); setTimeout(polish, 600); setTimeout(polish, 1400);
 })();
 </script>
-
 <script id="VK_TIMER_RESUME_REMAINING">
 (function(){
 'use strict';
@@ -17218,7 +17149,6 @@ setInterval(install, 700);
 setTimeout(install, 200); setTimeout(install, 800);
 })();
 </script>
-
 <script id="VK_LINE_TRUE_SMOOTH">
 (function(){
 'use strict';
@@ -17290,7 +17220,6 @@ setInterval(polish, 350);
 setTimeout(polish, 150); setTimeout(polish, 700);
 })();
 </script>
-
 <script id="VK_SUBJECT_LINE_ROUND">
 (function(){
 'use strict';
@@ -17333,157 +17262,595 @@ setInterval(fix, 500);
 setTimeout(fix, 200);
 })();
 </script>
-
-<script id="VK_SUBTOPIC_PDF_ROOT_FIX_V1">
+<script id="VK_SUBTOPIC_PDF_ROOT_FIX_FINAL_V2">
 (function(){
 'use strict';
-if(window.__VK_SUBTOPIC_PDF_ROOT_FIX_V1__) return;
-window.__VK_SUBTOPIC_PDF_ROOT_FIX_V1__=true;
-
+if(window.__VK_SUBTOPIC_PDF_ROOT_FIX_FINAL_V2__) return;
+window.__VK_SUBTOPIC_PDF_ROOT_FIX_FINAL_V2__=true;
 function arr(v){
-  if(Array.isArray(v)) return v.map(function(x){return String(x||'').trim();}).filter(Boolean);
+  if(Array.isArray(v)) return v.map(function(x){return String(x==null?'':x).trim();}).filter(Boolean);
+  if(typeof v==='string') return v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  return [];
+}
+function checked(id){var r=document.getElementById(id);return r?Array.prototype.map.call(r.querySelectorAll('input[type="checkbox"]:checked'),function(x){return String(x.value||'').trim();}).filter(Boolean):[];}
+function data(){return window.data||{};}
+function source(kind,id){
+  var d=data(), list=kind==='plan'?(d.planBlocks||[]):(d.tasks||[]);
+  return list.find(function(x){return x&&String(x.id)===String(id);})||null;
+}
+function hierarchy(prefix){return {topics:checked(prefix+'TopicsPicker'),subs:checked(prefix+'SubtopicsPicker')};}
+function stampItem(item,h){
+  if(!item||!h)return;
+  if(h.topics.length){item.mainTopics=h.topics.slice();item.topicList=h.topics.slice();item.topics=h.topics.join(', ');item.topic=h.topics[0];}
+  if(h.subs.length){item.subtopics=h.subs.slice();item.subtopicList=h.subs.slice();}
+}
+function hookSave(id,collection,prefix){
+  var b=document.getElementById(id); if(!b||b.__vkSubtopicV2)return;
+  b.__vkSubtopicV2=1;
+  b.addEventListener('click',function(){
+    var h=hierarchy(prefix), d=data(), list=Array.isArray(d[collection])?d[collection]:[];
+    var ids={};list.forEach(function(x){if(x&&x.id!=null)ids[String(x.id)]=1;});
+    /* Capture BEFORE the original handler can rebuild/clear the selectors. */
+    setTimeout(function(){
+      try{
+        var now=Array.isArray(d[collection])?d[collection]:[];
+        var item=now.find(function(x){return x&&x.id!=null&&!ids[String(x.id)];});
+        if(item){stampItem(item,h);if(typeof persist==='function')persist(true);}
+      }catch(e){console.error('[VELKORE Subtopic V2] save',e);}
+    },0);
+  },true);
+}
+function snapshotTimer(){
+  var t=data().timer||{};
+  return {subject:t.subject,chapter:t.chapter,mainTopics:arr(t.mainTopics||t.topicList||t.topics),subtopics:arr(t.subtopics||t.subtopicList),queueKind:t.queueKind,queueId:t.queueId,sessionId:t.sessionId};
+}
+function enrichSnap(s){
+  s=s||snapshotTimer();
+  var src=source(s.queueKind,s.queueId);
+  if(src){
+    if(!s.subject&&src.subject)s.subject=src.subject;
+    if(!s.chapter&&src.chapter)s.chapter=src.chapter;
+    if(!s.mainTopics.length)s.mainTopics=arr(src.mainTopics||src.topicList||src.topics);
+    if(!s.subtopics.length)s.subtopics=arr(src.subtopics||src.subtopicList);
+  }
+  return s;
+}
+function stampSession(rec,s){
+  if(!rec)return;
+  s=enrichSnap(s);
+  if(s.subject)rec.subject=s.subject;if(s.chapter)rec.chapter=s.chapter;
+  if(s.mainTopics.length){rec.mainTopics=s.mainTopics.slice();rec.topicList=s.mainTopics.slice();rec.topics=s.mainTopics.join(', ');rec.topic=s.mainTopics[0];}
+  if(s.subtopics.length){rec.subtopics=s.subtopics.slice();rec.subtopicList=s.subtopics.slice();}
+  if(s.queueKind!=null)rec.queueKind=s.queueKind;
+  if(s.queueId!=null)rec.queueId=s.queueId;
+}
+function hookQueue(){
+  var prev=window.vkGo;if(typeof prev!=='function'||prev.__vkSubtopicV2)return;
+  function wrap(kind,id,mins){
+    var src=source(kind,id), d=data();
+    var before=src?{subject:src.subject,chapter:src.chapter,mainTopics:arr(src.mainTopics||src.topicList||src.topics),subtopics:arr(src.subtopics||src.subtopicList),queueKind:kind,queueId:id}:null;
+    var r=prev.apply(this,arguments);
+    try{var t=d.timer||{};if(before){if(before.subject)t.subject=before.subject;if(before.chapter)t.chapter=before.chapter;t.mainTopics=before.mainTopics.slice();t.topicList=before.mainTopics.slice();t.topics=before.mainTopics.slice();t.subtopics=before.subtopics.slice();t.subtopicList=before.subtopics.slice();t.queueKind=kind;t.queueId=id;}if(typeof persist==='function')persist(true);}catch(e){console.error('[VELKORE Subtopic V2] queue',e);}
+    return r;
+  }
+  wrap.__vkSubtopicV2=1;window.vkGo=wrap;try{vkGo=wrap;}catch(e){}
+}
+function hookStart(){
+  var prev=window.startCountdown;if(typeof prev!=='function'||prev.__vkSubtopicV2)return;
+  function wrap(){
+    var d=data(),t=d.timer||{},topics=checked('sessionTopicsPicker'),subs=checked('sessionSubtopicsPicker');
+    var src=source(t.queueKind,t.queueId);
+    if(!topics.length)topics=arr(t.mainTopics||t.topicList||t.topics);if(!subs.length)subs=arr(t.subtopics||t.subtopicList);
+    if(src){if(!topics.length)topics=arr(src.mainTopics||src.topicList||src.topics);if(!subs.length)subs=arr(src.subtopics||src.subtopicList);}
+    if(topics.length){t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();}
+    if(subs.length){t.subtopics=subs.slice();t.subtopicList=subs.slice();}
+    var r=prev.apply(this,arguments);try{if(typeof persist==='function')persist(true);}catch(e){}return r;
+  }
+  wrap.__vkSubtopicV2=1;window.startCountdown=wrap;try{startCountdown=wrap;}catch(e){}
+}
+function hookPush(){
+  var list=data().sessions;if(!Array.isArray(list)||list.__vkSubtopicV2)return;
+  var orig=list.push.bind(list);
+  list.push=function(){var snap=enrichSnap(snapshotTimer());for(var i=0;i<arguments.length;i++)stampSession(arguments[i],snap);return orig.apply(null,arguments);};
+  list.__vkSubtopicV2=1;
+}
+function hookComplete(){
+  var prev=window.completeSession;if(typeof prev!=='function'||prev.__vkSubtopicV2)return;
+  function wrap(reason){
+    var d=data(),before=(d.sessions||[]).length,snap=enrichSnap(snapshotTimer()),beforeIds={};
+    (d.sessions||[]).forEach(function(x){if(x&&x.id!=null)beforeIds[String(x.id)]=1;});
+    var r=prev.apply(this,arguments);
+    try{
+      var list=Array.isArray(d.sessions)?d.sessions:[], rec=null;
+      for(var i=list.length-1;i>=0;i--){if(list[i]&&list[i].id!=null&&!beforeIds[String(list[i].id)]){rec=list[i];break;}}
+      if(!rec&&snap.sessionId)rec=list.find(function(x){return x&&String(x.id)===String(snap.sessionId);});
+      if(!rec&&list.length>before)rec=list[list.length-1];
+      if(rec)stampSession(rec,snap);
+      if(typeof persist==='function')persist(true);
+    }catch(e){console.error('[VELKORE Subtopic V2] complete',e);}
+    return r;
+  }
+  wrap.__vkSubtopicV2=1;window.completeSession=wrap;try{completeSession=wrap;}catch(e){}
+}
+/* Make every report use the same strict resolver: Topic and Sub-topic stay separate.
+   If an old session lacks subtopics, recover ONLY from its linked To-Do/Plan source. */
+function resolve(s){
+  s=s||{};var topics=arr(s.mainTopics||s.topicList||s.topics),subs=arr(s.subtopics||s.subtopicList);
+  if(!subs.length){
+    var src=source(s.queueKind,s.queueId);
+    if(src)subs=arr(src.subtopics||src.subtopicList);
+  }
+  return {topics:topics,subs:subs};
+}
+function patchSplit(){
+  if(typeof window.splitSession!=='function'||window.splitSession.__vkSubtopicV2)return;
+  function split(s){return resolve(s);}
+  split.__vkSubtopicV2=1;window.splitSession=split;try{splitSession=split;}catch(e){}
+}
+function patchFinalWeekly(){
+  /* The active final weekly renderer reads session fields directly. Wrap it so
+     legacy sessions can still recover their exact linked Sub-topic. */
+  var fn=window.__vkFinalWeeklyPdf;if(typeof fn!=='function'||fn.__vkSubtopicV2)return;
+  function wrap(){
+    var d=data(), sessions=Array.isArray(d.sessions)?d.sessions:[], backups=[];
+    sessions.forEach(function(s){var r=resolve(s);if(r.subs.length&&!arr(s.subtopics).length){backups.push([s,s.subtopics,s.subtopicList]);s.subtopics=r.subs.slice();s.subtopicList=r.subs.slice();}});
+    try{return fn.apply(this,arguments);}finally{backups.forEach(function(b){b[0].subtopics=b[1];b[0].subtopicList=b[2];});}
+  }
+  wrap.__vkSubtopicV2=1;window.__vkFinalWeeklyPdf=wrap;window.vkWeeklyPdf=wrap;window.vkExportPdf=wrap;
+}
+function boot(){
+  hookSave('addTask','tasks','task');hookSave('addPlanBlock','planBlocks','plan');hookQueue();hookStart();hookPush();hookComplete();patchSplit();patchFinalWeekly();
+}
+boot();setTimeout(boot,100);setTimeout(boot,500);setTimeout(boot,1200);setTimeout(boot,2500);
+})();
+</script>
+<script id="VK_TIMER_QUEUE_PDF_ROOT_FINAL">
+(function(){
+'use strict';
+if(window.__VK_TIMER_QUEUE_PDF_ROOT_FINAL__) return;
+window.__VK_TIMER_QUEUE_PDF_ROOT_FINAL__=true;
+
+function D(){ return window.data || {}; }
+function arr(v){
+  if(Array.isArray(v)) return v.map(function(x){return String(x==null?'':x).trim();}).filter(Boolean);
   if(typeof v==='string') return v.split(',').map(function(x){return x.trim();}).filter(Boolean);
   return [];
 }
 function checked(id){
-  var root=document.getElementById(id);
-  if(!root) return [];
-  return Array.prototype.map.call(root.querySelectorAll('input[type="checkbox"]:checked'),function(x){return String(x.value||'').trim();}).filter(Boolean);
+  var e=document.getElementById(id);
+  return e ? Array.prototype.map.call(e.querySelectorAll('input[type="checkbox"]:checked'),function(x){return String(x.value||'').trim();}).filter(Boolean) : [];
 }
-function selectedHierarchy(prefix){
-  var topics=checked(prefix+'TopicsPicker');
-  var subs=checked(prefix+'SubtopicsPicker');
-  return {topics:topics,subtopics:subs};
+function source(kind,id){
+  var d=D(), list=kind==='plan'?(d.planBlocks||[]):(d.tasks||[]);
+  return list.find(function(x){return x && String(x.id)===String(id);}) || null;
 }
-function stampItem(item, prefix){
+function topicFields(x){
+  x=x||{};
+  return arr(x.mainTopics && x.mainTopics.length ? x.mainTopics : (x.topicList && x.topicList.length ? x.topicList : x.topics));
+}
+function subtopicFields(x){
+  x=x||{};
+  return arr(x.subtopics && x.subtopics.length ? x.subtopics : x.subtopicList);
+}
+function selectedAcademic(prefix){
+  return {topics:checked(prefix+'TopicsPicker'),subs:checked(prefix+'SubtopicsPicker')};
+}
+
+/* ---------- ONE authoritative active-session record ---------- */
+function activeFromTimer(t){
+  t=t||{};
+  return {
+    sessionId:t.sessionId||null,
+    status:t.status||'IDLE',
+    subject:String(t.subject||'').trim(),
+    chapter:String(t.chapter||'').trim(),
+    topics:topicFields(t),
+    subtopics:subtopicFields(t),
+    plannedMinutes:Number(t.plannedMinutes||0),
+    remainingSeconds:Number(t.remainingSeconds||0),
+    accumulatedMs:Number(t.accumulatedMs||0),
+    startedAt:t.startedAt||null,
+    segmentStartedAt:t.segmentStartedAt||null,
+    queueKind:t.queueKind||null,
+    queueId:t.queueId||null
+  };
+}
+function syncActive(reason){
+  var d=D(),t=d.timer||{};
+  if(!d) return;
+  var a=activeFromTimer(t);
+  a.reason=reason||'';
+  if(t.mode!=='stopwatch'){
+    var done=Number(t.accumulatedMs||0);
+    if(t.status==='RUNNING'&&t.segmentStartedAt) done+=Math.max(0,Date.now()-Number(t.segmentStartedAt));
+    a.remainingSeconds=Math.max(0,Math.round((Number(t.plannedMinutes||0)*60000-done)/1000));
+  }
+  d.activeStudySession=a;
+  try{ if(typeof persist==='function') persist(true); }catch(e){}
+}
+function restoreActive(){
+  var d=D(),a=d.activeStudySession,t=d.timer;
+  if(!a || !t) return;
+  if(a.sessionId && (!t.sessionId || String(t.sessionId)!==String(a.sessionId))){
+    t.sessionId=a.sessionId;
+  }
+  if(a.subject) t.subject=a.subject;
+  if(a.chapter) t.chapter=a.chapter;
+  if(a.topics.length) { t.mainTopics=a.topics.slice();t.topicList=a.topics.slice();t.topics=a.topics.slice(); }
+  if(a.subtopics.length) { t.subtopics=a.subtopics.slice();t.subtopicList=a.subtopics.slice(); }
+  if(a.queueKind!=null) t.queueKind=a.queueKind;
+  if(a.queueId!=null) t.queueId=a.queueId;
+}
+
+/* ---------- Stable metadata: one DOM node, never rebuilt by the ticker ---------- */
+function ensureMeta(){
+  var time=document.getElementById('time');
+  if(!time) return null;
+  var box=document.getElementById('vkActiveSessionMeta');
+  if(!box){
+    box=document.createElement('div');
+    box.id='vkActiveSessionMeta';
+    box.innerHTML='<span data-k="subject"></span><span class="sep"> • </span><span data-k="chapter"></span><span class="sep"> • </span><span data-k="topic"></span><span class="sep"> • </span><span data-k="subtopic"></span>';
+    time.insertAdjacentElement('afterend',box);
+  }
+  return box;
+}
+function metaValue(v){return String(v==null?'':v).trim() || '—';}
+var lastMetaKey='';
+function renderMeta(force){
+  var box=ensureMeta(); if(!box) return;
+  var d=D(),t=d.timer||{};
+  var active=t.status==='RUNNING'||t.status==='PAUSED';
+  if(!active){
+    if(force || lastMetaKey!=='idle'){
+      box.style.display='none';
+      lastMetaKey='idle';
+    }
+    return;
+  }
+  var topics=topicFields(t),subs=subtopicFields(t);
+  var vals=[metaValue(t.subject),metaValue(t.chapter),metaValue(topics.join(' · ')),metaValue(subs.join(' · '))];
+  var key=vals.join('\u001f')+'|'+t.status;
+  if(!force && key===lastMetaKey) return;
+  ['subject','chapter','topic','subtopic'].forEach(function(k,i){
+    var el=box.querySelector('[data-k="'+k+'"]');
+    if(el) el.textContent=vals[i];
+  });
+  box.style.display='block';
+  box.dataset.state=t.status;
+  lastMetaKey=key;
+}
+function installMetaStyle(){
+  if(document.getElementById('VK_TIMER_QUEUE_META_STYLE')) return;
+  var st=document.createElement('style');st.id='VK_TIMER_QUEUE_META_STYLE';
+  st.textContent='#vkActiveSessionMeta{display:none;margin:9px auto 4px;max-width:100%;padding:8px 10px;text-align:center;color:#f5c95b;font-weight:900;font-size:12px;line-height:1.45;letter-spacing:.02em;border:1px solid rgba(245,201,91,.20);border-radius:12px;background:linear-gradient(180deg,rgba(245,201,91,.07),rgba(245,201,91,.025));box-shadow:0 0 18px rgba(245,201,91,.07),inset 0 1px 0 rgba(255,255,255,.035);box-sizing:border-box}#vkActiveSessionMeta .sep{opacity:.55;padding:0 2px}@media(max-width:520px){#vkActiveSessionMeta{font-size:11px;padding:7px 6px}}';
+  document.head.appendChild(st);
+}
+
+/* ---------- Queue source normalization ---------- */
+function normalizeQueueItem(item){
   if(!item) return;
-  var h=selectedHierarchy(prefix);
-  /* Keep Topic and Subtopic as separate authoritative fields. */
-  if(h.topics.length) item.mainTopics=h.topics.slice();
-  if(h.subtopics.length) item.subtopics=h.subtopics.slice();
-  if(h.topics.length) item.topicList=h.topics.slice();
-  else if(!Array.isArray(item.topicList)) item.topicList=[];
-  if(h.topics.length) item.topics=h.topics.join(', ');
-  if(h.subtopics.length) item.subtopicList=h.subtopics.slice();
+  var topics=topicFields(item),subs=subtopicFields(item);
+  if(topics.length){item.mainTopics=topics.slice();item.topicList=topics.slice();item.topics=topics.join(', ');item.topic=topics[0];}
+  if(subs.length){item.subtopics=subs.slice();item.subtopicList=subs.slice();}
+}
+function normalizeAllSources(){
+  var d=D();
+  (d.tasks||[]).forEach(normalizeQueueItem);
+  (d.planBlocks||[]).forEach(normalizeQueueItem);
+  (d.sessions||[]).forEach(function(s){
+    var src=source(s.queueKind,s.queueId);
+    if(src){
+      var subs=subtopicFields(s); if(!subs.length) subs=subtopicFields(src);
+      var tops=topicFields(s); if(!tops.length) tops=topicFields(src);
+      if(tops.length){s.mainTopics=tops.slice();s.topicList=tops.slice();s.topics=tops.join(', ');s.topic=tops[0];}
+      if(subs.length){s.subtopics=subs.slice();s.subtopicList=subs.slice();}
+    }
+  });
 }
 
-/* Save hooks run AFTER the app's own onclick has created the new record. */
-function bindSave(id, collection, prefix, last){
-  var b=document.getElementById(id);
-  if(!b || b.__vkSubtopicRoot) return;
-  b.__vkSubtopicRoot=1;
+/* Capture exact To-Do/Plan hierarchy at the moment Save is clicked. */
+function hookSave(id,collection,prefix){
+  var b=document.getElementById(id);if(!b||b.__vkFinalTimerSave)return;
+  b.__vkFinalTimerSave=true;
   b.addEventListener('click',function(){
+    var h=selectedAcademic(prefix),d=D(),before={};
+    (d[collection]||[]).forEach(function(x){if(x&&x.id!=null)before[String(x.id)]=true;});
     setTimeout(function(){
-      try{
-        var d=window.data||{};
-        var list=Array.isArray(d[collection])?d[collection]:[];
-        if(!list.length) return;
-        var item=last?list[list.length-1]:list[0];
-        stampItem(item,prefix);
-        if(typeof persist==='function') persist(true);
-        if(id==='addTask' && typeof renderTasks==='function') renderTasks();
-        if(id==='addPlanBlock' && typeof renderPlan==='function') renderPlan();
-      }catch(e){ console.error('VELKORE subtopic save sync:',e); }
-    },0);
-  },false);
-}
-function bindSaves(){
-  bindSave('addTask','tasks','task',false);
-  bindSave('addPlanBlock','planBlocks','plan',true);
-}
-
-/* Queue start: transfer the saved To-Do/Plan hierarchy into timer state. */
-function bindQueueTransfer(){
-  var prev=window.vkGo;
-  if(typeof prev!=='function' || prev.__vkSubtopicRoot) return;
-  var wrapped=function(kind,id,mins){
-    var d=window.data||{};
-    var raw=kind==='plan'
-      ? (d.planBlocks||[]).find(function(x){return String(x.id)===String(id);})
-      : (d.tasks||[]).find(function(x){return String(x.id)===String(id);});
-    var r=prev.apply(this,arguments);
-    try{
-      var t=d.timer||{};
-      var main=arr(raw&&raw.mainTopics);
-      if(!main.length) main=arr(raw&&raw.topicList);
-      var subs=arr(raw&&raw.subtopics);
-      if(!subs.length) subs=arr(raw&&raw.subtopicList);
-      if(main.length) t.mainTopics=main.slice();
-      if(subs.length) t.subtopics=subs.slice();
-      /* Never replace Topic with Subtopic. */
-      if(main.length){ t.topicList=main.slice(); t.topics=main.slice(); }
-      if(subs.length) t.subtopicList=subs.slice();
-      if(typeof persist==='function') persist(true);
-    }catch(e){ console.error('VELKORE subtopic queue transfer:',e); }
-    return r;
-  };
-  wrapped.__vkSubtopicRoot=true;
-  window.vkGo=wrapped;
-  try{ vkGo=wrapped; }catch(e){}
-}
-
-/* Session completion: copy the exact hierarchy from timer/queue into the
-   session record BEFORE the PDF renderer reads it. */
-function bindCompletion(){
-  var prev=window.completeSession;
-  if(typeof prev!=='function' || prev.__vkSubtopicRoot) return;
-  var wrapped=function(reason){
-    var d=window.data||{};
-    var t=d.timer||{};
-    var raw=t.queueKind==='plan'
-      ? (d.planBlocks||[]).find(function(x){return String(x.id)===String(t.queueId);})
-      : (d.tasks||[]).find(function(x){return String(x.id)===String(t.queueId);});
-    var main=arr(t.mainTopics);
-    if(!main.length) main=arr(raw&&raw.mainTopics);
-    if(!main.length) main=arr(raw&&raw.topicList);
-    var subs=arr(t.subtopics);
-    if(!subs.length) subs=arr(t.subtopicList);
-    if(!subs.length) subs=arr(raw&&raw.subtopics);
-    if(!subs.length) subs=arr(raw&&raw.subtopicList);
-
-    var before=(Array.isArray(d.sessions)?d.sessions.length:0);
-    var r=prev.apply(this,arguments);
-
-    try{
-      var list=Array.isArray(d.sessions)?d.sessions:[];
-      /* Prefer the session created by this completion; do not touch old records. */
-      var rec=null;
-      if(list.length>before) rec=list[list.length-1];
-      if(!rec && t.sessionId) rec=list.find(function(x){return String(x.id)===String(t.sessionId);});
-      if(rec){
-        if(main.length){
-          rec.mainTopics=main.slice();
-          rec.topicList=main.slice();
-          rec.topics=main.join(', ');
-          rec.topic=main[0];
-        }
-        if(subs.length){
-          rec.subtopics=subs.slice();
-          rec.subtopicList=subs.slice();
-        }
-        persist(true);
+      var list=d[collection]||[],item=null;
+      for(var i=list.length-1;i>=0;i--){if(list[i]&&list[i].id!=null&&!before[String(list[i].id)]){item=list[i];break;}}
+      if(item){
+        if(h.topics.length){item.mainTopics=h.topics.slice();item.topicList=h.topics.slice();item.topics=h.topics.join(', ');item.topic=h.topics[0];}
+        if(h.subs.length){item.subtopics=h.subs.slice();item.subtopicList=h.subs.slice();}
+        try{persist(true);}catch(e){}
       }
-    }catch(e){ console.error('VELKORE subtopic session sync:',e); }
-    return r;
-  };
-  wrapped.__vkSubtopicRoot=true;
-  window.completeSession=wrapped;
-  try{ completeSession=wrapped; }catch(e){}
+    },0);
+  },true);
 }
 
-function boot(){
-  bindSaves();
-  bindQueueTransfer();
-  bindCompletion();
+/* ---------- Authoritative queue start/resume ---------- */
+var oldGo=window.vkGo;
+function finalGo(kind,id,minsArg){
+  var d=D(),raw=source(kind,id);
+  if(!raw) return typeof oldGo==='function' ? oldGo.apply(this,arguments) : undefined;
+  normalizeQueueItem(raw);
+  var left=raw.remainingSeconds!=null ? Number(raw.remainingSeconds)/60 : (raw.remaining!=null ? Number(raw.remaining) : Number(raw.est||raw.minutes||raw.mins||minsArg||25));
+  if(!Number.isFinite(left)||left<=0) left=Number(raw.est||raw.minutes||raw.mins||minsArg||25)||25;
+  left=Math.max(1,Math.min(240,left));
+  var topics=topicFields(raw),subs=subtopicFields(raw);
+  try{if(typeof stopTicker==='function')stopTicker();}catch(e){}
+  if(typeof ensureIdleTimer==='function') ensureIdleTimer('flow',left,'focus');
+  var t=d.timer||{};
+  t.mode='flow';t.phase='focus';t.status='IDLE';t.plannedMinutes=left;
+  t.subject=String(raw.subject||'General');t.chapter=String(raw.chapter||'Focus');t.lockSubject=t.subject;
+  t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();
+  t.subtopics=subs.slice();t.subtopicList=subs.slice();
+  t.queueKind=kind;t.queueId=id;t.goal='';t.accumulatedMs=0;t.segmentStartedAt=null;t.startedAt=null;
+  t.sessionId=(typeof uid==='function'?uid():('s'+Date.now()));
+  d.focusQueue={taskId:id,kind:kind};
+  var fm=document.getElementById('flowMins');if(fm)fm.value=String(Math.round(left));
+  try{persist(true);}catch(e){}
+  if(typeof setPage==='function')setPage('focus');
+  /* Call the existing timer start once. It updates only countdown state. */
+  if(typeof window.startCountdown==='function') window.startCountdown();
+  /* Reassert the captured academic snapshot after legacy handlers return. */
+  d.timer.subject=t.subject;d.timer.chapter=t.chapter;d.timer.lockSubject=t.lockSubject;
+  d.timer.mainTopics=topics.slice();d.timer.topicList=topics.slice();d.timer.topics=topics.slice();
+  d.timer.subtopics=subs.slice();d.timer.subtopicList=subs.slice();d.timer.queueKind=kind;d.timer.queueId=id;
+  if(d.timer.status==='RUNNING'||d.timer.status==='PAUSED') syncActive('queue-start');
+  renderMeta(true);
+  return undefined;
 }
-boot();
-setTimeout(boot,100);
-setTimeout(boot,500);
-setTimeout(boot,1200);
+window.vkGo=finalGo;try{vkGo=finalGo;}catch(e){}
+window.startQueueFocus=function(it){if(it)finalGo(it.kind,it.id,it.mins);};
+
+/* ---------- Start/pause/resume: metadata captured once, not every tick ---------- */
+var oldStart=window.startCountdown;
+function finalStart(){
+  var d=D(),t=d.timer||{};
+  if(t.status==='IDLE'){
+    var topics=topicFields(t),subs=subtopicFields(t),src=source(t.queueKind,t.queueId);
+    if(src){normalizeQueueItem(src);if(!topics.length)topics=topicFields(src);if(!subs.length)subs=subtopicFields(src);}
+    var picked=selectedAcademic('session');
+    if(picked.topics.length)topics=picked.topics;
+    if(picked.subs.length)subs=picked.subs;
+    t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();
+    t.subtopics=subs.slice();t.subtopicList=subs.slice();
+    if(!t.subject)t.subject=document.getElementById('sessionSubject')?.value||'General';
+    if(!t.chapter)t.chapter=document.getElementById('sessionChapter')?.value||'Focus';
+    t.lockSubject=t.subject;
+  }
+  var r=typeof oldStart==='function'?oldStart.apply(this,arguments):undefined;
+  if(d.timer){
+    d.timer.mainTopics=topicFields(t).slice();d.timer.topicList=topicFields(t).slice();d.timer.topics=topicFields(t).slice();
+    d.timer.subtopics=subtopicFields(t).slice();d.timer.subtopicList=subtopicFields(t).slice();
+    if(d.timer.status==='RUNNING'||d.timer.status==='PAUSED') syncActive('start-or-pause');
+  }
+  renderMeta(true);
+  return r;
+}
+window.startCountdown=finalStart;try{startCountdown=finalStart;}catch(e){}
+
+/* ---------- Correct interrupted-session accounting ---------- */
+function elapsedSeconds(snap){
+  var ms=Number(snap.accumulatedMs||0);
+  if(snap.status==='RUNNING'&&snap.segmentStartedAt)ms+=Math.max(0,Date.now()-Number(snap.segmentStartedAt));
+  return Math.max(0,Math.floor(ms/1000));
+}
+function finalizeQueueFromSnapshot(snap,usedSec,startLeftSec){
+  var raw=source(snap.queueKind,snap.queueId);if(!raw)return;
+  /* IMPORTANT: use the queue remainder captured BEFORE legacy completion runs.
+     Several older wrappers also update remaining during completeSession(); reading
+     raw.remaining afterwards would subtract the same study time twice. */
+  var plannedSec=Number(startLeftSec);
+  if(!Number.isFinite(plannedSec)||plannedSec<=0) plannedSec=Number(snap.plannedMinutes||raw.est||raw.minutes||raw.mins||0)*60;
+  if(!Number.isFinite(plannedSec)||plannedSec<0) plannedSec=0;
+  var left=Math.max(0,Math.round(plannedSec-Math.max(0,usedSec)));
+  raw.lastStudiedMin=Math.floor(Math.max(0,usedSec)/60);
+  if(left<=0){raw.done=true;raw.remaining=0;raw.remainingSeconds=0;raw.completedAt=Date.now();}
+  else {raw.done=false;raw.remainingSeconds=left;raw.remaining=Math.ceil(left/60);}
+  try{persist(true);}catch(e){}
+  try{if(typeof renderTodayQueue==='function')renderTodayQueue();}catch(e){}
+  try{if(typeof renderTasks==='function')renderTasks();}catch(e){}
+  try{if(typeof renderPlan==='function')renderPlan();}catch(e){}
+}
+var oldComplete=window.completeSession;
+function finalComplete(reason){
+  var d=D(),t=d.timer||{},snap=JSON.parse(JSON.stringify({sessionId:t.sessionId,status:t.status,plannedMinutes:t.plannedMinutes,accumulatedMs:t.accumulatedMs,segmentStartedAt:t.segmentStartedAt,startedAt:t.startedAt,subject:t.subject,chapter:t.chapter,mainTopics:topicFields(t),subtopics:subtopicFields(t),queueKind:t.queueKind,queueId:t.queueId}));
+  var usedSec=elapsedSeconds(snap);
+  var rawBefore=source(snap.queueKind,snap.queueId);
+  var startLeftSec=0;
+  if(rawBefore){
+    startLeftSec=Number(rawBefore.remainingSeconds!=null?rawBefore.remainingSeconds:(rawBefore.remaining!=null?Number(rawBefore.remaining)*60:(snap.plannedMinutes||rawBefore.est||rawBefore.minutes||rawBefore.mins||0)*60));
+    if(!Number.isFinite(startLeftSec)||startLeftSec<0)startLeftSec=0;
+  }
+  var r=typeof oldComplete==='function'?oldComplete.apply(this,arguments):undefined;
+  /* Re-apply the exact queue arithmetic after every legacy wrapper has run. */
+  if(snap.queueId!=null)finalizeQueueFromSnapshot(snap,usedSec,startLeftSec);
+  /* Ensure the just-created session carries Topic + Sub-topic exactly. */
+  var list=d.sessions||[],rec=null;
+  for(var i=list.length-1;i>=0;i--){if(list[i]&&String(list[i].id)===String(snap.sessionId)){rec=list[i];break;}}
+  if(!rec && list.length)rec=list[list.length-1];
+  if(rec){
+    if(snap.subject)rec.subject=snap.subject;
+    if(snap.chapter)rec.chapter=snap.chapter;
+    if(snap.mainTopics.length){rec.mainTopics=snap.mainTopics.slice();rec.topicList=snap.mainTopics.slice();rec.topics=snap.mainTopics.join(', ');rec.topic=snap.mainTopics[0];}
+    if(snap.subtopics.length){rec.subtopics=snap.subtopics.slice();rec.subtopicList=snap.subtopics.slice();}
+    if(snap.queueKind!=null)rec.queueKind=snap.queueKind;if(snap.queueId!=null)rec.queueId=snap.queueId;
+    try{persist(true);}catch(e){}
+  }
+  if(!d.timer || d.timer.status==='IDLE') d.activeStudySession=null;
+  renderMeta(true);
+  try{if(typeof persist==='function')persist(true);}catch(e){}
+  return r;
+}
+window.completeSession=finalComplete;try{completeSession=finalComplete;}catch(e){}
+
+/* ---------- Resume after reload / tab switch ---------- */
+function recover(){
+  var d=D();restoreActive();var t=d.timer||{};
+  if(t.status==='RUNNING'||t.status==='PAUSED'){
+    var src=source(t.queueKind,t.queueId);if(src){normalizeQueueItem(src);if(!subtopicFields(t).length){t.subtopics=subtopicFields(src);t.subtopicList=subtopicFields(src);}if(!topicFields(t).length){t.mainTopics=topicFields(src);t.topicList=topicFields(src);t.topics=topicFields(src);}}
+    renderMeta(true);syncActive('recover');
+  } else renderMeta(true);
+}
+installMetaStyle();ensureMeta();normalizeAllSources();recover();
+
+/* Save exact selected Sub-topic on every new Task/Plan record. */
+hookSave('addTask','tasks','task');hookSave('addPlanBlock','planBlocks','plan');
+
+/* Metadata is deliberately NOT updated by the 250ms ticker. Only lifecycle changes call renderMeta(). */
+var oldPaint=window.paintTimeDisplay;
+if(typeof oldPaint==='function'&&!oldPaint.__vkTimerMetaFinal){
+  function paint(){return oldPaint.apply(this,arguments);}
+  paint.__vkTimerMetaFinal=true;window.paintTimeDisplay=paint;try{paintTimeDisplay=paint;}catch(e){}
+}
+
+/* Background-safe lifecycle persistence.
+   IMPORTANT: leaving VELKORE must NEVER pause a running timer.
+   The active segment keeps its original segmentStartedAt timestamp, so
+   elapsed wall-clock time continues while the page is hidden, backgrounded,
+   the phone is locked, or the browser is temporarily closed. On return,
+   recover()/paintTimeDisplay() calculate the remaining time from that
+   timestamp. Only the user's explicit Pause control may change RUNNING to
+   PAUSED. */
+function persistActiveLifecycle(reason){
+  var d=D(),t=d.timer||{};
+  if(t.status==='RUNNING' && !t.segmentStartedAt) t.segmentStartedAt=Date.now();
+  try{if(typeof persist==='function')persist(true);}catch(e){}
+}
+document.addEventListener('visibilitychange',function(){
+  /* Never pause/freeze here. Persist the unchanged RUNNING timestamp only. */
+  persistActiveLifecycle(document.hidden?'hidden':'visible');
+  if(!document.hidden){
+    recover();
+    try{if(typeof paintTimeDisplay==='function')paintTimeDisplay();}catch(e){}
+  }
+});
+window.addEventListener('pagehide',function(){persistActiveLifecycle('pagehide');});
+window.addEventListener('beforeunload',function(){persistActiveLifecycle('beforeunload');});
+
+/* Queue button fallback: finalGo is the single launch path. */
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest&&e.target.closest('#todayQueue [data-vkq],#todayQueue [data-start]');
+  if(!b)return;
+  var key=b.getAttribute('data-vkq')||b.getAttribute('data-start')||'';
+  if(!key)return;
+  e.preventDefault();e.stopPropagation();
+  var p=String(key).split(':'),kind=p.shift(),id=p.join(':'),mins=Number(b.getAttribute('data-mins'));
+  finalGo(kind,id,mins);
+},true);
+
+/* ---------- PDF source of truth ---------- */
+function normalizeSessionsForReports(){
+  var d=D();(d.sessions||[]).forEach(function(s){
+    var src=source(s.queueKind,s.queueId);
+    if(!src)return;
+    var subs=subtopicFields(s);if(!subs.length)subs=subtopicFields(src);
+    var tops=topicFields(s);if(!tops.length)tops=topicFields(src);
+    if(tops.length){s.mainTopics=tops.slice();s.topicList=tops.slice();s.topics=tops.join(', ');s.topic=tops[0];}
+    if(subs.length){s.subtopics=subs.slice();s.subtopicList=subs.slice();}
+  });
+}
+function withReportData(fn){
+  return function(){normalizeSessionsForReports();return fn.apply(this,arguments);};
+}
+var wk=window.vkWeeklyPdf;if(typeof wk==='function'&&!wk.__vkTimerPdfFinal){var wkw=withReportData(wk);wkw.__vkTimerPdfFinal=true;window.vkWeeklyPdf=wkw;window.vkExportPdf=wkw;}
+var dy=window.vkDailyPdf;if(typeof dy==='function'&&!dy.__vkTimerPdfFinal){var dyw=withReportData(dy);dyw.__vkTimerPdfFinal=true;window.vkDailyPdf=dyw;}
+if(typeof window.__vkFinalWeeklyPdf==='function'&&!window.__vkFinalWeeklyPdf.__vkTimerPdfFinal){var f=withReportData(window.__vkFinalWeeklyPdf);f.__vkTimerPdfFinal=true;window.__vkFinalWeeklyPdf=f;window.vkWeeklyPdf=f;window.vkExportPdf=f;}
+
+/* Late boot: other legacy wrappers may finish installing before this runs. */
+setTimeout(function(){normalizeAllSources();recover();hookSave('addTask','tasks','task');hookSave('addPlanBlock','planBlocks','plan');},100);
+setTimeout(function(){normalizeAllSources();recover();},500);
+setTimeout(function(){normalizeAllSources();recover();},1200);
 })();
 </script>
+<script id="VK_SINGLE_TIMER_METADATA_FINAL">
+(function(){
+'use strict';
+/* ONE authoritative timer metadata display.  This is deliberately isolated
+   to the timer metadata UI; timer/queue/session data is not modified. */
+function hideDuplicateMetadata(){
+  var ids=['vkTimerHierarchy','focusNowCard'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){
+      el.setAttribute('hidden','');
+      el.style.setProperty('display','none','important');
+    }
+  });
+  /* timerStatus is a status indicator, not an academic metadata renderer.
+     While a session is active, keep it visually out of the metadata stack so
+     Subject/Chapter cannot appear a second time. */
+  var st=document.getElementById('timerStatus');
+  if(st){
+    st.style.setProperty('display','none','important');
+  }
+}
+function ensureSingleGoldMeta(){
+  var time=document.getElementById('time');
+  if(!time)return null;
+  var box=document.getElementById('vkActiveSessionMeta');
+  if(!box){
+    box=document.createElement('div');
+    box.id='vkActiveSessionMeta';
+    time.insertAdjacentElement('afterend',box);
+  }
+  return box;
+}
+function arr(v){return Array.isArray(v)?v.filter(function(x){return String(x||'').trim();}):[];}
+function val(v){var s=String(v==null?'':v).trim();return s||'—';}
+function renderOne(){
+  hideDuplicateMetadata();
+  var box=ensureSingleGoldMeta();
+  if(!box)return;
+  var d=window.data||{},t=d.timer||{};
+  var active=t.status==='RUNNING'||t.status==='PAUSED';
+  if(!active){
+    box.style.setProperty('display','none','important');
+    return;
+  }
+  var subject=String(t.lockSubject||t.subject||'').trim();
+  var chapter=String(t.chapter||'').trim();
+  var topics=arr(t.mainTopics&&t.mainTopics.length?t.mainTopics:t.topicList&&t.topicList.length?t.topicList:t.topics);
+  var subs=arr(t.subtopics&&t.subtopics.length?t.subtopics:t.subtopicList);
+  var values=[val(subject),val(chapter),val(topics.join(' · ')),val(subs.join(' · '))];
+  var key=values.join('\u001f');
+  if(box.dataset.vkMetaKey!==key){
+    box.textContent=values.join(' • ');
+    box.dataset.vkMetaKey=key;
+  }
+  box.style.setProperty('display','block','important');
+}
+function style(){
+  if(document.getElementById('VK_SINGLE_TIMER_METADATA_STYLE'))return;
+  var s=document.createElement('style');
+  s.id='VK_SINGLE_TIMER_METADATA_STYLE';
+  s.textContent='#vkActiveSessionMeta{display:none!important;margin:9px auto 4px;max-width:100%;padding:8px 10px;text-align:center;color:#f5c95b!important;font-weight:900;font-size:12px;line-height:1.45;letter-spacing:.02em;border:1px solid rgba(245,201,91,.20);border-radius:12px;background:linear-gradient(180deg,rgba(245,201,91,.07),rgba(245,201,91,.025));box-shadow:0 0 18px rgba(245,201,91,.07),inset 0 1px 0 rgba(255,255,255,.035);box-sizing:border-box}#vkTimerHierarchy,#focusNowCard,#timerStatus{display:none!important}@media(max-width:520px){#vkActiveSessionMeta{font-size:11px;padding:7px 6px}}';
+  document.head.appendChild(s);
+}
+function boot(){style();renderOne();}
+boot();
+setTimeout(boot,50);setTimeout(boot,250);setTimeout(boot,800);setTimeout(boot,1500);
+/* Lifecycle-only refresh: this does not rebuild the metadata every countdown
+   tick. It only reacts when the timer state/academic snapshot actually changes. */
+var last='';
+setInterval(function(){
+  var t=(window.data&&window.data.timer)||{};
+  var k=[t.status,t.sessionId,t.subject,t.chapter,JSON.stringify(t.mainTopics||t.topicList||t.topics||[]),JSON.stringify(t.subtopics||t.subtopicList||[])].join('|');
+  if(k!==last){last=k;renderOne();}
+},300);
+})();
+</script>
+\n<!-- VELKORE PREMIUM FOCUS AUDIO — single instance, autoplay-safe -->\n<!-- Replaced by the single strict VELKORE audio controller -->
+\n
+<!-- VK_TODO_PLAN_SAKSHI_AUDIO: play the user's second audio on To-Do / Plan tab activation -->
+<!-- Replaced by the single strict VELKORE audio controller -->
+<!-- VK_AUDIO_ONCE_PER_PAGE_LOAD: play each of the three audios once in sequence; refresh resets the sequence -->
+<!-- VK_AUDIO_HARD_ONCE_PER_LOAD_FINAL: each coordinated audio can successfully start once until refresh -->
+<!-- Replaced by the single strict VELKORE audio controller -->
 
-<!-- Restored user-requested one-time Focus + Sakshi audio controller. Third track intentionally omitted. -->
+<!-- VK_AUDIO_SINGLE_CONTROLLER: explicit user gesture only; each track once until refresh -->
 <script id="VK_AUDIO_SINGLE_CONTROLLER">
 (function(){
   'use strict';
@@ -17591,53 +17958,112 @@ setTimeout(boot,1200);
 })();
 </script>
 
-<script id="vkSongDailyGoalGate">
+<!-- USER REQUEST: third Padhai audio disabled/removed until a replacement is supplied. -->
+<script id="VK_DISABLE_THIRD_AUDIO_UNTIL_REPLACED">
 (function(){
   'use strict';
-  var SONG_PAGE='harmoniq';
-  var lock=document.getElementById('vkSongLockCard');
-  var frameCard=document.getElementById('vkHarmoniqFrameCard');
-  var frame=document.getElementById('vkHarmoniqFrame');
-  var nav=document.querySelector('nav button[data-page="harmoniq"]');
-  function goalState(){
-    try{
-      if(typeof data==='undefined'||!data.goal||typeof todayTotal!=='function') return {ok:false,done:0,target:120,pct:0};
-      var target=Math.max(1,Number(data.goal.minutes)||120), done=Math.max(0,Number(todayTotal())||0);
-      return {ok:done>=target,done:done,target:target,pct:Math.max(0,Math.min(100,Math.floor(done/target*100)))};
-    }catch(e){return {ok:false,done:0,target:120,pct:0};}
+  var thirdId = 'vkTodoPlanPadhaiFocusAudio';
+  function removeThirdAudio(){
+    var old = document.getElementById(thirdId);
+    if (old) { try { old.pause(); old.removeAttribute('autoplay'); old.removeAttribute('src'); old.load(); old.remove(); } catch (_) {} }
   }
-  function updateGate(){
-    var g=goalState(), unlocked=g.ok;
-    if(lock) lock.hidden=unlocked;
-    if(frameCard) frameCard.hidden=!unlocked;
-    if(nav){nav.classList.toggle('vk-song-locked',!unlocked);nav.setAttribute('aria-disabled',unlocked?'false':'true');nav.title=unlocked?'Music Sanctuary unlocked':'Complete today’s goal to unlock Songs';var icon=nav.querySelector('.ico');if(icon)icon.textContent=unlocked?'♫':'🔒';}
-    var fill=document.getElementById('vkSongLockProgressFill');if(fill)fill.style.width=g.pct+'%';
-    var txt=document.getElementById('vkSongLockProgressText');if(txt)txt.textContent=Math.floor(g.done)+' / '+Math.floor(g.target)+' study minutes · '+g.pct+'% complete';
-    if(frame&&unlocked&&!frame.getAttribute('src')){var src=frame.getAttribute('data-vk-src');if(src)frame.setAttribute('src',src);}
-    if(frame&&!unlocked&&frame.getAttribute('src'))frame.removeAttribute('src');
-    return unlocked;
+  removeThirdAudio();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', removeThirdAudio, {once:true});
+  var originalPlay = HTMLMediaElement.prototype.play;
+  HTMLMediaElement.prototype.play = function(){
+    if (this && this.id === thirdId) { try { this.pause(); this.removeAttribute('src'); this.load(); } catch (_) {} return Promise.resolve(); }
+    return originalPlay.apply(this, arguments);
+  };
+})();
+</script>
+
+
+<script>
+/* VELKORE Songs availability: always accessible; no daily-goal dependency. */
+(function(){
+  'use strict';
+  function openSongs(){
+    var frame=document.getElementById('vkSongsFrame');
+    if(frame && !frame.getAttribute('src')) frame.setAttribute('src',frame.getAttribute('data-src') || 'https://hq.cinemaz.workers.dev');
+    document.querySelectorAll('.page').forEach(function(el){el.classList.toggle('active',el.id==='songs');});
+    document.querySelectorAll('nav button').forEach(function(el){el.classList.toggle('active',el.getAttribute('data-page')==='songs');});
+    var main=document.querySelector('main'); if(main) main.scrollTop=0;
   }
-  function requestSongs(){
-    if(updateGate())return true;
-    try{if(typeof toast==='function')toast('Complete today’s study goal to unlock Songs.');}catch(e){}
-    try{if(typeof window.setPage==='function')window.setPage('goal');else if(typeof setPage==='function')setPage('goal');}catch(e){}
-    return false;
+  function bind(){
+    var b=document.querySelector('nav button[data-page="songs"]');
+    if(b && !b.__vkSongsAlwaysOn){
+      b.__vkSongsAlwaysOn=true;
+      b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();openSongs();},true);
+    }
+    if(typeof window.setPage==='function' && !window.setPage.__vkSongsAlwaysOn){
+      var original=window.setPage;
+      var wrapped=function(p){if(p==='songs'){openSongs();return;}return original.apply(this,arguments);};
+      wrapped.__vkSongsAlwaysOn=true; window.setPage=wrapped;
+      try{setPage=wrapped;}catch(e){}
+    }
   }
-  if(nav)nav.addEventListener('click',function(e){if(!requestSongs()){e.preventDefault();e.stopImmediatePropagation();}},true);
-  var go=document.getElementById('vkSongGoGoal');if(go)go.addEventListener('click',function(){try{if(typeof window.setPage==='function')window.setPage('goal');else if(typeof setPage==='function')setPage('goal');}catch(e){}});
-  if(typeof window.setPage==='function'&&!window.setPage.__vkDailySongGate){
-    var oldSetPage=window.setPage;
-    var gated=function(page){if(page===SONG_PAGE&&!updateGate()){try{if(typeof toast==='function')toast('Complete today’s study goal to unlock Songs.');}catch(e){}return oldSetPage.apply(this,['goal']);}return oldSetPage.apply(this,arguments);};
-    gated.__vkDailySongGate=true;window.setPage=gated;try{setPage=gated;}catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
+})();
+</script>
+
+<!-- VELKORE PATCH: keep all seven bottom navigation items on one row; style Songs shell with native theme tokens only. -->
+<style id="vk-seven-nav-and-songs-theme-fix">
+nav{
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  align-items:stretch !important;
+  gap:0 !important;
+  padding-left:3px !important;
+  padding-right:3px !important;
+  overflow:hidden !important;
+}
+nav button{
+  min-width:0 !important;
+  width:100% !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  font-size:clamp(5.8px,1.75vw,8px) !important;
+  letter-spacing:0 !important;
+  padding:7px 0 8px !important;
+  gap:2px !important;
+}
+nav .ico{font-size:15px !important;margin-bottom:1px !important;line-height:1.1}
+@media(min-width:760px){
+  nav{grid-template-columns:repeat(7,minmax(76px,104px)) !important;justify-content:center !important;gap:5px !important;overflow:visible !important}
+  nav button{font-size:8px !important;padding:7px 2px !important}
+}
+#vkSongsPlayerCard{
+  background:linear-gradient(145deg,var(--card2),var(--card)) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 12px 36px rgba(0,0,0,.2),0 0 18px color-mix(in srgb,var(--p) 7%,transparent) !important;
+  padding:8px !important;
+  border-radius:20px !important;
+}
+#vkSongsFrame{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  border:1px solid var(--line) !important;
+  border-radius:14px !important;
+  background:var(--bg) !important;
+  overflow:hidden !important;
+}
+</style>
+<script id="vk-seven-nav-final-guard">
+(function(){
+  function keepSeven(){
+    var n=document.querySelector('nav');
+    if(!n)return;
+    n.style.setProperty('grid-template-columns','repeat(7,minmax(0,1fr))','important');
+    n.style.setProperty('display','grid','important');
+    n.querySelectorAll('button').forEach(function(b){
+      b.style.setProperty('min-width','0','important');
+      b.style.setProperty('white-space','nowrap','important');
+      b.style.setProperty('overflow','hidden','important');
+    });
   }
-  ['renderGoal','renderDash'].forEach(function(name){try{var old=window[name];if(typeof old==='function'&&!old.__vkSongGateRefresh){var wrapped=function(){var r=old.apply(this,arguments);updateGate();return r;};wrapped.__vkSongGateRefresh=true;window[name]=wrapped;}}catch(e){}});
-  function check(){updateGate();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',check);else check();
-  setInterval(check,2000);
-  var style=document.createElement('style');style.textContent=`
-  .vkSongLockCard{margin:12px 0 16px;padding:clamp(22px,5vw,38px) 18px;text-align:center;border:1px solid color-mix(in srgb,var(--p,#e4b84b) 45%,var(--line,transparent));border-radius:24px;background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--p,#e4b84b) 15%,transparent),transparent 65%),linear-gradient(145deg,color-mix(in srgb,var(--card,var(--in,#151515)) 96%,transparent),color-mix(in srgb,var(--bg,#090909) 90%,transparent));box-shadow:0 16px 48px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.06)}
-  .vkSongLockCard[hidden],#vkHarmoniqFrameCard[hidden]{display:none!important}.vkSongLockIcon{width:66px;height:66px;margin:0 auto 14px;display:grid;place-items:center;border-radius:22px;border:1px solid color-mix(in srgb,var(--p,#e4b84b) 55%,transparent);background:color-mix(in srgb,var(--p,#e4b84b) 12%,transparent);color:var(--p,#e4b84b);font-size:34px;box-shadow:0 0 32px color-mix(in srgb,var(--p,#e4b84b) 14%,transparent)}
-  .vkSongLockEyebrow{font-size:10px;font-weight:900;letter-spacing:2.3px;color:var(--p,#e4b84b)}.vkSongLockCard h2{margin:8px 0;font-size:clamp(22px,5vw,30px);font-weight:950;letter-spacing:-.6px;color:var(--text,inherit)}.vkSongLockCard p{max-width:480px;margin:0 auto;color:var(--muted,#aaa);font-size:13px;line-height:1.7}.vkSongLockProgress{max-width:420px;height:8px;margin:22px auto 8px;border-radius:99px;overflow:hidden;background:color-mix(in srgb,var(--text,#fff) 10%,transparent)}.vkSongLockProgress span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--p,#e4b84b),#fff0a3);box-shadow:0 0 18px color-mix(in srgb,var(--p,#e4b84b) 65%,transparent);transition:width .35s ease}.vkSongLockMeta{font-size:11px;font-weight:800;color:var(--muted,#aaa)}.vkSongLockButton{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;padding:12px 18px;border:1px solid color-mix(in srgb,var(--p,#e4b84b) 65%,transparent);border-radius:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--p,#e4b84b) 20%,var(--card,#171717)),color-mix(in srgb,var(--p,#e4b84b) 8%,var(--bg,#080808)));color:var(--text,inherit);font-size:11px;font-weight:950;letter-spacing:.8px;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.16)}.vkSongLockButton:active{transform:scale(.98)}nav button.vk-song-locked{opacity:.78}nav button.vk-song-locked .ico{filter:saturate(.65)}
-  `;document.head.appendChild(style);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',keepSeven,{once:true});
+  keepSeven();
 })();
 </script>
