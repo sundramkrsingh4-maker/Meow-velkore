@@ -332,7 +332,31 @@ main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
+
+<style id="VELKORE_EXAM_STOPWATCH_ROOT_FIX">
+#focus #flowEditWrap{display:flex;justify-content:center;align-items:center;gap:8px}
+#focus #examControls{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0 4px;padding:12px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--in) 78%,transparent);box-shadow:inset 0 1px rgba(255,255,255,.035),0 8px 22px rgba(0,0,0,.12)}
+#focus #examControls .field{margin:0;min-width:0}
+#focus #examControls label{display:block;margin:0 0 6px;font-size:11px;font-weight:900;letter-spacing:.035em;color:var(--muted)}
+#focus #examControls select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--in);color:var(--text);font:inherit;font-weight:800;padding:10px 12px;color-scheme:dark}
+#focus #examControls select:focus-visible{outline:2px solid var(--p);outline-offset:2px;border-color:var(--p)}
+#focus #examControls select:disabled{opacity:.72}
+#focus .examSelected{padding:9px 11px;border:1px solid color-mix(in srgb,var(--p) 45%,var(--line));border-radius:11px;background:color-mix(in srgb,var(--p) 10%,transparent);color:var(--text);font-size:12px;font-weight:900;letter-spacing:.035em;text-align:center}
+#focus .mode button{min-width:0}
+#focus #sessionSetupCard.stopwatchHierarchyMode #sessionSubtopicsWrap{display:block!important}
+body.vk-run #focus #sessionSetupCard.stopwatchHierarchyMode,body.vk-run #focus #sessionSetupCard.stopwatchHierarchyMode.card{display:block!important}
+#focus .timer .time{font-variant-numeric:tabular-nums}
+@media(min-width:520px){#focus #examControls{grid-template-columns:1fr 1fr}#focus #examControls .examSelected{grid-column:1/-1}}
+@media(max-width:420px){#focus #examControls{padding:9px;gap:7px}#focus #examControls select{padding:9px;font-size:12px}}
+</style>
+
+<style id="VELKORE_LINE_GRAPH_READABILITY_FIX">
+#stats .chartSvg{display:block;width:100%;height:auto;overflow:visible}
+#stats .chartSvg .axisY,#stats .chartSvg .axis{font-size:11px;fill:var(--text);font-weight:700}
+#stats .chartSvg .chartGrid{stroke:var(--line);stroke-opacity:.72;vector-effect:non-scaling-stroke}
+#stats .chartSvg .chartLine{stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#stats .chartSvg .dot{stroke-width:2.4;vector-effect:non-scaling-stroke}
+</style></head>
 <body>
 <div class="app">
 <header>
@@ -360,11 +384,21 @@ main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}
 <div class="card timer">
 <div class="mode">
 <button class="btn active" data-mode="flow">FLOW</button>
-<button class="btn" data-mode="pomodoro">POMODORO</button>
 <button class="btn" data-mode="custom">CUSTOM</button>
+<button class="btn" data-mode="pomodoro">POMODORO</button>
+<button class="btn" data-mode="exam">EXAM</button>
 <button class="btn" data-mode="stopwatch">STOPWATCH</button>
 </div>
 <div class="time" id="time">25:00</div>
+<div class="examControls" id="examControls" style="display:none" aria-label="Exam timer setup">
+  <div class="field"><label for="examSubject">Exam subject</label><select id="examSubject" aria-label="Exam subject">
+    <option value="English">English</option><option value="Hindi">Hindi</option><option value="Science">Science</option><option value="Maths">Maths</option><option value="SST">SST</option><option value="Computer Application">Computer Application</option><option value="Information Technology">Information Technology</option><option value="Artificial Intelligence">Artificial Intelligence</option>
+  </select></div>
+  <div class="field"><label for="examDuration">Exam duration</label><select id="examDuration" aria-label="Exam duration">
+    <option value="3600">1 hour · 01:00:00</option><option value="5400">1 hour 30 minutes · 01:30:00</option><option value="7200">2 hours · 02:00:00</option><option value="9000">2 hours 30 minutes · 02:30:00</option><option value="10800" selected>3 hours · 03:00:00</option><option value="11700">3 hours 15 minutes · 03:15:00</option>
+  </select></div>
+  <div class="examSelected" id="examSelected" aria-live="polite">English · 03:00:00</div>
+</div>
 <div id="flowEditWrap" style="display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0 2px">
 <label class="mini" for="flowMins" style="margin:0">Minutes</label>
 <input id="flowMins" max="240" min="1" step="1" style="width:92px;text-align:center;font-weight:800" type="number" value="25"/>
@@ -1237,8 +1271,9 @@ function paintTimeDisplay(){
     if(t&&t.mode==='stopwatch'){$('#time').textContent='00:00';}
     else {
       const m=Number(t&&t.plannedMinutes?t.plannedMinutes:25)||25;
-      const sec=Math.round(m*60);
-      $('#time').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+      const sec=Math.max(0,Math.round(m*60));
+      if(t&&t.mode==='exam') $('#time').textContent=String(Math.floor(sec/3600)).padStart(2,'0')+':'+String(Math.floor((sec%3600)/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+      else $('#time').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
       const fm=document.getElementById('flowMins'); if(fm && document.activeElement!==fm) fm.value=String(Math.max(1,Math.round(m)));
     }
     document.title='VELKORE';
@@ -1258,7 +1293,7 @@ function paintTimeDisplay(){
   const totalSec=Math.max(0,Math.floor(elapsedMs/1000));
   const h=Math.floor(totalSec/3600),m=Math.floor((totalSec%3600)/60),s=totalSec%60;
   let txt;
-  if(t.mode==='stopwatch'&&h>0) txt=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if((t.mode==='stopwatch'&&h>0)||t.mode==='exam') txt=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   else txt=String(Math.floor(totalSec/60)).padStart(2,'0')+':'+String(s).padStart(2,'0');
   $('#time').textContent=txt;
   if(t.status==='RUNNING') document.title=txt+' • VELKORE';
@@ -1292,10 +1327,17 @@ function setModeUI(mode){
   $('#quickMins').style.display=sw?'none':'grid';
   const customRow=$('#customMinsRow');
   if(customRow) customRow.style.display=mode==='custom'?'block':'none';
+  const flowEdit=document.getElementById('flowEditWrap');
+  if(flowEdit) flowEdit.style.display=mode==='flow'?'flex':'none';
+  const examControls=document.getElementById('examControls');
+  if(examControls) examControls.style.display=mode==='exam'?'grid':'none';
+  const setup=document.getElementById('sessionSetupCard');
+  if(setup) setup.classList.toggle('stopwatchHierarchyMode',mode==='stopwatch');
 }
 
 function ensureIdleTimer(mode,minutes,phase){
   const pomo=mode==='pomodoro';
+  const priorExamSubject=(data&&data.timer&&data.timer.mode==='exam')?data.timer.subject:'';
   data.timer={
     sessionId:uid(),
     status:'IDLE',
@@ -1307,6 +1349,11 @@ function ensureIdleTimer(mode,minutes,phase){
     segmentStartedAt:null,
     startedAt:null
   };
+  if(mode==='exam'){
+    const subjectEl=document.getElementById('examSubject');
+    data.timer.subject=priorExamSubject||(subjectEl&&subjectEl.value)||'English';
+    data.timer.chapter='Exam';data.timer.topics=[];data.timer.lockSubject=true;
+  }
   setModeUI(data.timer.mode);
   paintTimeDisplay();
   if(pomo){
@@ -1333,12 +1380,15 @@ function stopTicker(){clearInterval(uiTick);uiTick=null;}
 function hideSessionTarget(on){
   const c=document.getElementById('sessionSetupCard') || document.querySelector('#sessionSubject')?.closest('.card');
   if(!c) return;
-  if(on){
+  // Stopwatch sessions must keep the complete Subject → Chapter → Topic → Subtopic setup visible.
+  const keepHierarchyVisible=!!(data&&data.timer&&data.timer.mode==='stopwatch');
+  if(on&&!keepHierarchyVisible){
     c.style.setProperty('display','none','important');
     c.setAttribute('hidden','hidden');
   } else {
     c.style.removeProperty('display');
     c.removeAttribute('hidden');
+    c.classList.remove('isHidden');
   }
 }
 function setProgressLine(){
@@ -1446,6 +1496,7 @@ function resetCountdown(){
   persist(true);
   hideSessionTarget(false);
   setProgressLine();
+  if(typeof syncExamSelection==='function') syncExamSelection();
 }
 
 function startPomodoroBreak(longBreak){
@@ -1663,6 +1714,8 @@ function swStart(){
   var runLabel = t.subject + (t.chapter ? (' · ' + t.chapter) : '');
   $('#timerStatus').textContent = (runLabel ? runLabel.toUpperCase() + ' · STOPWATCH' : 'STOPWATCH RUNNING');
   startTicker();paintTimeDisplay();
+  if(typeof syncSessionSetup==='function') syncSessionSetup();
+  if(typeof hideSessionTarget==='function') hideSessionTarget(false);
 }
 function swPause(){
   const t=data.timer;if(!t||t.mode!=='stopwatch'||t.status!=='RUNNING') return;
@@ -1745,7 +1798,17 @@ $$('.mode button').forEach(b=>{
     else if(mode==='custom'){
       const m=Math.max(1,Math.min(240,+$('#customMins').value||45));
       ensureIdleTimer('custom',m,'focus');
-    } else ensureIdleTimer(mode,25,'focus');
+    } else if(mode==='exam'){
+      const seconds=Math.max(1,Number(document.getElementById('examDuration')?.value)||10800);
+      ensureIdleTimer('exam',seconds/60,'focus');
+      data.timer.subject=document.getElementById('examSubject')?.value||'English';
+      data.timer.chapter='Exam';
+      data.timer.topics=[];
+      data.timer.lockSubject=true;
+      const sel=document.getElementById('examSelected');
+      if(sel) sel.textContent=data.timer.subject+' · '+formatExamDuration(seconds);
+    }
+    else ensureIdleTimer(mode,25,'focus');
     persist(true);
   };
 });
@@ -1782,6 +1845,29 @@ if(_applyCustomMins) _applyCustomMins.onclick=()=>{
 $('#swStartBtn').onclick=swStart;
 $('#swPauseBtn').onclick=swPause;
 $('#swStopBtn').onclick=swStop;
+
+// EXAM mode controls are configuration only: selecting them never starts the countdown.
+function formatExamDuration(seconds){
+  const n=Math.max(0,Math.floor(Number(seconds)||0));
+  return String(Math.floor(n/3600)).padStart(2,'0')+':'+String(Math.floor((n%3600)/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+}
+function syncExamSelection(){
+  const subject=document.getElementById('examSubject');
+  const duration=document.getElementById('examDuration');
+  const summary=document.getElementById('examSelected');
+  const t=data&&data.timer;
+  const running=!!(t&&(t.status==='RUNNING'||t.status==='PAUSED'));
+  if(subject) subject.disabled=running;
+  if(duration) duration.disabled=running;
+  if(summary) summary.textContent=(subject?subject.value:'English')+' · '+formatExamDuration(duration?duration.value:10800);
+  if(t&&t.mode==='exam'&&t.status==='IDLE'){
+    t.subject=subject?subject.value:'English';t.chapter='Exam';t.topics=[];t.lockSubject=true;
+    t.plannedMinutes=Math.max(1,Number(duration?duration.value:10800)/60);
+    paintTimeDisplay();
+  }
+}
+document.getElementById('examSubject')?.addEventListener('change',()=>{syncExamSelection();persist(true);});
+document.getElementById('examDuration')?.addEventListener('change',()=>{syncExamSelection();persist(true);});
 
 /* ===== NAV ===== */
 function setPage(p){
@@ -4081,7 +4167,7 @@ function afterBootFixes(){
     sync();
   }
   function decorateAll(){
-    $$('#sessionSubject,#sessionChapter,#taskSubject,#taskChapter,#planSubject,#planChapter,#chapterSubject,#chapterInput').forEach(decorateSelect);
+    $$('#sessionSubject,#sessionChapter,#taskSubject,#taskChapter,#planSubject,#planChapter,#chapterSubject,#chapterInput,#examSubject,#examDuration').forEach(decorateSelect);
   }
 
   // Replace selector rendering with alias-safe, data-preserving versions.
@@ -5381,6 +5467,24 @@ document.addEventListener('click',function(e){var b=e.target&&e.target.closest&&
 setTimeout(paint,300);setTimeout(paint,1000);
 })();
 </script>
+
+<script id="VELKORE_EXAM_MODE_INITIALIZER">
+(function(){
+  function initExamUI(){
+    try{
+      if(typeof setModeUI==='function' && data && data.timer) setModeUI(data.timer.mode||'flow');
+      if(data&&data.timer&&data.timer.mode==='exam'){
+        var subj=document.getElementById('examSubject'),dur=document.getElementById('examDuration');
+        if(subj && data.timer.subject && Array.from(subj.options).some(o=>o.value===data.timer.subject)) subj.value=data.timer.subject;
+        if(dur && data.timer.plannedMinutes){var secs=Math.round(data.timer.plannedMinutes*60);if(Array.from(dur.options).some(o=>Number(o.value)===secs))dur.value=String(secs);}
+      }
+      if(typeof syncExamSelection==='function')syncExamSelection();
+      if(data&&data.timer&&data.timer.mode==='stopwatch'&&typeof syncSessionSetup==='function')syncSessionSetup();
+    }catch(e){console.warn('VELKORE exam UI initialization:',e);}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initExamUI,{once:true});else initExamUI();
+})();
+</script>
 </body>
 </html>
 <!-- VELKORE FINAL INTEGRATION PATCH -->
@@ -6075,9 +6179,14 @@ function syncSessionSetup(forceShow){
   const card=Q('#sessionSetupCard');
   const live=Q('#focusNowCard');
   const busy=forceShow?false:sessionBusy();
-  if(card) card.classList.toggle('isHidden', busy);
+  const keepStopwatchSetup=!!(data&&data.timer&&data.timer.mode==='stopwatch');
+  const hideSetup=busy&&!keepStopwatchSetup;
+  if(card){
+    card.classList.toggle('isHidden',hideSetup);
+    if(keepStopwatchSetup){card.style.removeProperty('display');card.removeAttribute('hidden');}
+  }
   if(live){
-    if(busy) live.removeAttribute('hidden');
+    if(hideSetup) live.removeAttribute('hidden');
     else live.setAttribute('hidden','');
   }
   const t=data.timer||{};
@@ -6610,11 +6719,15 @@ function hideSetup(){
 function showSetup(){
   const c=card(); if(!c) return;
   c.classList.remove('vkGone','isHidden');
+  c.removeAttribute('data-vk-hide');
+  c.removeAttribute('hidden');
   c.style.removeProperty('display');
   const live=Q('#focusNowCard'); if(live) live.setAttribute('hidden','');
 }
 function sync(){
-  if(running()) hideSetup(); else showSetup();
+  // Stopwatch must keep the complete academic hierarchy available while it runs.
+  const t=data&&data.timer;
+  if(running() && !(t&&t.mode==='stopwatch')) hideSetup(); else showSetup();
 }
 window.syncSessionSetup=sync;
 
@@ -18067,3 +18180,14 @@ nav .ico{font-size:15px !important;margin-bottom:1px !important;line-height:1.1}
   keepSeven();
 })();
 </script>
+
+<style id="VELKORE_TARGETED_TIMER_GRAPH_PATCH">
+#focus .mode{align-items:stretch;gap:6px}
+#focus .mode button{flex:1 1 0;min-width:0;min-height:42px;padding:10px 5px;border-radius:12px;border:1px solid var(--line);font-size:clamp(9px,2.4vw,11px);font-weight:900;letter-spacing:.025em;transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
+#focus .mode button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#focus .mode button.active{box-shadow:0 0 16px color-mix(in srgb,var(--p) 20%,transparent),inset 0 1px rgba(255,255,255,.08)}
+#sessionSetupCard{position:relative!important;inset:auto!important;transform:none!important;top:auto!important;bottom:auto!important}
+#stats .chartLine{stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--chart-b) 35%,transparent))}
+#stats .dot{r:4;stroke-width:2.4}
+@media(max-width:420px){#focus .mode{gap:4px}#focus .mode button{padding:9px 2px;font-size:9px;letter-spacing:0}}
+</style>
