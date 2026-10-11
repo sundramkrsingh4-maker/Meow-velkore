@@ -13472,9 +13472,9 @@ function makeCleanPdf(mode){
   else html+='<tr><td colspan="5" style="padding:10px;border:1px solid #d8d0c0;text-align:center">No sessions in this range</td></tr>';
   html+='</table><div style="margin-top:24px;padding-top:10px;border-top:1px solid #d8d0c0;font-size:10px;color:#8a7a58;display:flex;justify-content:space-between"><span>VELKORE · Class 10 CBSE Study Report</span><span>'+new Date().toLocaleDateString('en-IN')+'</span></div>';
   wrap.innerHTML=html; document.body.appendChild(wrap);
-  var opt={ margin:[10,10,10,10], filename:'VELKORE_'+(mode==='day'?'Daily':'Weekly')+'_'+range.replace(/\s/g,'_')+'.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2,useCORS:true,logging:false}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
+  var opt={ margin:[10,10,10,10], filename:'VELKORE_'+(mode==='day'?'Daily':'Weekly')+'_'+range.replace(/\s/g,'_')+'.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:3,useCORS:true,logging:false,backgroundColor:'#ffffff',windowWidth:794, onclone:function(doc){doc.querySelectorAll('svg').forEach(function(svg){svg.style.overflow='visible';});}}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} };
   if(typeof html2pdf==='undefined'){ wrap.style.left='0';wrap.style.position='static'; var w=window.open('','_blank'); if(w){w.document.write('<html><head><title>'+title+'</title></head><body>'+wrap.innerHTML+'');w.document.close();w.print();} document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF library loading…'); return; }
-  html2pdf().set(opt).from(wrap).save().then(function(){ document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF downloaded ✓'); }).catch(function(err){ console.error(err); document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF failed'); });
+  Promise.resolve(window.vkWaitForPdfRender?window.vkWaitForPdfRender(wrap):null).then(function(){return html2pdf().set(opt).from(wrap).save();}).then(function(){ document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF downloaded ✓'); }).catch(function(err){ console.error(err); document.body.removeChild(wrap); if(typeof toast==='function')toast('PDF failed'); });
 }
 window.vkWeeklyPdf=function(){ makeCleanPdf('week'); };
 window.vkDailyPdf=function(day){ if(day&&window.data) window.data.statsSelectedDay=day; makeCleanPdf('day'); };
@@ -15036,10 +15036,10 @@ function downloadPdfFile(html, filename){
     margin: [10,10,10,10],
     filename: filename,
     image: {type:'jpeg', quality:0.98},
-    html2canvas: {scale:2, useCORS:true, logging:false, backgroundColor:'#ffffff'},
+    html2canvas: {scale:3, useCORS:true, logging:false, backgroundColor:'#ffffff', windowWidth:794, onclone:function(doc){doc.querySelectorAll('svg').forEach(function(svg){svg.style.overflow='visible';});}},
     jsPDF: {unit:'mm', format:'a4', orientation:'portrait'}
   };
-  html2pdf().set(opt).from(wrap).save().then(function(){
+  Promise.resolve(window.vkWaitForPdfRender?window.vkWaitForPdfRender(wrap):null).then(function(){return html2pdf().set(opt).from(wrap).save();}).then(function(){
     try{ document.body.removeChild(wrap); }catch(e){}
     if(typeof toast==='function') toast('PDF downloaded ✓');
   }).catch(function(err){
@@ -18483,5 +18483,68 @@ if(typeof grantBase==='function'&&!grantBase.__vkLevelWatch){
 })();
 </script>
 
+
+<style id="VK_SOVEREIGN_GOLD_SILVER_GLOW_PATCH">
+/* Targeted visual polish: preserve existing layout, IDs, themes and behavior. */
+:root{--vk-metal-gold:#f5c969;--vk-metal-silver:#d9dde6}
+.card,.stat,.chartCard,.chartWrap,.infoCell,.chiFeature,.chiItem,.todayItem{
+ border-color:color-mix(in srgb,var(--accent) 22%,var(--line));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 8px 24px rgba(0,0,0,.22),0 0 18px color-mix(in srgb,var(--accent) 5%,transparent);
+}
+.btn,.primary,.weekNavBtn,.smartSelectFace,.smartSelectMenu,.topicChip,input,textarea,select{
+ transition:border-color .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+.btn{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 4px 14px rgba(0,0,0,.16)}
+.btn:hover,.weekNavBtn:hover,.smartSelectOption:hover{
+ border-color:color-mix(in srgb,var(--accent) 55%,var(--line));
+ box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 10%,transparent),0 0 15px color-mix(in srgb,var(--accent) 11%,transparent);
+}
+.btn.active,.primary,.topicChip.selected,.chiItem.on,.smartSelectOption.selected{
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px color-mix(in srgb,var(--accent) 20%,transparent),0 0 20px color-mix(in srgb,var(--accent) 13%,transparent);
+}
+input:focus,textarea:focus,select:focus,.smartSelectWrap:focus-within .smartSelectFace{
+ border-color:var(--accent);
+ box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 13%,transparent),0 0 14px color-mix(in srgb,var(--accent) 10%,transparent);
+}
+.progCard.xp,.stat b,.reportVal{ text-shadow:0 0 10px color-mix(in srgb,var(--accent) 20%,transparent) }
+.chartBox,.chartWrap{isolation:isolate}
+.chartGrid{stroke:rgba(210,215,225,.18)!important}
+.axis,.axisY{fill:#c7c9d0!important}
+.barVal{fill:#fff1c4!important}
+.chartBar{filter:drop-shadow(0 0 3px rgba(245,201,105,.20))}
+.chartLine{filter:drop-shadow(0 0 3px rgba(245,201,105,.30))}
+#vkCompareChart svg,#vkDeepChart svg,#chart svg{overflow:visible}
+@media(max-width:520px){
+ .card,.stat,.chartCard{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 5px 16px rgba(0,0,0,.18)}
+}
+@media(prefers-reduced-motion:reduce){.btn,.primary,.weekNavBtn,.smartSelectFace,.topicChip{transition:none!important}}
+</style>
+<script id="VK_PDF_CAPTURE_RELIABILITY_PATCH">
+(function(){
+ 'use strict';
+ if(window.__VK_PDF_CAPTURE_RELIABILITY_PATCH__) return;
+ window.__VK_PDF_CAPTURE_RELIABILITY_PATCH__=true;
+ /* Export helpers for existing report pipelines; does not touch saved data. */
+ window.vkWaitForPdfRender=async function(root){
+   try{if(document.fonts&&document.fonts.ready) await document.fonts.ready;}catch(e){}
+   root=root||document;
+   var imgs=Array.from(root.querySelectorAll?root.querySelectorAll('img'):[]);
+   await Promise.all(imgs.map(function(img){
+     if(img.complete)return Promise.resolve();
+     return new Promise(function(resolve){img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,1800);});
+   }));
+   await new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve);});});
+   /* SVG dimensions are made explicit for rasterizers that ignore CSS-only sizing. */
+   try{root.querySelectorAll('svg').forEach(function(svg){
+     var vb=svg.getAttribute('viewBox');
+     if(vb){var p=vb.trim().split(/[ ,]+/).map(Number);if(p.length===4&&p.every(Number.isFinite)){
+       if(!svg.getAttribute('width'))svg.setAttribute('width',String(p[2]));
+       if(!svg.getAttribute('height'))svg.setAttribute('height',String(p[3]));
+     }}
+     svg.style.overflow='visible';
+   });}catch(e){}
+ };
+})();
+</script>
 </body>
 </html>
