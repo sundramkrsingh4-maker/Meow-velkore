@@ -332,31 +332,7 @@ main{padding-bottom:calc(108px + env(safe-area-inset-bottom))}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<style id="VELKORE_EXAM_STOPWATCH_ROOT_FIX">
-#focus #flowEditWrap{display:flex;justify-content:center;align-items:center;gap:8px}
-#focus #examControls{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0 4px;padding:12px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--in) 78%,transparent);box-shadow:inset 0 1px rgba(255,255,255,.035),0 8px 22px rgba(0,0,0,.12)}
-#focus #examControls .field{margin:0;min-width:0}
-#focus #examControls label{display:block;margin:0 0 6px;font-size:11px;font-weight:900;letter-spacing:.035em;color:var(--muted)}
-#focus #examControls select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--in);color:var(--text);font:inherit;font-weight:800;padding:10px 12px;color-scheme:dark}
-#focus #examControls select:focus-visible{outline:2px solid var(--p);outline-offset:2px;border-color:var(--p)}
-#focus #examControls select:disabled{opacity:.72}
-#focus .examSelected{padding:9px 11px;border:1px solid color-mix(in srgb,var(--p) 45%,var(--line));border-radius:11px;background:color-mix(in srgb,var(--p) 10%,transparent);color:var(--text);font-size:12px;font-weight:900;letter-spacing:.035em;text-align:center}
-#focus .mode button{min-width:0}
-#focus #sessionSetupCard.stopwatchHierarchyMode #sessionSubtopicsWrap{display:block!important}
-body.vk-run #focus #sessionSetupCard.stopwatchHierarchyMode,body.vk-run #focus #sessionSetupCard.stopwatchHierarchyMode.card{display:block!important}
-#focus .timer .time{font-variant-numeric:tabular-nums}
-@media(min-width:520px){#focus #examControls{grid-template-columns:1fr 1fr}#focus #examControls .examSelected{grid-column:1/-1}}
-@media(max-width:420px){#focus #examControls{padding:9px;gap:7px}#focus #examControls select{padding:9px;font-size:12px}}
-</style>
-
-<style id="VELKORE_LINE_GRAPH_READABILITY_FIX">
-#stats .chartSvg{display:block;width:100%;height:auto;overflow:visible}
-#stats .chartSvg .axisY,#stats .chartSvg .axis{font-size:11px;fill:var(--text);font-weight:700}
-#stats .chartSvg .chartGrid{stroke:var(--line);stroke-opacity:.72;vector-effect:non-scaling-stroke}
-#stats .chartSvg .chartLine{stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-#stats .chartSvg .dot{stroke-width:2.4;vector-effect:non-scaling-stroke}
-</style></head>
+</head>
 <body>
 <div class="app">
 <header>
@@ -390,18 +366,37 @@ body.vk-run #focus #sessionSetupCard.stopwatchHierarchyMode,body.vk-run #focus #
 <button class="btn" data-mode="stopwatch">STOPWATCH</button>
 </div>
 <div class="time" id="time">25:00</div>
-<div class="examControls" id="examControls" style="display:none" aria-label="Exam timer setup">
-  <div class="field"><label for="examSubject">Exam subject</label><select id="examSubject" aria-label="Exam subject">
-    <option value="English">English</option><option value="Hindi">Hindi</option><option value="Science">Science</option><option value="Maths">Maths</option><option value="SST">SST</option><option value="Computer Application">Computer Application</option><option value="Information Technology">Information Technology</option><option value="Artificial Intelligence">Artificial Intelligence</option>
-  </select></div>
-  <div class="field"><label for="examDuration">Exam duration</label><select id="examDuration" aria-label="Exam duration">
-    <option value="3600">1 hour · 01:00:00</option><option value="5400">1 hour 30 minutes · 01:30:00</option><option value="7200">2 hours · 02:00:00</option><option value="9000">2 hours 30 minutes · 02:30:00</option><option value="10800" selected>3 hours · 03:00:00</option><option value="11700">3 hours 15 minutes · 03:15:00</option>
-  </select></div>
-  <div class="examSelected" id="examSelected" aria-live="polite">English · 03:00:00</div>
-</div>
 <div id="flowEditWrap" style="display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0 2px">
 <label class="mini" for="flowMins" style="margin:0">Minutes</label>
 <input id="flowMins" max="240" min="1" step="1" style="width:92px;text-align:center;font-weight:800" type="number" value="25"/>
+</div>
+<div id="examSetup" class="examSetup" hidden>
+  <div class="grid2">
+    <div class="field"><label for="examSubject">Exam subject</label>
+      <select id="examSubject">
+        <option value="English" selected>English</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Science">Science</option>
+        <option value="Maths">Maths</option>
+        <option value="SST">SST</option>
+        <option value="Computer Application">Computer Application</option>
+        <option value="Information Technology">Information Technology</option>
+        <option value="Artificial Intelligence">Artificial Intelligence</option>
+      </select>
+    </div>
+    <div class="field"><label for="examDuration">Exam duration</label>
+      <select id="examDuration">
+        <option value="3600">1 Hour</option>
+        <option value="5400">1 Hour 30 Minutes</option>
+        <option value="7200">2 Hours</option>
+        <option value="9000">2 Hours 30 Minutes</option>
+        <option value="10800" selected>3 Hours</option>
+        <option value="11700">3 Hours 15 Minutes</option>
+      </select>
+    </div>
+  </div>
+  <div class="examPreview" id="examPreview">English · 03:00:00</div>
+  <p class="mini">Selecting an option does not start the timer. Press START when ready.</p>
 </div>
 <div hidden="" id="focusNowCard"></div>
 <small id="timerStatus">Ready</small>
@@ -413,7 +408,7 @@ body.vk-run #focus #sessionSetupCard.stopwatchHierarchyMode,body.vk-run #focus #
 <div class="timerActions" id="swBtns" style="display:none">
 <button class="btn" id="swStartBtn" type="button">▶ RESUME</button>
 <button class="btn" id="swPauseBtn" type="button">Ⅱ PAUSE</button>
-<button class="btn" id="swStopBtn" type="button">■ STOP</button>
+<button class="btn" id="swStopBtn" type="button">■ SAVE</button>
 </div>
 </div>
 <div class="card" id="sessionSetupCard">
@@ -1271,9 +1266,8 @@ function paintTimeDisplay(){
     if(t&&t.mode==='stopwatch'){$('#time').textContent='00:00';}
     else {
       const m=Number(t&&t.plannedMinutes?t.plannedMinutes:25)||25;
-      const sec=Math.max(0,Math.round(m*60));
-      if(t&&t.mode==='exam') $('#time').textContent=String(Math.floor(sec/3600)).padStart(2,'0')+':'+String(Math.floor((sec%3600)/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
-      else $('#time').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+      const sec=Math.round(m*60);
+      $('#time').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
       const fm=document.getElementById('flowMins'); if(fm && document.activeElement!==fm) fm.value=String(Math.max(1,Math.round(m)));
     }
     document.title='VELKORE';
@@ -1293,7 +1287,7 @@ function paintTimeDisplay(){
   const totalSec=Math.max(0,Math.floor(elapsedMs/1000));
   const h=Math.floor(totalSec/3600),m=Math.floor((totalSec%3600)/60),s=totalSec%60;
   let txt;
-  if((t.mode==='stopwatch'&&h>0)||t.mode==='exam') txt=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(t.mode==='stopwatch'&&h>0) txt=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   else txt=String(Math.floor(totalSec/60)).padStart(2,'0')+':'+String(s).padStart(2,'0');
   $('#time').textContent=txt;
   if(t.status==='RUNNING') document.title=txt+' • VELKORE';
@@ -1327,17 +1321,10 @@ function setModeUI(mode){
   $('#quickMins').style.display=sw?'none':'grid';
   const customRow=$('#customMinsRow');
   if(customRow) customRow.style.display=mode==='custom'?'block':'none';
-  const flowEdit=document.getElementById('flowEditWrap');
-  if(flowEdit) flowEdit.style.display=mode==='flow'?'flex':'none';
-  const examControls=document.getElementById('examControls');
-  if(examControls) examControls.style.display=mode==='exam'?'grid':'none';
-  const setup=document.getElementById('sessionSetupCard');
-  if(setup) setup.classList.toggle('stopwatchHierarchyMode',mode==='stopwatch');
 }
 
 function ensureIdleTimer(mode,minutes,phase){
   const pomo=mode==='pomodoro';
-  const priorExamSubject=(data&&data.timer&&data.timer.mode==='exam')?data.timer.subject:'';
   data.timer={
     sessionId:uid(),
     status:'IDLE',
@@ -1349,11 +1336,6 @@ function ensureIdleTimer(mode,minutes,phase){
     segmentStartedAt:null,
     startedAt:null
   };
-  if(mode==='exam'){
-    const subjectEl=document.getElementById('examSubject');
-    data.timer.subject=priorExamSubject||(subjectEl&&subjectEl.value)||'English';
-    data.timer.chapter='Exam';data.timer.topics=[];data.timer.lockSubject=true;
-  }
   setModeUI(data.timer.mode);
   paintTimeDisplay();
   if(pomo){
@@ -1380,15 +1362,12 @@ function stopTicker(){clearInterval(uiTick);uiTick=null;}
 function hideSessionTarget(on){
   const c=document.getElementById('sessionSetupCard') || document.querySelector('#sessionSubject')?.closest('.card');
   if(!c) return;
-  // Stopwatch sessions must keep the complete Subject → Chapter → Topic → Subtopic setup visible.
-  const keepHierarchyVisible=!!(data&&data.timer&&data.timer.mode==='stopwatch');
-  if(on&&!keepHierarchyVisible){
+  if(on){
     c.style.setProperty('display','none','important');
     c.setAttribute('hidden','hidden');
   } else {
     c.style.removeProperty('display');
     c.removeAttribute('hidden');
-    c.classList.remove('isHidden');
   }
 }
 function setProgressLine(){
@@ -1496,7 +1475,6 @@ function resetCountdown(){
   persist(true);
   hideSessionTarget(false);
   setProgressLine();
-  if(typeof syncExamSelection==='function') syncExamSelection();
 }
 
 function startPomodoroBreak(longBreak){
@@ -1714,8 +1692,6 @@ function swStart(){
   var runLabel = t.subject + (t.chapter ? (' · ' + t.chapter) : '');
   $('#timerStatus').textContent = (runLabel ? runLabel.toUpperCase() + ' · STOPWATCH' : 'STOPWATCH RUNNING');
   startTicker();paintTimeDisplay();
-  if(typeof syncSessionSetup==='function') syncSessionSetup();
-  if(typeof hideSessionTarget==='function') hideSessionTarget(false);
 }
 function swPause(){
   const t=data.timer;if(!t||t.mode!=='stopwatch'||t.status!=='RUNNING') return;
@@ -1798,17 +1774,7 @@ $$('.mode button').forEach(b=>{
     else if(mode==='custom'){
       const m=Math.max(1,Math.min(240,+$('#customMins').value||45));
       ensureIdleTimer('custom',m,'focus');
-    } else if(mode==='exam'){
-      const seconds=Math.max(1,Number(document.getElementById('examDuration')?.value)||10800);
-      ensureIdleTimer('exam',seconds/60,'focus');
-      data.timer.subject=document.getElementById('examSubject')?.value||'English';
-      data.timer.chapter='Exam';
-      data.timer.topics=[];
-      data.timer.lockSubject=true;
-      const sel=document.getElementById('examSelected');
-      if(sel) sel.textContent=data.timer.subject+' · '+formatExamDuration(seconds);
-    }
-    else ensureIdleTimer(mode,25,'focus');
+    } else ensureIdleTimer(mode,25,'focus');
     persist(true);
   };
 });
@@ -1845,29 +1811,6 @@ if(_applyCustomMins) _applyCustomMins.onclick=()=>{
 $('#swStartBtn').onclick=swStart;
 $('#swPauseBtn').onclick=swPause;
 $('#swStopBtn').onclick=swStop;
-
-// EXAM mode controls are configuration only: selecting them never starts the countdown.
-function formatExamDuration(seconds){
-  const n=Math.max(0,Math.floor(Number(seconds)||0));
-  return String(Math.floor(n/3600)).padStart(2,'0')+':'+String(Math.floor((n%3600)/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
-}
-function syncExamSelection(){
-  const subject=document.getElementById('examSubject');
-  const duration=document.getElementById('examDuration');
-  const summary=document.getElementById('examSelected');
-  const t=data&&data.timer;
-  const running=!!(t&&(t.status==='RUNNING'||t.status==='PAUSED'));
-  if(subject) subject.disabled=running;
-  if(duration) duration.disabled=running;
-  if(summary) summary.textContent=(subject?subject.value:'English')+' · '+formatExamDuration(duration?duration.value:10800);
-  if(t&&t.mode==='exam'&&t.status==='IDLE'){
-    t.subject=subject?subject.value:'English';t.chapter='Exam';t.topics=[];t.lockSubject=true;
-    t.plannedMinutes=Math.max(1,Number(duration?duration.value:10800)/60);
-    paintTimeDisplay();
-  }
-}
-document.getElementById('examSubject')?.addEventListener('change',()=>{syncExamSelection();persist(true);});
-document.getElementById('examDuration')?.addEventListener('change',()=>{syncExamSelection();persist(true);});
 
 /* ===== NAV ===== */
 function setPage(p){
@@ -4568,7 +4511,7 @@ function afterBootFixes(){
 
   /* ---------- 4. UNIVERSAL SELECTOR DECORATION ---------- */
   function decorateSelectsMAHA(){
-    $$('#sessionSubject,#sessionChapter,#taskSubject,#taskChapter,#planSubject,#planChapter,#chapterSubject,#chapterInput').forEach(sel=>{
+    $$('#sessionSubject,#sessionChapter,#taskSubject,#taskChapter,#planSubject,#planChapter,#chapterSubject,#chapterInput,#examSubject,#examDuration').forEach(sel=>{
       if(typeof decorateSelect==='function')decorateSelect(sel);
     });
   }
@@ -5467,24 +5410,6 @@ document.addEventListener('click',function(e){var b=e.target&&e.target.closest&&
 setTimeout(paint,300);setTimeout(paint,1000);
 })();
 </script>
-
-<script id="VELKORE_EXAM_MODE_INITIALIZER">
-(function(){
-  function initExamUI(){
-    try{
-      if(typeof setModeUI==='function' && data && data.timer) setModeUI(data.timer.mode||'flow');
-      if(data&&data.timer&&data.timer.mode==='exam'){
-        var subj=document.getElementById('examSubject'),dur=document.getElementById('examDuration');
-        if(subj && data.timer.subject && Array.from(subj.options).some(o=>o.value===data.timer.subject)) subj.value=data.timer.subject;
-        if(dur && data.timer.plannedMinutes){var secs=Math.round(data.timer.plannedMinutes*60);if(Array.from(dur.options).some(o=>Number(o.value)===secs))dur.value=String(secs);}
-      }
-      if(typeof syncExamSelection==='function')syncExamSelection();
-      if(data&&data.timer&&data.timer.mode==='stopwatch'&&typeof syncSessionSetup==='function')syncSessionSetup();
-    }catch(e){console.warn('VELKORE exam UI initialization:',e);}
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initExamUI,{once:true});else initExamUI();
-})();
-</script>
 </body>
 </html>
 <!-- VELKORE FINAL INTEGRATION PATCH -->
@@ -6179,14 +6104,9 @@ function syncSessionSetup(forceShow){
   const card=Q('#sessionSetupCard');
   const live=Q('#focusNowCard');
   const busy=forceShow?false:sessionBusy();
-  const keepStopwatchSetup=!!(data&&data.timer&&data.timer.mode==='stopwatch');
-  const hideSetup=busy&&!keepStopwatchSetup;
-  if(card){
-    card.classList.toggle('isHidden',hideSetup);
-    if(keepStopwatchSetup){card.style.removeProperty('display');card.removeAttribute('hidden');}
-  }
+  if(card) card.classList.toggle('isHidden', busy);
   if(live){
-    if(hideSetup) live.removeAttribute('hidden');
+    if(busy) live.removeAttribute('hidden');
     else live.setAttribute('hidden','');
   }
   const t=data.timer||{};
@@ -6719,15 +6639,11 @@ function hideSetup(){
 function showSetup(){
   const c=card(); if(!c) return;
   c.classList.remove('vkGone','isHidden');
-  c.removeAttribute('data-vk-hide');
-  c.removeAttribute('hidden');
   c.style.removeProperty('display');
   const live=Q('#focusNowCard'); if(live) live.setAttribute('hidden','');
 }
 function sync(){
-  // Stopwatch must keep the complete academic hierarchy available while it runs.
-  const t=data&&data.timer;
-  if(running() && !(t&&t.mode==='stopwatch')) hideSetup(); else showSetup();
+  if(running()) hideSetup(); else showSetup();
 }
 window.syncSessionSetup=sync;
 
@@ -18181,13 +18097,391 @@ nav .ico{font-size:15px !important;margin-bottom:1px !important;line-height:1.1}
 })();
 </script>
 
-<style id="VELKORE_TARGETED_TIMER_GRAPH_PATCH">
-#focus .mode{align-items:stretch;gap:6px}
-#focus .mode button{flex:1 1 0;min-width:0;min-height:42px;padding:10px 5px;border-radius:12px;border:1px solid var(--line);font-size:clamp(9px,2.4vw,11px);font-weight:900;letter-spacing:.025em;transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
-#focus .mode button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-#focus .mode button.active{box-shadow:0 0 16px color-mix(in srgb,var(--p) 20%,transparent),inset 0 1px rgba(255,255,255,.08)}
-#sessionSetupCard{position:relative!important;inset:auto!important;transform:none!important;top:auto!important;bottom:auto!important}
-#stats .chartLine{stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--chart-b) 35%,transparent))}
-#stats .dot{r:4;stroke-width:2.4}
-@media(max-width:420px){#focus .mode{gap:4px}#focus .mode button{padding:9px 2px;font-size:9px;letter-spacing:0}}
-</style>
+
+
+
+<script id="VELKORE_DATA_INTEGRITY_PATCH_V1">
+(function(){
+  'use strict';
+  var d=window.data;
+  if(!d||!d.timer||!Array.isArray(d.sessions))return;
+  var KEY_NAME='velkore_v2';
+  var $id=function(id){return document.getElementById(id);};
+  var clone=function(x){try{return JSON.parse(JSON.stringify(x));}catch(e){return x;}};
+  var arr=function(v){if(Array.isArray(v))return v.filter(Boolean).map(String);if(typeof v==='string')return v.split(',').map(function(x){return x.trim();}).filter(Boolean);return[];};
+  var subjects=['English','Hindi','Science','Maths','SST','Computer Application','Information Technology','Artificial Intelligence'];
+  var durations=[{seconds:3600,label:'1 Hour'},{seconds:5400,label:'1 Hour 30 Minutes'},{seconds:7200,label:'2 Hours'},{seconds:9000,label:'2 Hours 30 Minutes'},{seconds:10800,label:'3 Hours'},{seconds:11700,label:'3 Hours 15 Minutes'}];
+  function say(m){try{if(typeof window.toast==='function')window.toast(m);else console.warn('[VELKORE]',m);}catch(e){}}
+  function tmr(){return d.timer||(d.timer={status:'IDLE',mode:'flow',plannedMinutes:25,accumulatedMs:0});}
+  function itemFor(kind,id){if(id==null||id==='')return null;var a=kind==='plan'?(d.planBlocks||[]):(d.tasks||[]);return a.find(function(x){return x&&String(x.id)===String(id);})||null;}
+  function itemSeconds(x,fallback){if(!x)return Math.max(0,Number(fallback)||0);if(x.remainingSeconds!=null&&Number.isFinite(Number(x.remainingSeconds)))return Math.max(0,Number(x.remainingSeconds));if(x.remaining!=null&&Number.isFinite(Number(x.remaining)))return Math.max(0,Number(x.remaining)*60);return Math.max(0,Number(x.est||x.minutes||x.mins||fallback||0)*60);}
+  function fields(t){return{sessionId:String(t.sessionId||''),mode:String(t.mode||'flow'),subject:String(t.subject||'General').trim()||'General',chapter:String(t.chapter||'').trim(),topics:(arr(t.mainTopics).length?arr(t.mainTopics):(arr(t.topicList).length?arr(t.topicList):arr(t.topics))),subtopics:(arr(t.subtopics).length?arr(t.subtopics):arr(t.subtopicList)),startedAt:Number(t.startedAt||Date.now()),queueKind:t.queueId!=null?(t.queueKind||'task'):null,queueId:t.queueId!=null?t.queueId:null,queueStartRemainingSeconds:t.queueId!=null?Math.max(0,Number(t.queueStartRemainingSeconds)||itemSeconds(itemFor(t.queueKind,t.queueId),Number(t.plannedMinutes||0)*60)):null,plannedMinutes:Math.max(0,Number(t.plannedMinutes)||0),goal:String(t.goal||'')};}
+  function snap(t,force){if(force||!t.sessionSnapshot||String(t.sessionSnapshot.sessionId||'')!==String(t.sessionId||''))t.sessionSnapshot=fields(t);}
+  function elapsed(t){var ms=Math.max(0,Number(t.accumulatedMs)||0);if(t.status==='RUNNING'&&t.segmentStartedAt)ms+=Math.max(0,Date.now()-Number(t.segmentStartedAt));return ms;}
+  function hms(s){s=Math.max(0,Math.floor(Number(s)||0));return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor((s%3600)/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+  function commit(){localStorage.setItem(KEY_NAME,JSON.stringify(d));}
+  function refresh(){['renderXP','renderDash','renderStats','renderTodayQueue','renderTasks','renderPlan','paintTimeDisplay'].forEach(function(k){try{if(typeof window[k]==='function')window[k]();}catch(e){}});}
+  function updateLinkedTask(s,seconds,sid){
+    if(s.queueId==null)return null;
+    var raw=itemFor(s.queueKind,s.queueId);if(!raw)return null;
+    if(String(raw.lastStudySessionId||'')===String(sid))return null;
+    var before={};['remainingSeconds','remaining','done','lastStudiedMin','lastStudySessionId','completedAt'].forEach(function(k){before[k]=raw[k];});
+    var start=Number(s.queueStartRemainingSeconds);if(!Number.isFinite(start)||start<0)start=itemSeconds(raw,Number(s.plannedMinutes||0)*60);
+    var left=Math.max(0,Math.round(start-Math.max(0,seconds)));
+    raw.remainingSeconds=left;raw.remaining=Math.ceil(left/60);raw.lastStudiedMin=Math.floor(seconds/60);raw.lastStudySessionId=String(sid);
+    if(left<=0){raw.done=true;raw.remaining=0;raw.remainingSeconds=0;raw.completedAt=Date.now();}else raw.done=false;
+    return{item:raw,before:before};
+  }
+  function rollbackTask(q){if(!q)return;Object.keys(q.before).forEach(function(k){if(q.before[k]===undefined)delete q.item[k];else q.item[k]=q.before[k];});}
+  function finishBreak(){
+    try{if(typeof window.stopTicker==='function')window.stopTicker();}catch(e){}
+    if(typeof window.ensureIdleTimer==='function')window.ensureIdleTimer('pomodoro',25,'focus');
+    try{commit();}catch(e){say('Storage failed; break state remains recoverable.');return false;}
+    try{if(typeof window.paintTimeDisplay==='function')window.paintTimeDisplay();}catch(e){}
+    say('Break finished');return true;
+  }
+  function completeIntegrity(reason){
+    var t=tmr();
+    if(t.status!=='RUNNING'&&t.status!=='PAUSED'&&reason!=='auto'&&reason!=='recover-complete')return false;
+    if(t.phase==='break'||t.phase==='longBreak')return finishBreak();
+    var sid=String(t.sessionId||'');if(!sid){say('Session ID missing; not saved.');return false;}
+    if((d.sessions||[]).some(function(r){return r&&String(r.id)===sid;})){say('Duplicate save prevented.');return false;}
+    var s=clone(t.sessionSnapshot||fields(t));if(String(s.sessionId||'')!==sid)s=fields(t);
+    var ms=elapsed(t);
+    if(s.mode!=='stopwatch'){var cap=Math.max(0,Number(s.plannedMinutes||t.plannedMinutes||25)*60000);ms=(reason==='auto'||reason==='recover-complete')?Math.min(ms||cap,cap):Math.min(ms,cap);}
+    var seconds=Math.max(0,Math.floor(ms/1000));
+    if(seconds<60){say('At least 1 minute is required. Session remains available to retry.');return false;}
+    var minutes=Math.floor(seconds/60),now=Date.now(),topics=arr(s.topics),subs=arr(s.subtopics);
+    var day=typeof window.dayKey==='function'?window.dayKey(new Date(s.startedAt||now)):new Date(s.startedAt||now).toISOString().slice(0,10);
+    var rec={id:sid,day:day,startTime:Number(s.startedAt||t.startedAt||now),endTime:now,minutes:minutes,seconds:seconds,activeDurationMs:seconds*1000,subject:String(s.subject||'General').trim()||'General',chapter:String(s.chapter||'').trim()||(s.mode==='stopwatch'?'':'Focus'),topic:topics[0]||'',topics:topics.join(', '),topicList:topics.slice(),subtopics:subs.slice(),subtopicList:subs.slice(),mode:String(s.mode||t.mode||'flow'),sessionGoal:String(s.goal||''),queueKind:s.queueId!=null?s.queueKind:null,queueId:s.queueId!=null?s.queueId:null,status:'saved'};
+    var oldTimer=clone(t),oldSessions=d.sessions.slice(),oldDays=Array.isArray(d.activeDays)?d.activeDays.slice():[],oldActive=clone(d.activeStudySession),q=null;
+    try{
+      t.accumulatedMs=ms;t.segmentStartedAt=null;t.status='PAUSED';
+      if(typeof window.stopTicker==='function')window.stopTicker();
+      d.sessions.push(rec);
+      if(!Array.isArray(d.activeDays))d.activeDays=[];
+      if(day&&!d.activeDays.includes(day))d.activeDays.push(day);
+      q=updateLinkedTask(s,seconds,sid);
+      if(typeof window.ensureIdleTimer==='function')window.ensureIdleTimer(s.mode==='stopwatch'?'flow':s.mode,s.mode==='custom'?(s.plannedMinutes||45):(s.mode==='exam'?(s.plannedMinutes||180):25),'focus');
+      if(s.mode==='exam')d.timer.plannedMinutes=0;
+      d.timer.sessionSnapshot=null;d.focusQueue=null;d.activeStudySession=null;
+      commit();
+    }catch(err){
+      d.sessions=oldSessions;d.activeDays=oldDays;d.activeStudySession=oldActive;rollbackTask(q);d.timer=oldTimer;d.timer.status='PAUSED';d.timer.accumulatedMs=ms;d.timer.segmentStartedAt=null;
+      try{commit();}catch(ignore){}
+      say('SAVE FAILED — session kept paused for retry. Check browser storage space/permissions.');
+      try{if(typeof window.paintTimeDisplay==='function')window.paintTimeDisplay();}catch(ignore2){}
+      return false;
+    }
+    try{if(typeof window.markStudyDay==='function')window.markStudyDay();commit();}catch(e){}
+    try{
+      var xp=0;if(s.mode==='stopwatch'){if(minutes>=25&&minutes<50)xp=5;else if(minutes>=50&&minutes<120)xp=10;else if(minutes>=120&&minutes<180)xp=15;else if(minutes>=180)xp=20+Math.floor((minutes-180)/60)*5;}else xp=minutes*2;
+      if(xp>0&&typeof window.grantXP==='function')window.grantXP(xp,s.mode==='stopwatch'?'Stopwatch session':'Focus session','focus',sid,true);
+      if(typeof window.tryGoalBonus==='function')window.tryGoalBonus();
+      if(typeof window.beep==='function')window.beep('focus');
+    }catch(e){}
+    try{if(typeof window.hideSessionTarget==='function')window.hideSessionTarget(false);}catch(e){}
+    say(minutes+' min saved under '+rec.subject);refresh();return true;
+  }
+  window.completeSession=completeIntegrity;try{completeSession=completeIntegrity;}catch(e){}
+
+  /* The Exam selectors use VELKORE's existing shared smart-selector component. */
+  var modeBox=document.querySelector('.mode');
+  var examSetup=$id('examSetup'),flowWrap=$id('flowEditWrap'),examSub=$id('examSubject'),examDur=$id('examDuration'),preview=$id('examPreview');
+  function examSecs(){var n=Number(examDur&&examDur.value);return durations.some(function(x){return x.seconds===n;})?n:10800;}
+  function previewExam(){
+    var sub=examSub&&subjects.includes(examSub.value)?examSub.value:'English',secs=examSecs();
+    if(preview)preview.textContent=sub+' · '+hms(secs);
+    var t=tmr();if(t.mode==='exam'&&t.status==='IDLE'){t.subject=sub;t.chapter='Exam Practice';t.plannedMinutes=secs/60;t.lockSubject=sub;t.queueKind=null;t.queueId=null;t.queueStartRemainingSeconds=null;d.focusQueue=null;snap(t,true);try{commit();}catch(e){say('Could not persist exam selection.');}}
+  }
+  var baseModeUI=window.setModeUI;
+  function modeUI(mode){
+    if(typeof baseModeUI==='function')baseModeUI(mode);
+    if(examSetup)examSetup.hidden=mode!=='exam';
+    if(flowWrap)flowWrap.style.display=(mode==='stopwatch'||mode==='exam')?'none':'flex';
+  }
+  window.setModeUI=modeUI;try{setModeUI=modeUI;}catch(e){}
+  if(examSub)examSub.addEventListener('change',previewExam);
+  if(examDur)examDur.addEventListener('change',previewExam);
+
+  function chooseMode(mode){
+    var t=tmr();if(t.status==='RUNNING'||t.status==='PAUSED'){say('Save or reset the active session before switching modes.');return;}
+    try{if(typeof window.stopTicker==='function')window.stopTicker();}catch(e){}
+    var mins=mode==='exam'?examSecs()/60:mode==='stopwatch'?0:mode==='pomodoro'?25:mode==='custom'?Math.max(1,Math.min(240,Number($id('customMins')&&$id('customMins').value)||45)):Math.max(1,Math.min(240,Number($id('flowMins')&&$id('flowMins').value)||25));
+    if(typeof window.ensureIdleTimer==='function')window.ensureIdleTimer(mode,mins,'focus');
+    d.focusQueue=null;t=tmr();t.queueKind=null;t.queueId=null;t.queueStartRemainingSeconds=null;t.status='IDLE';t.accumulatedMs=0;t.segmentStartedAt=null;t.startedAt=null;
+    t.topics=[];t.mainTopics=[];t.topicList=[];t.subtopics=[];t.subtopicList=[];t.goal='';
+    if(mode==='exam'){t.subject=examSub&&subjects.includes(examSub.value)?examSub.value:'English';t.chapter='Exam Practice';t.plannedMinutes=examSecs()/60;t.lockSubject=t.subject;}else{t.subject='';t.chapter='';t.lockSubject='';}d.activeStudySession=null;
+    snap(t,true);modeUI(mode);try{commit();}catch(e){say('Could not persist mode selection.');}
+    try{if(typeof window.paintTimeDisplay==='function')window.paintTimeDisplay();}catch(e){}
+    if(mode==='exam')previewExam();
+  }
+  if(modeBox){
+    /* Replace the old inline handlers so every mode follows the same isolated setup path. */
+    modeBox.querySelectorAll('button[data-mode]').forEach(function(old){
+      var b=old.cloneNode(true);old.parentNode.replaceChild(b,old);
+      b.addEventListener('click',function(e){e.preventDefault();chooseMode(b.dataset.mode);});
+    });
+  }
+
+  var baseStart=window.startCountdown;
+  function startCountdownIntegrity(){
+    var t=tmr();
+    if(t.status==='IDLE'){
+      if(t.mode==='exam'){t.subject=examSub&&subjects.includes(examSub.value)?examSub.value:'English';t.chapter='Exam Practice';t.plannedMinutes=examSecs()/60;t.lockSubject=t.subject;t.queueKind=null;t.queueId=null;t.queueStartRemainingSeconds=null;d.focusQueue=null;d.activeStudySession=null;}
+      else if(!t.queueId){t.queueKind=null;t.queueId=null;t.queueStartRemainingSeconds=null;d.focusQueue=null;d.activeStudySession=null;}
+      if(!t.sessionId)t.sessionId='vk-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
+      if(!t.startedAt)t.startedAt=Date.now();
+      snap(t,true);
+    }
+    var r=typeof baseStart==='function'?baseStart.apply(this,arguments):undefined;
+    t=tmr();if(t.status==='RUNNING'||t.status==='PAUSED'){if(!t.sessionSnapshot||String(t.sessionSnapshot.sessionId)!==String(t.sessionId))snap(t,true);try{commit();}catch(e){say('Timer checkpoint failed; keep this tab open until storage is available.');}}
+    return r;
+  }
+  window.startCountdown=startCountdownIntegrity;try{startCountdown=startCountdownIntegrity;}catch(e){}
+
+  var baseQueueLaunch=window.finalGo||window.vkGo;
+  if(typeof baseQueueLaunch==='function'){
+    var guardedQueueLaunch=function(kind,id,minsArg){
+      var active=tmr();
+      if(active.status==='RUNNING'||active.status==='PAUSED'){
+        /* Never overwrite an active session if it cannot be safely saved first. */
+        if(!completeIntegrity('switch'))return false;
+      }
+      var raw=itemFor(kind,id),left=itemSeconds(raw,Number(minsArg||25)*60);
+      var result=baseQueueLaunch.apply(this,arguments),t=tmr();
+      if(raw){
+        t.queueKind=kind;t.queueId=raw.id;t.queueStartRemainingSeconds=left;
+        t.subject=String(raw.subject||'General');t.chapter=String(raw.chapter||raw.topic||'Focus');t.lockSubject=t.subject;
+        t.mainTopics=arr(raw.mainTopics||raw.topicList||raw.topics);t.topicList=t.mainTopics.slice();t.topics=t.mainTopics.slice();
+        t.subtopics=arr(raw.subtopics||raw.subtopicList);t.subtopicList=t.subtopics.slice();
+        d.focusQueue={taskId:raw.id,kind:kind};snap(t,true);
+        try{if(typeof window.syncActive==='function')window.syncActive('queue-start');}catch(e){}
+        try{commit();}catch(e){say('Queue session checkpoint failed.');}
+      }
+      return result;
+    };
+    window.vkGo=guardedQueueLaunch;window.finalGo=guardedQueueLaunch;
+    try{vkGo=guardedQueueLaunch;finalGo=guardedQueueLaunch;}catch(e){}
+  }
+
+  window.swStart=function(){
+    var t=tmr();
+    if(t.mode!=='stopwatch'||t.status==='IDLE'){
+      if(typeof window.ensureIdleTimer==='function')window.ensureIdleTimer('stopwatch',0,'focus');
+      t=tmr();t.mode='stopwatch';t.subject=String(($id('sessionSubject')&&$id('sessionSubject').value)||'General').trim()||'General';t.chapter=String(($id('sessionChapter')&&$id('sessionChapter').value)||'').trim();
+      try{t.topics=arr(typeof window.selectedTopicsFrom==='function'?window.selectedTopicsFrom('sessionTopicsPicker'):[]);}catch(e){t.topics=[];}
+      try{t.subtopics=arr(typeof window.selectedTopicsFrom==='function'?window.selectedTopicsFrom('sessionSubtopicsPicker'):[]);}catch(e){t.subtopics=[];}
+      t.mainTopics=t.topics.slice();t.topicList=t.topics.slice();t.subtopicList=t.subtopics.slice();t.goal=String(($id('sessionGoal')&&$id('sessionGoal').value)||'').trim();d.activeStudySession=null;t.queueKind=null;t.queueId=null;t.queueStartRemainingSeconds=null;d.focusQueue=null;
+    }
+    if(t.status==='RUNNING')return;
+    if(t.status==='IDLE'){t.sessionId='vk-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);t.startedAt=Date.now();t.accumulatedMs=0;snap(t,true);}
+    t.status='RUNNING';t.segmentStartedAt=Date.now();
+    try{commit();}catch(e){t.status='PAUSED';t.segmentStartedAt=null;say('Storage failed; stopwatch remains paused.');return;}
+    if($id('timerStatus'))$id('timerStatus').textContent=(t.subject+(t.chapter?' · '+t.chapter:'')+' · STOPWATCH').toUpperCase();
+    if($id('swStartBtn'))$id('swStartBtn').textContent='▶ RESUME';
+    if(typeof window.startTicker==='function')window.startTicker();if(typeof window.paintTimeDisplay==='function')window.paintTimeDisplay();
+  };
+  window.swPause=function(){var t=tmr();if(t.mode!=='stopwatch'||t.status!=='RUNNING')return;t.accumulatedMs=elapsed(t);t.segmentStartedAt=null;t.status='PAUSED';try{commit();}catch(e){say('Pause checkpoint failed; session remains in memory.');}if($id('timerStatus'))$id('timerStatus').textContent='Stopwatch paused';if(typeof window.paintTimeDisplay==='function')window.paintTimeDisplay();};
+
+  function replaceBtn(id,label,fn){var old=$id(id);if(!old)return null;var b=old.cloneNode(true);if(label)b.textContent=label;old.parentNode.replaceChild(b,old);b.addEventListener('click',function(e){e.preventDefault();fn(e);});return b;}
+  replaceBtn('finishBtn','■ SAVE',function(){completeIntegrity('save');});
+  replaceBtn('swStopBtn','■ SAVE',function(){completeIntegrity('save');});
+  replaceBtn('swStartBtn','▶ RESUME',function(){window.swStart();});
+  replaceBtn('swPauseBtn','Ⅱ PAUSE',function(){window.swPause();});
+  replaceBtn('startBtn','▶ START',function(){window.startCountdown();});
+  var reset= $id('resetBtn');
+  if(reset){
+    var rb=reset.cloneNode(true);reset.parentNode.replaceChild(rb,reset);
+    rb.addEventListener('click',function(e){e.preventDefault();var t=tmr();if((t.status==='RUNNING'||t.status==='PAUSED')&&!confirm('Reset active session? Progress for this session will be discarded.'))return;
+      try{if(typeof window.stopTicker==='function')window.stopTicker();}catch(err){}
+      var mode=t.mode||'flow',mins=mode==='exam'?examSecs()/60:mode==='custom'?(t.plannedMinutes||45):mode==='stopwatch'?0:mode==='pomodoro'?25:(t.plannedMinutes||25);
+      if(typeof window.ensureIdleTimer==='function')window.ensureIdleTimer(mode,mins,'focus');t=tmr();t.queueKind=null;t.queueId=null;t.queueStartRemainingSeconds=null;t.sessionSnapshot=null;t.lockSubject='';d.focusQueue=null;d.activeStudySession=null;
+      try{commit();}catch(err){say('Reset could not be persisted; data remains in memory.');}try{if(typeof window.hideSessionTarget==='function')window.hideSessionTarget(false);}catch(err){}modeUI(mode);try{if(typeof window.paintTimeDisplay==='function')window.paintTimeDisplay();}catch(err){}
+    });
+  }
+
+  var oldPaint=window.paintTimeDisplay;
+  if(typeof oldPaint==='function'){
+    window.paintTimeDisplay=function(){var r=oldPaint.apply(this,arguments),t=tmr();if(t.mode==='exam'){var ms=Math.max(0,Number(t.accumulatedMs)||0);if(t.status==='RUNNING'&&t.segmentStartedAt)ms+=Math.max(0,Date.now()-t.segmentStartedAt);$id('time').textContent=hms(Math.max(0,Math.ceil(Number(t.plannedMinutes||0)*60-ms/1000)));}return r;};
+    try{paintTimeDisplay=window.paintTimeDisplay;}catch(e){}
+  }
+  var style=document.createElement('style');style.id='VK_DATA_INTEGRITY_STYLE';
+  style.textContent='.examSetup{margin:12px auto 4px;padding:13px;border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line));border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 92%,transparent),var(--in));box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.035);text-align:left}.examSetup[hidden]{display:none!important}.examSetup .field{margin-bottom:6px;min-width:0}.examSetup label{color:var(--accent)}.examPreview{margin-top:7px;padding:10px;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--accent) 7%,var(--in));color:var(--accent);font-size:12px;font-weight:900;text-align:center;font-variant-numeric:tabular-nums}.mode{gap:5px;align-items:stretch}.mode button{flex:1 1 0;min-width:0;padding:10px 3px;border-radius:12px;font-size:clamp(8px,2.4vw,10px);font-weight:900;letter-spacing:.02em}.timerActions button{border-radius:12px;min-height:44px;font-weight:900}#time{font-variant-numeric:tabular-nums}@media(max-width:420px){.examSetup{padding:10px}.mode{gap:3px}.mode button{padding:9px 1px;letter-spacing:0;font-size:8px}.examSetup .grid2{grid-template-columns:1fr}}';
+  document.head.appendChild(style);
+  modeUI(tmr().mode||'flow');previewExam();
+})();
+</script>
+
+<script id="VELKORE_CRITICAL_QUEUE_WEEK_LEVEL_PATCH_V1">
+(function(){
+'use strict';
+if(window.__VK_CRITICAL_QUEUE_WEEK_LEVEL_V1__) return;
+window.__VK_CRITICAL_QUEUE_WEEK_LEVEL_V1__=true;
+var d=window.data;
+if(!d || !Array.isArray(d.sessions)) return;
+var STORE_KEY='velkore_v2';
+function num(v){var n=Number(v);return Number.isFinite(n)?n:0;}
+function clampSec(v){return Math.max(0,Math.round(num(v)));}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(dataNow()));return true;}catch(e){return false;}}
+function dataNow(){return window.data||d;}
+function taskFor(kind,id){var x=dataNow(),a=kind==='plan'?(x.planBlocks||[]):(x.tasks||[]);return id==null?null:a.find(function(t){return t&&String(t.id)===String(id);})||null;}
+/* Normalize legacy task durations only when the canonical seconds value is absent. */
+function taskDurationSeconds(item, fallbackSeconds){
+  if(!item)return clampSec(fallbackSeconds);
+  var keysSec=['durationSeconds','plannedSeconds','estSeconds','timeSeconds'];
+  for(var i=0;i<keysSec.length;i++){var v=item[keysSec[i]];if(v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)))return clampSec(v);}
+  var keysMs=['remainingMs','durationMs','plannedMs','timeMs'];
+  for(var j=0;j<keysMs.length;j++){var m=item[keysMs[j]];if(m!==null&&m!==undefined&&m!==''&&Number.isFinite(Number(m)))return clampSec(Number(m)/1000);}
+  var keysMin=['durationMinutes','plannedMinutes','est','minutes','mins','duration'];
+  for(var k=0;k<keysMin.length;k++){var z=item[keysMin[k]];if(z!==null&&z!==undefined&&z!==''&&Number.isFinite(Number(z)))return clampSec(Number(z)*60);}
+  if(item.hours!=null&&Number.isFinite(Number(item.hours)))return clampSec((Number(item.hours)*60+num(item.minutesPart||item.extraMinutes||0))*60);
+  return clampSec(fallbackSeconds);
+}
+function itemLeftSeconds(item,fallback){
+  if(!item)return clampSec(fallback);
+  if(item.done)return 0;
+  if(item.remainingSeconds!=null&&item.remainingSeconds!==''&&Number.isFinite(Number(item.remainingSeconds)))return clampSec(item.remainingSeconds);
+  if(item.remaining!=null&&item.remaining!==''&&Number.isFinite(Number(item.remaining)))return clampSec(Number(item.remaining)*60);
+  return taskDurationSeconds(item,fallback);
+}
+function makeSessionId(){return 'vk-'+Date.now()+'-'+Math.random().toString(36).slice(2,10);}
+/* Wrap queue launch after all older handlers so the exact remaining duration and explicit link win. */
+function installQueueWrapper(name,base){
+  base=base||window[name];if(typeof base!=='function'||base.__vkCriticalQueue)return base;
+  var wrapped=function(kind,id,minsArg){
+    var item=taskFor(kind,id),fallback=Number(minsArg)>0?Number(minsArg)*60:0;
+    var startSec=item?itemLeftSeconds(item,fallback):0;
+    if(item&&startSec<=0&&!item.done)startSec=taskDurationSeconds(item,fallback);
+    var result=base.apply(this,arguments);
+    var x=dataNow(),t=x.timer||{};
+    if(item&&!item.done&&startSec>0){
+      /* Preserve the timer's real running segment; only repair duration and its explicit task association. */
+      var sid=String(t.sessionId||makeSessionId()),started=Number(t.startedAt||Date.now());
+      t.mode=t.mode||'flow';t.plannedMinutes=startSec/60;
+      t.queueKind=kind==='plan'?'plan':'task';t.queueId=item.id;t.queueStartRemainingSeconds=startSec;
+      t.subject=String(item.subject||'General').trim()||'General';t.lockSubject=t.subject;
+      t.chapter=String(item.chapter||item.topic||'Focus').trim();
+      var topics=Array.isArray(item.mainTopics)?item.mainTopics:Array.isArray(item.topicList)?item.topicList:Array.isArray(item.topics)?item.topics:[];
+      var subs=Array.isArray(item.subtopics)?item.subtopics:Array.isArray(item.subtopicList)?item.subtopicList:[];
+      t.mainTopics=topics.slice();t.topicList=topics.slice();t.topics=topics.slice();t.subtopics=subs.slice();t.subtopicList=subs.slice();
+      t.sessionId=sid;t.startedAt=started;
+      t.sessionSnapshot={sessionId:sid,mode:String(t.mode||'flow'),subject:t.subject,chapter:t.chapter,topics:topics.slice(),subtopics:subs.slice(),startedAt:started,queueKind:t.queueKind,queueId:item.id,queueStartRemainingSeconds:startSec,plannedMinutes:startSec/60,goal:String(t.goal||'')};
+      x.focusQueue={taskId:item.id,kind:t.queueKind};
+      if(x.activeStudySession){x.activeStudySession.sessionId=sid;x.activeStudySession.queueKind=t.queueKind;x.activeStudySession.queueId=item.id;}
+      persist();
+    }
+    return result;
+  };
+  wrapped.__vkCriticalQueue=true;window[name]=wrapped;
+  try{if(name==='vkGo')vkGo=wrapped;if(name==='finalGo')finalGo=wrapped;}catch(e){}
+  return wrapped;
+}
+var originalVkGo=window.vkGo,originalFinalGo=window.finalGo,queueWrapped;
+if(typeof originalVkGo==='function'&&originalVkGo===originalFinalGo){queueWrapped=installQueueWrapper('vkGo',originalVkGo);window.finalGo=queueWrapped;try{finalGo=queueWrapped;}catch(e){}}
+else{installQueueWrapper('vkGo',originalVkGo);installQueueWrapper('finalGo',originalFinalGo);}
+/* Queue UI also has a direct startExact path that bypasses vkGo. Normalize it at the common countdown boundary. */
+var startCountdownBase=window.startCountdown;
+if(typeof startCountdownBase==='function'&&!startCountdownBase.__vkCriticalQueueDuration){
+  var startCountdownExact=function(){
+    var x=dataNow(),t=x.timer||{};
+    if(t.status==='IDLE'&&t.queueId!=null){
+      var raw=taskFor(t.queueKind,t.queueId);
+      if(raw&&!raw.done){
+        var existing=Number(t.queueStartRemainingSeconds);
+        var sec=Number.isFinite(existing)&&existing>0?clampSec(existing):itemLeftSeconds(raw,Number(t.plannedMinutes||0)*60);
+        if(sec<=0)sec=taskDurationSeconds(raw,Number(t.plannedMinutes||0)*60);
+        if(sec>0){t.queueStartRemainingSeconds=sec;t.plannedMinutes=sec/60;t.queueKind=t.queueKind==='plan'?'plan':'task';t.queueId=raw.id;t.subject=String(raw.subject||t.subject||'General').trim()||'General';t.lockSubject=t.subject;t.chapter=String(raw.chapter||raw.topic||t.chapter||'Focus').trim();}
+      }
+    }
+    return startCountdownBase.apply(this,arguments);
+  };
+  startCountdownExact.__vkCriticalQueueDuration=true;window.startCountdown=startCountdownExact;
+  try{startCountdown=startCountdownExact;}catch(e){}
+}
+/* Preserve custom durations when the old launcher imposes a smaller max after returning. */
+function repairQueueDuration(){var x=dataNow(),t=x.timer||{};if(t.queueId==null)return;var item=taskFor(t.queueKind,t.queueId);if(!item||item.done)return;var sec=clampSec(t.queueStartRemainingSeconds);if(sec>0&&Math.abs(num(t.plannedMinutes)*60-sec)>0.01){t.plannedMinutes=sec/60;persist();}}
+/* On reload, never create a link from focusQueue alone; only timer's explicit queueId is authoritative. */
+try{var t0=d.timer||{};if(t0.queueId==null){t0.queueKind=null;t0.queueStartRemainingSeconds=null;if(d.focusQueue&&d.focusQueue.taskId!=null)d.focusQueue=null;}}catch(e){}
+
+/* Canonical local-calendar Monday-Sunday data source for week comparison. */
+function dateKey(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function dayForSession(s){
+  if(!s)return '';
+  var candidates=[s.day,s.date];
+  for(var i=0;i<candidates.length;i++){var v=String(candidates[i]||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(v)){var p=v.split('-').map(Number),check=new Date(p[0],p[1]-1,p[2],12);if(check.getFullYear()===p[0]&&check.getMonth()===p[1]-1&&check.getDate()===p[2])return v;}}
+  var ts=s.startTime||s.startedAt||s.startTimestamp||s.ts;
+  if(ts!=null&&ts!==''){var dt=new Date(typeof ts==='number'&&ts<1e12?ts*1000:ts);if(!isNaN(dt.getTime()))return dateKey(dt);}
+  return '';
+}
+function minutesForSession(s){
+  if(!s)return 0;
+  if(s.deleted===true||s.cancelled===true||String(s.status||'').toLowerCase()==='cancelled'||String(s.status||'').toLowerCase()==='running'||String(s.status||'').toLowerCase()==='paused')return 0;
+  var m=s.minutes!=null?Number(s.minutes):s.min!=null?Number(s.min):null;
+  if(m==null||!Number.isFinite(m))m=Number(s.seconds||0)/60;
+  return Math.max(0,m);
+}
+function weekKeys(off){var now=new Date();now.setHours(12,0,0,0);var monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7),12);monday.setDate(monday.getDate()+(Number(off)||0)*7);var a=[];for(var i=0;i<7;i++){var z=new Date(monday);z.setDate(monday.getDate()+i);a.push(dateKey(z));}return a;}
+function weekData(off){var keys=weekKeys(off),map=Object.create(null);keys.forEach(function(k){map[k]=0;});var count=0;dataNow().sessions.forEach(function(s){var day=dayForSession(s);if(Object.prototype.hasOwnProperty.call(map,day)){var m=minutesForSession(s);if(m>0){map[day]+=m;count++;}}});return{keys:keys,values:keys.map(function(k){return Math.round(map[k]*100)/100;}),total:keys.reduce(function(sum,k){return sum+map[k];},0),records:count};}
+function fmtDate(k){var p=k.split('-').map(Number),dte=new Date(p[0],p[1]-1,p[2],12);return dte.toLocaleDateString(undefined,{month:'short',day:'numeric'});}
+function renderWeekCompare(){
+  var host=document.getElementById('vkCompareChart');if(!host)return;
+  var x=dataNow(),off=Number(x.statsWeekOffset);if(!Number.isFinite(off))off=0;off=Math.trunc(off);
+  var cur=weekData(off),prev=weekData(off-1),names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var card=document.getElementById('vkCompareCard'),peak=document.getElementById('vkComparePeak');
+  if(peak)peak.textContent=cur.records||prev.records?(Math.round(cur.total)+' vs '+Math.round(prev.total)+' min'):'No saved study data';
+  var W=820,H=340,L=48,R=18,T=46,B=60,iw=W-L-R,ih=H-T-B,slot=iw/7,max=Math.max(30,Math.ceil(Math.max.apply(null,cur.values.concat(prev.values,[30]))/30)*30),bw=Math.min(22,slot*.22);
+  var goldId='vkQWGold',silverId='vkQWSilver',glowId='vkQWGlow';
+  var svg='<defs><linearGradient id="'+goldId+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0bd"/><stop offset=".52" stop-color="#e8b84c"/><stop offset="1" stop-color="#9d701c"/></linearGradient><linearGradient id="'+silverId+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#c7c9d0"/><stop offset="1" stop-color="#777d8a"/></linearGradient><filter id="'+glowId+'"><feGaussianBlur stdDeviation="2.4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  for(var q=0;q<=4;q++){var val=max*(1-q/4),yy=T+ih*q/4;svg+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="rgba(255,255,255,.10)"/><text x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end" font-size="10" fill="#aaa6b0">'+Math.round(val)+'</text>';}
+  for(var i=0;i<7;i++){
+    var cx=L+i*slot+slot/2,v1=cur.values[i],v2=prev.values[i],h1=ih*v1/max,h2=ih*v2/max,y1=T+ih-h1,y2=T+ih-h2;
+    svg+='<rect x="'+(cx-bw-3)+'" y="'+(T+ih-Math.max(2,h1))+'" width="'+bw+'" height="'+Math.max(2,h1)+'" rx="6" fill="url(#'+goldId+')" filter="url(#'+glowId+')"><title>This week · '+names[i]+' '+fmtDate(cur.keys[i])+' · '+Math.round(v1)+' min</title></rect>';
+    svg+='<rect x="'+(cx+3)+'" y="'+(T+ih-Math.max(2,h2))+'" width="'+bw+'" height="'+Math.max(2,h2)+'" rx="6" fill="url(#'+silverId+')"><title>Previous week · '+names[i]+' '+fmtDate(prev.keys[i])+' · '+Math.round(v2)+' min</title></rect>';
+    if(v1>0)svg+='<text x="'+(cx-bw/2-3)+'" y="'+Math.max(T+12,y1-7)+'" text-anchor="middle" font-size="9" font-weight="800" fill="#ffe7a3">'+Math.round(v1)+'</text>';
+    if(v2>0)svg+='<text x="'+(cx+bw/2+3)+'" y="'+Math.max(T+12,y2-7)+'" text-anchor="middle" font-size="9" font-weight="800" fill="#ededf0">'+Math.round(v2)+'</text>';
+    svg+='<text x="'+cx+'" y="'+(H-34)+'" text-anchor="middle" font-size="11" font-weight="850" fill="#ddd">'+names[i]+'</text><text x="'+cx+'" y="'+(H-18)+'" text-anchor="middle" font-size="9" fill="#aaa6b0">'+fmtDate(cur.keys[i])+'</text>';
+  }
+  svg+='<rect x="'+(W-222)+'" y="10" width="10" height="10" rx="3" fill="#e8b84c"/><text x="'+(W-207)+'" y="19" font-size="10" fill="#ddd">Selected week · '+Math.round(cur.total)+' min</text><rect x="'+(W-105)+'" y="27" width="10" height="10" rx="3" fill="#c7c9d0"/><text x="'+(W-90)+'" y="36" font-size="10" fill="#ddd">Previous · '+Math.round(prev.total)+' min</text>';
+  host.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" style="display:block;width:100%;height:100%">'+svg+'</svg>';
+  var empty=host.parentElement&&host.parentElement.querySelector('.vkQueueWeekEmpty');
+  if(!cur.records&&!prev.records){if(!empty&&host.parentElement){empty=document.createElement('div');empty.className='vkQueueWeekEmpty';empty.style.cssText='padding:10px 4px;text-align:center;color:var(--muted,#aaa);font-size:12px';host.parentElement.appendChild(empty);}if(empty)empty.textContent='No saved study sessions for these two weeks yet.';}
+  else if(empty)empty.remove();
+  var hint=card&&card.querySelector('.hqHint');if(hint)hint.textContent='Gold = selected week ('+cur.keys[0]+'–'+cur.keys[6]+', '+Math.round(cur.total)+' min). Silver = previous week ('+prev.keys[0]+'–'+prev.keys[6]+', '+Math.round(prev.total)+' min). Only saved study sessions count.';
+}
+window.__vkQueueWeekData=weekData;window.renderFinalWeekCompare=renderWeekCompare;window.renderWeekCompare=renderWeekCompare;
+try{renderFinalWeekCompare=renderWeekCompare;renderWeekCompare=renderWeekCompare;}catch(e){}
+/* Ensure stats re-render after saves, edits, deletes, and week navigation. */
+var statsBase=window.renderStats;
+if(typeof statsBase==='function'&&!statsBase.__vkQueueWeekWrap){var statsWrap=function(){var r=statsBase.apply(this,arguments);setTimeout(renderWeekCompare,20);return r;};statsWrap.__vkQueueWeekWrap=true;window.renderStats=statsWrap;try{renderStats=statsWrap;}catch(e){}}
+document.addEventListener('click',function(e){if(e.target&&e.target.closest&&e.target.closest('#weekPrevBtn,#weekNextBtn,#weekThisBtn,[data-page="stats"]'))setTimeout(renderWeekCompare,100);},true);
+/* Observe the authoritative saved-session array and repaint when changed in place. */
+var lastSig='';function signature(){return JSON.stringify([dataNow().statsWeekOffset,(dataNow().sessions||[]).map(function(s){return [s.id,s.day,s.startTime,s.startedAt,s.minutes,s.min,s.seconds,s.status,s.deleted,s.cancelled];})]);}
+function checkWeek(){try{var sig=signature();if(sig!==lastSig){lastSig=sig;renderWeekCompare();}}catch(e){}}
+setTimeout(checkWeek,80);setTimeout(checkWeek,500);setInterval(checkWeek,1200);
+
+/* Genuine level-transition detection: wrap existing XP grant without changing XP rules. */
+function levelOf(xp){return Math.floor(Math.max(0,num(xp))/100)+1;}
+function showLevelCelebration(level,oldLevel){
+  var id='vkLevelCelebration';var modal=document.getElementById(id);if(!modal){modal=document.createElement('div');modal.id=id;modal.className='vkLevelOverlay';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','vkLevelTitle');modal.innerHTML='<div class="vkLevelCard"><div class="vkLevelOrbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="vkLevelBadge">✦ LEVEL ACHIEVED ✦</div><div class="vkLevelTrophy" aria-hidden="true">♛</div><h2 id="vkLevelTitle">🎉 LEVEL UP! CONGRATULATIONS!</h2><p class="vkLevelLead">Your dedication is paying off!</p><div class="vkLevelNumber">LEVEL <strong id="vkLevelNumber">'+level+'</strong></div><p class="vkLevelMessage" id="vkLevelMessage">You have advanced from Level '+oldLevel+' to Level '+level+'. Keep going!</p><button type="button" id="vkLevelContinue">CONTINUE</button></div>';document.body.appendChild(modal);}
+  var n=document.getElementById('vkLevelNumber'),m=document.getElementById('vkLevelMessage');if(n)n.textContent=String(level);if(m)m.textContent=level>oldLevel+1?'Amazing progress! You gained '+(level-oldLevel)+' levels and reached Level '+level+'. Keep going!':'You have advanced from Level '+oldLevel+' to Level '+level+'. Keep going!';
+  modal.classList.remove('show');void modal.offsetWidth;modal.classList.add('show');
+  var btn=document.getElementById('vkLevelContinue');if(btn){btn.onclick=function(){modal.classList.remove('show');};}
+  modal.onclick=function(e){if(e.target===modal)modal.classList.remove('show');};
+  function keyClose(e){if(e.key==='Escape'){modal.classList.remove('show');document.removeEventListener('keydown',keyClose);}}document.addEventListener('keydown',keyClose);
+  try{if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)modal.classList.add('reduced');}catch(e){}
+}
+var css=document.createElement('style');css.id='VK_LEVEL_CELEBRATION_STYLE';css.textContent='.vkLevelOverlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(2,3,8,.82);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);opacity:0;visibility:hidden;transition:opacity .24s ease,visibility .24s ease}.vkLevelOverlay.show{opacity:1;visibility:visible}.vkLevelCard{position:relative;isolation:isolate;overflow:hidden;width:min(470px,100%);box-sizing:border-box;padding:28px 22px 24px;text-align:center;border:1px solid color-mix(in srgb,var(--accent,#e8b84c) 65%,#cfd2d9);border-radius:26px;background:radial-gradient(ellipse at 50% 0%,rgba(232,184,76,.16),transparent 58%),linear-gradient(145deg,color-mix(in srgb,var(--card2,#1a1a20) 96%,#d4d5da 4%),var(--bg,#09090d));box-shadow:0 24px 80px rgba(0,0,0,.62),0 0 30px rgba(232,184,76,.16),inset 0 1px rgba(255,255,255,.1);transform:translateY(18px) scale(.96);transition:transform .35s cubic-bezier(.2,.8,.2,1)}.vkLevelOverlay.show .vkLevelCard{transform:translateY(0) scale(1)}.vkLevelBadge{position:relative;z-index:2;color:var(--accent,#e8b84c);font-size:10px;font-weight:950;letter-spacing:.22em}.vkLevelTrophy{position:relative;z-index:2;margin:8px auto 6px;font-size:48px;line-height:1.15;color:#f5d782;text-shadow:0 0 12px rgba(232,184,76,.65),0 0 28px rgba(232,184,76,.3)}.vkLevelCard h2{position:relative;z-index:2;margin:8px 0;font-size:clamp(18px,4vw,24px);line-height:1.25;color:var(--text,#f4f0e6)}.vkLevelLead{position:relative;z-index:2;color:var(--muted,#aaa);margin:8px 0 18px;font-size:14px}.vkLevelNumber{position:relative;z-index:2;margin:auto;width:max-content;max-width:100%;padding:10px 20px;border-radius:15px;border:1px solid rgba(232,184,76,.5);background:linear-gradient(135deg,rgba(232,184,76,.16),rgba(210,214,222,.09));color:#f4d27a;font-size:11px;letter-spacing:.16em}.vkLevelNumber strong{font-size:32px;letter-spacing:0;margin-left:8px;color:#fff1bd;text-shadow:0 0 16px rgba(232,184,76,.38)}.vkLevelMessage{position:relative;z-index:2;color:var(--text,#f4f0e6);font-size:13px;line-height:1.6;margin:18px auto;max-width:340px}.vkLevelCard button{position:relative;z-index:2;width:100%;min-height:46px;border:1px solid rgba(255,255,255,.28);border-radius:14px;background:linear-gradient(110deg,#f3d27b,#c99a35 52%,#d7dbe3);color:#17130b;font-weight:950;letter-spacing:.12em;box-shadow:0 8px 25px rgba(232,184,76,.2);cursor:pointer}.vkLevelOrbs{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}.vkLevelOrbs i{position:absolute;top:12%;left:50%;width:5px;height:5px;border-radius:50%;background:#f6d77c;box-shadow:0 0 12px #e8b84c;animation:vkLevelFloat 2.8s ease-in-out infinite}.vkLevelOrbs i:nth-child(2){left:18%;top:30%;background:#d8dbe3;animation-delay:-.7s}.vkLevelOrbs i:nth-child(3){left:82%;top:25%;animation-delay:-1.2s}.vkLevelOrbs i:nth-child(4){left:28%;top:62%;background:#d8dbe3;animation-delay:-1.8s}.vkLevelOrbs i:nth-child(5){left:75%;top:65%;animation-delay:-.4s}.vkLevelOrbs i:nth-child(6){left:12%;top:75%;animation-delay:-1.1s}.vkLevelOrbs i:nth-child(7){left:90%;top:78%;background:#d8dbe3;animation-delay:-2s}.vkLevelOrbs i:nth-child(8){left:55%;top:88%;animation-delay:-1.5s}@keyframes vkLevelFloat{0%,100%{transform:translate3d(0,0,0) scale(.7);opacity:.25}50%{transform:translate3d(8px,-18px,0) scale(1.5);opacity:.95}}.vkLevelOverlay.reduced *{animation:none!important;transition:none!important}@media(max-width:420px){.vkLevelCard{padding:23px 16px 18px;border-radius:22px}.vkLevelTrophy{font-size:40px}.vkLevelNumber strong{font-size:28px}}@media(prefers-reduced-motion:reduce){.vkLevelOverlay,.vkLevelCard,.vkLevelOrbs i{animation:none!important;transition:none!important}}';document.head.appendChild(css);
+var grantBase=window.grantXP;
+if(typeof grantBase==='function'&&!grantBase.__vkLevelWatch){
+  /* Baseline is current level at boot; refreshing never counts as a level-up. */
+  if(d.levelCelebrationNotifiedLevel==null||!Number.isFinite(Number(d.levelCelebrationNotifiedLevel)))d.levelCelebrationNotifiedLevel=levelOf(d.xpTotal);
+  var wrappedGrant=function(){var beforeXp=Math.max(0,num(dataNow().xpTotal)),beforeLevel=levelOf(beforeXp),result=grantBase.apply(this,arguments),afterXp=Math.max(0,num(dataNow().xpTotal)),afterLevel=levelOf(afterXp);if(result!==false&&afterLevel>beforeLevel){var notified=Number(dataNow().levelCelebrationNotifiedLevel);if(!Number.isFinite(notified))notified=beforeLevel;if(afterLevel>notified){dataNow().levelCelebrationNotifiedLevel=afterLevel;persist();showLevelCelebration(afterLevel,beforeLevel);}}return result;};
+  wrappedGrant.__vkLevelWatch=true;window.grantXP=wrappedGrant;try{grantXP=wrappedGrant;}catch(e){}
+}
+})();
+</script>
+
+</body>
+</html>
