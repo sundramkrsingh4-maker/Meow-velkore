@@ -10,7 +10,7 @@
 <meta content="#09050b" name="theme-color"/>
 <meta content="VELKORE — Class 10 CBSE Study Command Center" name="description"/>
 <title>VELKORE</title>
-<meta content="7.1-stats-repair" name="velkore-build"/>
+<meta content="7.4-trophy-room-2-advanced-legacy-vault" name="velkore-build"/>
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="VELKORE" name="apple-mobile-web-app-title"/>
@@ -1310,7 +1310,7 @@ function paintTimeDisplay(){
   }
 
   // countdown finished?
-  if(t.mode!=='stopwatch'&&t.status==='RUNNING'&&elapsedMs<=0) completeSession('auto');
+  if(t.mode!=='stopwatch'&&t.status==='RUNNING'&&elapsedMs<=0) { if(typeof window.completeSession==='function') window.completeSession('auto'); else completeSession('auto'); }
 }
 
 function setModeUI(mode){
@@ -1716,7 +1716,7 @@ function recoverTimerOnBoot(){
     const planned=(t.plannedMinutes||25)*60000;
     if(done>=planned){
       t.accumulatedMs=planned;t.segmentStartedAt=null;t.status='PAUSED';
-      completeSession('recover-complete');
+      if(typeof window.completeSession==='function') window.completeSession('recover-complete'); else completeSession('recover-complete');
       return;
     }
   }
@@ -1752,7 +1752,7 @@ document.addEventListener('visibilitychange',()=>{
     if(t&&t.mode!=='stopwatch'&&t.status==='RUNNING'){
       let done=t.accumulatedMs||0;
       if(t.segmentStartedAt) done+=(Date.now()-t.segmentStartedAt);
-      if(done>=(t.plannedMinutes||25)*60000) completeSession('recover-complete');
+      if(done>=(t.plannedMinutes||25)*60000) { if(typeof window.completeSession==='function') window.completeSession('recover-complete'); else completeSession('recover-complete'); }
     }
   }
 });
@@ -4024,6 +4024,9 @@ if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
 
 function afterBootFixes(){
   window.data=data;
+  /* Expose the existing XP transaction function to the final timer integrity
+     layer so saved/auto-completed sessions can award XP exactly once. */
+  window.grantXP=grantXP;
   window.ensureIdleTimer=ensureIdleTimer;
   window.startCountdown=startCountdown;
   window.startTicker=startTicker;
@@ -5410,6 +5413,210 @@ document.addEventListener('click',function(e){var b=e.target&&e.target.closest&&
 setTimeout(paint,300);setTimeout(paint,1000);
 })();
 </script>
+<!-- VELKORE LEVEL-UP EVOLUTION + FULL-SCREEN ACHIEVEMENT TROPHY ROOM -->
+<style id="VK_TROPHY_ROOM_STYLE">
+.vkRankStack{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+#vkRankBadge{display:block;max-width:132px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 8px;border-radius:999px;border:1px solid rgba(208,214,224,.28);background:linear-gradient(115deg,rgba(207,171,100,.12),rgba(211,218,228,.09));color:#e8d4a6;font-size:8px;font-weight:950;letter-spacing:.055em;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.045)}
+#vkRankBadge:active{transform:scale(.98)}
+#vkTrophyRoom{position:fixed;inset:0;z-index:100020;display:none;overflow:auto;overscroll-behavior:contain;padding:calc(16px + env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));color:#f4f0e7;background:radial-gradient(ellipse at 50% -5%,rgba(213,174,94,.15),transparent 38%),radial-gradient(ellipse at 100% 100%,rgba(183,195,211,.07),transparent 38%),#07080b;font-family:Inter,system-ui,-apple-system,sans-serif;box-sizing:border-box}
+#vkTrophyRoom.vk-tr-open{display:block}#vkTrophyRoom *{box-sizing:border-box}
+#vkTrophyRoom .vk-tr-wrap{width:100%;max-width:980px;margin:0 auto}
+#vkTrophyRoom .vk-tr-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0 15px;border-bottom:1px solid rgba(215,195,155,.2)}
+#vkTrophyRoom .vk-tr-brand{font:700 17px Georgia,serif;letter-spacing:.15em;color:#f0d8a1}#vkTrophyRoom .vk-tr-kicker{margin-top:5px;color:#9ba3af;font-size:9px;letter-spacing:.2em}
+#vkTrophyRoom .vk-tr-close{min-height:42px;padding:10px 13px;border:1px solid rgba(215,221,229,.22);border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.02));color:#e7d7b5;font-weight:850;font-size:10px;letter-spacing:.08em;cursor:pointer}
+#vkTrophyRoom .vk-tr-hero{position:relative;overflow:hidden;margin:18px 0;padding:22px 18px;border:1px solid rgba(225,191,117,.27);border-radius:22px;background:radial-gradient(ellipse at 50% 0%,rgba(232,190,102,.16),transparent 68%),linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px rgba(255,255,255,.05),0 18px 45px rgba(0,0,0,.2);text-align:center}
+#vkTrophyRoom .vk-tr-crown{font-size:39px;color:#f2d48a;text-shadow:0 0 18px rgba(232,190,102,.28)}#vkTrophyRoom .vk-tr-rank{margin-top:3px;color:#f0d6a0;font:700 clamp(20px,5vw,28px) Georgia,serif;letter-spacing:.04em}#vkTrophyRoom .vk-tr-sub{margin-top:7px;color:#aab1bb;font-size:12px;line-height:1.5}
+#vkTrophyRoom .vk-tr-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}#vkTrophyRoom .vk-tr-metric{padding:12px 7px;border:1px solid rgba(207,215,226,.13);border-radius:13px;background:rgba(0,0,0,.16)}#vkTrophyRoom .vk-tr-metric b{display:block;color:#f3d88f;font-size:20px;font-variant-numeric:tabular-nums}#vkTrophyRoom .vk-tr-metric span{display:block;margin-top:4px;color:#939ca8;font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+#vkTrophyRoom .vk-tr-progress{height:5px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.09);margin:15px auto 6px;max-width:440px}#vkTrophyRoom .vk-tr-progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8c6a38,#f3d98f 52%,#d7dfe8);box-shadow:0 0 12px rgba(227,190,113,.24)}#vkTrophyRoom .vk-tr-progress-label{color:#9da5b0;font-size:10px}
+#vkTrophyRoom .vk-tr-section{margin:23px 0 10px;display:flex;align-items:end;justify-content:space-between;gap:10px}#vkTrophyRoom .vk-tr-section h2{margin:0;color:#e8d9b8;font:700 17px Georgia,serif}#vkTrophyRoom .vk-tr-section span{font-size:10px;color:#9da5b0}
+#vkTrophyRoom .vk-tr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#vkTrophyRoom .vk-tr-card{min-width:0;padding:14px 12px;border:1px solid rgba(205,213,224,.13);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));}
+#vkTrophyRoom .vk-tr-card.is-unlocked{border-color:rgba(226,190,111,.37);background:linear-gradient(145deg,rgba(220,177,87,.105),rgba(208,216,228,.025));box-shadow:inset 0 1px rgba(255,255,255,.04)}
+#vkTrophyRoom .vk-tr-card-head{display:flex;align-items:center;gap:10px}#vkTrophyRoom .vk-tr-icon{display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border-radius:12px;border:1px solid rgba(213,220,230,.15);background:rgba(0,0,0,.18);font-size:20px;filter:grayscale(1);opacity:.6}#vkTrophyRoom .is-unlocked .vk-tr-icon{filter:none;opacity:1;border-color:rgba(232,190,102,.35);box-shadow:0 0 18px rgba(232,190,102,.08)}
+#vkTrophyRoom .vk-tr-card h3{margin:0;color:#e8eaf0;font-size:12px;line-height:1.3}#vkTrophyRoom .vk-tr-card p{margin:9px 0 0;color:#929ba8;font-size:10px;line-height:1.5}#vkTrophyRoom .vk-tr-state{display:inline-block;margin-top:9px;color:#8e98a5;font-size:8px;font-weight:950;letter-spacing:.12em}#vkTrophyRoom .is-unlocked .vk-tr-state{color:#e8cd87}
+#vkTrophyRoom .vk-tr-note{margin:18px 0 3px;color:#7f8996;font-size:10px;line-height:1.6;text-align:center}
+@media(min-width:650px){#vkTrophyRoom .vk-tr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#vkTrophyRoom .vk-tr-hero{padding:30px 24px}}@media(max-width:360px){#vkTrophyRoom .vk-tr-grid{grid-template-columns:1fr}#vkTrophyRoom .vk-tr-metric b{font-size:17px}}
+
+#vkTrophyRoom .vk-tr-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 0}
+#vkTrophyRoom .vk-tr-controls label{display:flex;flex-direction:column;gap:5px;min-width:0;color:#8993a0;font-size:8px;font-weight:900;letter-spacing:.12em}
+#vkTrophyRoom .vk-tr-controls select{width:100%;min-width:0;min-height:39px;padding:7px 8px;border:1px solid rgba(210,216,226,.17);border-radius:10px;background:#111318;color:#e7e2d7;font:600 11px system-ui;letter-spacing:0}
+#vkTrophyRoom .vk-tr-completion{margin-top:12px;padding:12px 13px;border:1px solid rgba(215,195,155,.15);border-radius:13px;background:rgba(255,255,255,.025)}
+#vkTrophyRoom .vk-tr-completion>div:first-child{display:flex;justify-content:space-between;gap:8px;color:#aab1bb;font-size:10px}#vkTrophyRoom .vk-tr-completion b{color:#f0d6a0}
+#vkTrophyRoom .vk-tr-completion .vk-tr-progress{margin:9px 0 0;max-width:none}
+#vkTrophyRoom .vk-tr-card{display:block;width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer;transition:border-color .16s ease,transform .16s ease}
+#vkTrophyRoom .vk-tr-card:active{transform:scale(.99)}#vkTrophyRoom .vk-tr-card:focus-visible,#vkTrophyRoom button:focus-visible{outline:2px solid #e8cd87;outline-offset:2px}
+#vkTrophyRoom .vk-tr-card-title{min-width:0}#vkTrophyRoom .vk-tr-card-title h3{overflow-wrap:anywhere}
+#vkTrophyRoom .vk-tr-tags{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:10px}
+#vkTrophyRoom .vk-tr-rarity{display:inline-block;padding:4px 7px;border:1px solid rgba(200,207,218,.2);border-radius:999px;color:#d7dce4;font-size:8px;font-weight:950;letter-spacing:.09em}
+#vkTrophyRoom .vk-rarity-bronze{color:#d9a779;border-color:rgba(180,115,64,.4);background:rgba(180,115,64,.08)}#vkTrophyRoom .vk-rarity-silver{color:#d6dde6;border-color:rgba(205,215,228,.35);background:rgba(205,215,228,.07)}#vkTrophyRoom .vk-rarity-gold{color:#f1d18a;border-color:rgba(232,190,102,.4);background:rgba(232,190,102,.08)}#vkTrophyRoom .vk-rarity-platinum{color:#dce8f6;border-color:rgba(196,218,239,.42);background:linear-gradient(120deg,rgba(210,221,235,.09),rgba(255,255,255,.025))}#vkTrophyRoom .vk-rarity-legendary{color:#f3dfb1;border-color:rgba(240,214,156,.6);background:linear-gradient(120deg,rgba(232,190,102,.13),rgba(209,221,240,.08))}
+#vkTrophyRoom .vk-tr-category{color:#7f8996;font-size:8px;letter-spacing:.04em}
+#vkTrophyRoom .vk-tr-card-progress{height:3px;margin-top:12px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}#vkTrophyRoom .vk-tr-card-progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8c6a38,#f3d98f 60%,#d7dfe8)}
+#vkTrophyRoom .vk-tr-card-foot{display:flex;justify-content:space-between;gap:6px;margin-top:8px;color:#78828f;font-size:8px}#vkTrophyRoom .vk-tr-card-foot b{color:#aab3bf;font-size:8px}
+#vkTrophyRoom .vk-tr-empty{grid-column:1/-1;padding:28px 10px;text-align:center;color:#929ba8;font-size:12px}
+.vk-tr-modal{position:fixed;inset:0;z-index:100080;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(2,3,7,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,visibility .16s ease}
+.vk-tr-modal.is-open{opacity:1;visibility:visible;pointer-events:auto}
+.vk-tr-modal-card{position:relative;width:min(430px,100%);max-height:min(86vh,720px);overflow:auto;padding:24px 20px 20px;border:1px solid rgba(225,191,117,.34);border-radius:22px;background:radial-gradient(ellipse at 50% 0,rgba(232,190,102,.13),transparent 60%),#0c0d11;color:#f4f0e7;box-shadow:0 25px 80px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.06);text-align:center}
+.vk-tr-modal-x{position:absolute;right:10px;top:9px;width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:#15161b;color:#e8d9b8;font-size:22px}
+.vk-tr-detail-icon{display:grid;place-items:center;width:76px;height:76px;margin:5px auto 12px;border:1px solid rgba(232,190,102,.27);border-radius:23px;background:linear-gradient(145deg,rgba(232,190,102,.11),rgba(210,220,235,.04));font-size:36px;box-shadow:inset 0 1px rgba(255,255,255,.06),0 0 25px rgba(232,190,102,.05)}
+.vk-tr-modal-card h2{margin:10px 0 8px;color:#f0d6a0;font:700 23px Georgia,serif}.vk-tr-modal-card p{color:#aab1bb;font-size:12px;line-height:1.6}
+.vk-tr-detail-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;font-size:10px}.vk-tr-detail-row span{color:#7f8996}.vk-tr-detail-row b{max-width:65%;color:#e6e8ed;text-align:right;font-weight:700;overflow-wrap:anywhere}
+.vk-tr-action{width:100%;min-height:45px;margin-top:17px;border:1px solid rgba(225,191,117,.42);border-radius:13px;background:linear-gradient(115deg,#f0d79b,#c5a064 55%,#d9dfe8);color:#17130b;font-size:10px;font-weight:950;letter-spacing:.14em}
+.vk-tr-reveal{z-index:100090}.vk-tr-reveal .vk-tr-modal-card{animation:vkTRRevealIn .34s cubic-bezier(.2,.8,.2,1)}.vk-tr-reveal-kicker{color:#b9a06c;font-size:9px;font-weight:950;letter-spacing:.2em}.vk-tr-reveal .vk-tr-detail-icon{width:94px;height:94px;border-radius:28px;font-size:45px;box-shadow:0 0 28px rgba(232,190,102,.12),inset 0 1px rgba(255,255,255,.1)}
+@keyframes vkTRRevealIn{from{transform:translateY(12px) scale(.96);opacity:.4}to{transform:translateY(0) scale(1);opacity:1}}
+@media(max-width:420px){#vkTrophyRoom .vk-tr-controls{grid-template-columns:1fr;gap:7px}#vkTrophyRoom .vk-tr-controls label{font-size:8px}#vkTrophyRoom .vk-tr-controls select{min-height:37px}.vk-tr-modal-card{padding:22px 15px 16px;border-radius:19px}}
+@media(prefers-reduced-motion:reduce){.vk-tr-modal,.vk-tr-modal-card,#vkTrophyRoom .vk-tr-card{animation:none!important;transition:none!important}}
+
+/* VELKORE Trophy Room — native filters restyled to match the luxury glass UI */
+#vkTrophyRoom .vk-tr-controls{gap:9px;margin:14px 0 0;padding:10px;border:1px solid rgba(218,190,128,.17);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));box-shadow:inset 0 1px rgba(255,255,255,.035)}
+#vkTrophyRoom .vk-tr-controls label{gap:7px;color:#c5b58f;font-size:8px;letter-spacing:.15em}
+#vkTrophyRoom .vk-tr-controls label:before{content:"";display:block;width:18px;height:1px;background:linear-gradient(90deg,#c5a064,rgba(197,160,100,0));opacity:.8}
+#vkTrophyRoom .vk-tr-controls select{appearance:none;-webkit-appearance:none;display:block;width:100%;min-height:43px;padding:10px 32px 10px 11px;border:1px solid rgba(220,190,126,.28);border-radius:12px;background-color:#101116;background-image:linear-gradient(45deg,transparent 50%,#d9c18c 50%),linear-gradient(135deg,#d9c18c 50%,transparent 50%),linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.005));background-position:calc(100% - 15px) 18px,calc(100% - 10px) 18px,0 0;background-size:5px 5px,5px 5px,100% 100%;background-repeat:no-repeat;color:#f0e5cb;font:700 11px Inter,system-ui,sans-serif;letter-spacing:.015em;box-shadow:inset 0 1px rgba(255,255,255,.045),0 5px 14px rgba(0,0,0,.13);outline:none;transition:border-color .16s ease,box-shadow .16s ease}
+#vkTrophyRoom .vk-tr-controls select:focus{border-color:rgba(239,210,143,.72);box-shadow:0 0 0 3px rgba(232,190,102,.09),0 0 18px rgba(232,190,102,.07)}
+#vkTrophyRoom .vk-tr-controls select option{background:#101116;color:#f0e5cb}
+#vkTrophyRoom .vk-tr-controls select option:checked{background:#403522;color:#f6dfa3}
+#vkTrophyRoom .vk-tr-completion{border-color:rgba(220,190,126,.2);background:linear-gradient(145deg,rgba(232,190,102,.045),rgba(255,255,255,.012));box-shadow:inset 0 1px rgba(255,255,255,.025)}
+@media(max-width:420px){#vkTrophyRoom .vk-tr-controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px}#vkTrophyRoom .vk-tr-controls label{font-size:7px;letter-spacing:.08em}#vkTrophyRoom .vk-tr-controls select{min-height:42px;padding:8px 20px 8px 7px;font-size:10px;background-position:calc(100% - 10px) 18px,calc(100% - 5px) 18px,0 0}}
+@media(max-width:330px){#vkTrophyRoom .vk-tr-controls{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#vkTrophyRoom *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Custom Trophy Room pickers: avoid Android/browser-native option menus. */
+#vkTrophyRoom .vk-tr-controls label{position:relative;display:flex;flex-direction:column;align-items:stretch;min-width:0;gap:7px}
+#vkTrophyRoom .vk-tr-controls .vk-tr-native-select{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;opacity:0!important;pointer-events:none!important}
+#vkTrophyRoom .vk-tr-picker{position:relative;min-width:0;width:100%;z-index:2}
+#vkTrophyRoom .vk-tr-picker.is-open{z-index:100}
+#vkTrophyRoom .vk-tr-picker-trigger{display:flex;align-items:center;justify-content:space-between;gap:9px;width:100%;min-height:44px;padding:10px 11px;border:1px solid rgba(220,190,126,.31);border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)),#101116;color:#f0e5cb;text-align:left;font:700 11px Inter,system-ui,sans-serif;box-shadow:inset 0 1px rgba(255,255,255,.055),0 5px 14px rgba(0,0,0,.16);cursor:pointer;touch-action:manipulation}
+#vkTrophyRoom .vk-tr-picker-trigger:focus-visible{outline:2px solid rgba(239,210,143,.8);outline-offset:2px}
+#vkTrophyRoom .vk-tr-picker-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#vkTrophyRoom .vk-tr-picker-chevron{flex:0 0 auto;color:#e2c783;font-size:18px;line-height:1;transition:transform .16s ease}
+#vkTrophyRoom .vk-tr-picker.is-open .vk-tr-picker-chevron{transform:rotate(180deg)}
+#vkTrophyRoom .vk-tr-picker-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;display:none;max-height:min(46vh,280px);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid rgba(220,190,126,.32);border-radius:13px;background:linear-gradient(150deg,#1a1a1e,#0c0d11 72%);box-shadow:0 16px 38px rgba(0,0,0,.62),0 0 18px rgba(232,190,102,.08),inset 0 1px rgba(255,255,255,.055);z-index:101}
+#vkTrophyRoom .vk-tr-picker.is-open .vk-tr-picker-menu{display:block;animation:vkTRPickerIn .13s ease-out}
+#vkTrophyRoom .vk-tr-picker-option{display:flex;align-items:center;width:100%;min-height:39px;padding:9px 10px;border:1px solid transparent;border-radius:8px;background:transparent;color:#d5d8df;text-align:left;font:600 11px Inter,system-ui,sans-serif;line-height:1.35;cursor:pointer;touch-action:manipulation}
+#vkTrophyRoom .vk-tr-picker-option+.vk-tr-picker-option{margin-top:2px}
+#vkTrophyRoom .vk-tr-picker-option:hover,#vkTrophyRoom .vk-tr-picker-option:focus-visible{outline:none;border-color:rgba(220,190,126,.2);background:rgba(232,190,102,.075);color:#f8e5b4}
+#vkTrophyRoom .vk-tr-picker-option.is-selected{border-color:rgba(220,190,126,.24);background:linear-gradient(100deg,rgba(232,190,102,.16),rgba(211,220,233,.055));color:#f4d88f;font-weight:850}
+#vkTrophyRoom .vk-tr-picker-option.is-selected:before{content:'✦';margin-right:8px;color:#f3d78e;font-size:10px}
+@keyframes vkTRPickerIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:420px){#vkTrophyRoom .vk-tr-controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:8px}#vkTrophyRoom .vk-tr-controls label{font-size:7px;letter-spacing:.07em}#vkTrophyRoom .vk-tr-picker-trigger{min-height:43px;padding:9px 7px;font-size:10px;gap:4px}#vkTrophyRoom .vk-tr-picker-chevron{font-size:16px}#vkTrophyRoom .vk-tr-picker-menu{left:auto;right:0;min-width:132px;width:max-content;max-width:min(80vw,230px)}#vkTrophyRoom label:nth-child(2) .vk-tr-picker-menu{left:50%;right:auto;transform:translateX(-50%)}#vkTrophyRoom label:nth-child(3) .vk-tr-picker-menu{left:auto;right:0}}
+@media(max-width:330px){#vkTrophyRoom .vk-tr-controls{grid-template-columns:1fr}#vkTrophyRoom .vk-tr-picker-menu,#vkTrophyRoom label:nth-child(2) .vk-tr-picker-menu{left:0;right:0;width:auto;max-width:none;transform:none}}
+@media(prefers-reduced-motion:reduce){#vkTrophyRoom .vk-tr-picker-chevron,#vkTrophyRoom .vk-tr-picker-menu{animation:none!important;transition:none!important}}
+
+</style>
+<div id="vkTrophyRoom" role="dialog" aria-modal="true" aria-label="VELKORE Achievement Trophy Room">
+ <div class="vk-tr-wrap">
+  <header class="vk-tr-top"><div><div class="vk-tr-brand">VELKORE <span style="color:#c7cdd5">/ TROPHY ROOM</span></div><div class="vk-tr-kicker">YOUR DISCIPLINE. YOUR LEGACY.</div></div><button class="vk-tr-close" id="vkTrophyClose" type="button">← DASHBOARD</button></header>
+  <section class="vk-tr-hero"><div class="vk-tr-crown" aria-hidden="true">♛</div><div class="vk-tr-kicker">CURRENT RANK</div><div class="vk-tr-rank" id="vkTRRank">Initiate</div><div class="vk-tr-sub" id="vkTRLevelLine">Level 1 · Your journey starts here</div><div class="vk-tr-metrics"><div class="vk-tr-metric"><b id="vkTRXP">0</b><span>Total XP</span></div><div class="vk-tr-metric"><b id="vkTRSessions">0</b><span>Sessions</span></div><div class="vk-tr-metric"><b id="vkTRHours">0h</b><span>Study time</span></div></div><div class="vk-tr-progress"><i id="vkTRProgress" style="width:0%"></i></div><div class="vk-tr-progress-label" id="vkTRNext">100 XP to next level</div></section>
+  <div class="vk-tr-section"><h2>Achievement Collection</h2><span id="vkTRUnlockedCount">0 unlocked</span></div>
+  <div class="vk-tr-grid" id="vkTRAchievements"></div>
+  <p class="vk-tr-note">Achievements are calculated from your existing VELKORE records. No sessions, XP, levels or streaks are reset or re-awarded by opening this room.</p>
+ </div>
+</div>
+<script id="VK_TROPHY_ROOM_INTEGRATION">
+(function(){
+ 'use strict';
+ if(window.__VK_TROPHY_ROOM_V2__)return;window.__VK_TROPHY_ROOM_V2__=true;
+ var room=document.getElementById('vkTrophyRoom');if(!room)return;
+ function D(){try{if(typeof dataNow==='function')return dataNow();}catch(e){}return window.data||{};}
+ function n(v){var x=Number(v);return Number.isFinite(x)&&x>0?x:0;}
+ function levelOf(xp){return Math.floor(n(xp)/100)+1;}
+ function rankFor(level){if(level>=100)return 'Sovereign';if(level>=60)return 'Legend';if(level>=40)return 'Grandmaster';if(level>=25)return 'Master';if(level>=15)return 'Elite';if(level>=10)return 'Adept';if(level>=5)return 'Scholar';if(level>=3)return 'Apprentice';return 'Initiate';}
+ function validSession(s){return !!(s&&!s.deleted&&!s.cancelled&&s.status!=='CANCELLED'&&s.status!=='DELETED');}
+ function sessions(d){return (Array.isArray(d.sessions)?d.sessions:[]).filter(validSession);}
+ function totalMinutes(d){return sessions(d).reduce(function(sum,s){var mins=s.minutes!=null?s.minutes:(s.min!=null?s.min:(n(s.seconds)/60));return sum+n(mins);},0);}
+ function uniqueSessionCount(d){var seen={};sessions(d).forEach(function(s,i){var id=s.id!=null?'id:'+String(s.id):(s.startTime||s.startedAt?'t:'+String(s.startTime||s.startedAt):'i:'+i);seen[id]=1;});return Object.keys(seen).length;}
+ function dayKey(s){var raw=String(s&& (s.day||s.date)||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;var dt=new Date(s&&(s.startTime||s.startedAt||s.createdAt)||'');return isNaN(dt)?'':dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+ function studyDays(d){var set={};(Array.isArray(d.activeDays)?d.activeDays:[]).forEach(function(k){k=String(k||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(k))set[k]=1;});sessions(d).forEach(function(s){var k=dayKey(s);if(k)set[k]=1;});return Object.keys(set).length;}
+ function currentStreak(d){var set={};(Array.isArray(d.activeDays)?d.activeDays:[]).forEach(function(k){set[String(k).slice(0,10)]=1;});sessions(d).forEach(function(s){var k=dayKey(s);if(k)set[k]=1;});var now=new Date(),count=0;for(var i=0;i<500;i++){var x=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i),k=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');if(set[k])count++;else if(i===0)continue;else break;}return count;}
+ function countDone(list){return Array.isArray(list)?list.filter(function(x){return !!(x&&(x.done===true||x.completed===true||x.status==='completed'||x.status==='done'));}).length:0;}
+ function chapterCount(d){return countDone(d.chapters);}
+ function topicCount(d){var total=0;['topics','topicProgress','completedTopics'].forEach(function(k){if(Array.isArray(d[k]))total+=countDone(d[k]);});return total;}
+ var rarityOrder={Bronze:1,Silver:2,Gold:3,Platinum:4,Legendary:5};
+ var catalog=[
+  {id:'first-session',cat:'Study Milestones',rarity:'Bronze',icon:'🎯',name:'First Focus',desc:'Save your first valid study session.',req:'At least 1 valid saved study session.',need:1,metric:'sessions'},
+  {id:'five-sessions',cat:'Study Milestones',rarity:'Bronze',icon:'📘',name:'Building Rhythm',desc:'Complete 5 saved study sessions.',req:'At least 5 valid saved study sessions.',need:5,metric:'sessions'},
+  {id:'25-sessions',cat:'Study Milestones',rarity:'Silver',icon:'📚',name:'Consistent Scholar',desc:'Complete 25 saved study sessions.',req:'At least 25 valid saved study sessions.',need:25,metric:'sessions'},
+  {id:'100-sessions',cat:'Study Milestones',rarity:'Gold',icon:'🏛️',name:'Study Institution',desc:'Complete 100 saved study sessions.',req:'At least 100 valid saved study sessions.',need:100,metric:'sessions'},
+  {id:'500-sessions',cat:'Study Milestones',rarity:'Legendary',icon:'🏆',name:'The Archive',desc:'Build a verified history of 500 saved sessions.',req:'At least 500 valid saved study sessions.',need:500,metric:'sessions'},
+  {id:'one-hour',cat:'Study Milestones',rarity:'Bronze',icon:'⌛',name:'First Hour',desc:'Accumulate one hour of saved study time.',req:'At least 60 minutes across valid saved sessions.',need:60,metric:'minutes'},
+  {id:'ten-hours',cat:'Study Milestones',rarity:'Silver',icon:'⏳',name:'Ten-Hour Foundation',desc:'Accumulate 10 hours of saved study.',req:'At least 600 saved study minutes.',need:600,metric:'minutes'},
+  {id:'50-hours',cat:'Study Milestones',rarity:'Gold',icon:'🌙',name:'Deep Work',desc:'Accumulate 50 hours of saved study.',req:'At least 3,000 saved study minutes.',need:3000,metric:'minutes'},
+  {id:'100-hours',cat:'Study Milestones',rarity:'Platinum',icon:'💎',name:'Century of Focus',desc:'Accumulate 100 hours of saved study.',req:'At least 6,000 saved study minutes.',need:6000,metric:'minutes'},
+  {id:'500-hours',cat:'Study Milestones',rarity:'Legendary',icon:'🌌',name:'Lifetime of Focus',desc:'Accumulate 500 hours of saved study.',req:'At least 30,000 saved study minutes.',need:30000,metric:'minutes'},
+  {id:'three-days',cat:'Consistency',rarity:'Bronze',icon:'🔥',name:'Three-Day Spark',desc:'Study on 3 distinct days in total.',req:'At least 3 distinct study dates in saved records.',need:3,metric:'days'},
+  {id:'streak-7',cat:'Consistency',rarity:'Silver',icon:'⚡',name:'Seven-Day Resolve',desc:'Reach a 7-day current or recorded longest streak.',req:'Current or saved longest streak of at least 7 days.',need:7,metric:'streak'},
+  {id:'streak-30',cat:'Consistency',rarity:'Gold',icon:'🌟',name:'Unshakable',desc:'Reach a 30-day current or recorded longest streak.',req:'Current or saved longest streak of at least 30 days.',need:30,metric:'streak'},
+  {id:'streak-100',cat:'Consistency',rarity:'Platinum',icon:'🛡️',name:'The Constant',desc:'Reach a 100-day current or recorded longest streak.',req:'Current or saved longest streak of at least 100 days.',need:100,metric:'streak'},
+  {id:'streak-365',cat:'Consistency',rarity:'Legendary',icon:'☀️',name:'Year of Resolve',desc:'Reach a 365-day current or recorded longest streak.',req:'Current or saved longest streak of at least 365 days.',need:365,metric:'streak'},
+  {id:'chapters-5',cat:'Mastery',rarity:'Silver',icon:'🧠',name:'Chapter Conqueror',desc:'Mark 5 chapters complete in the existing progress data.',req:'At least 5 completed entries in the saved chapters collection.',need:5,metric:'chapters'},
+  {id:'chapters-20',cat:'Mastery',rarity:'Gold',icon:'📖',name:'Syllabus Architect',desc:'Mark 20 chapters complete in the existing progress data.',req:'At least 20 completed entries in the saved chapters collection.',need:20,metric:'chapters'},
+  {id:'tasks-10',cat:'Mastery',rarity:'Bronze',icon:'✅',name:'Task Finisher',desc:'Complete 10 saved study tasks.',req:'At least 10 tasks marked done/completed.',need:10,metric:'tasks'},
+  {id:'tasks-50',cat:'Mastery',rarity:'Silver',icon:'🧩',name:'Momentum Builder',desc:'Complete 50 saved study tasks.',req:'At least 50 tasks marked done/completed.',need:50,metric:'tasks'},
+  {id:'level-3',cat:'Level Evolution',rarity:'Bronze',icon:'🥉',name:'First Ascent',desc:'Reach Level 3 through the existing XP rules.',req:'Reach Level 3 (level thresholds remain 100 XP per level).',need:3,metric:'level'},
+  {id:'level-5',cat:'Level Evolution',rarity:'Silver',icon:'🥈',name:'Silver Ascent',desc:'Reach Level 5 through the existing XP rules.',req:'Reach Level 5 (400 total XP at the current level formula).',need:5,metric:'level'},
+  {id:'level-10',cat:'Level Evolution',rarity:'Gold',icon:'🥇',name:'Gold Ascent',desc:'Reach Level 10 through the existing XP rules.',req:'Reach Level 10 (900 total XP at the current level formula).',need:10,metric:'level'},
+  {id:'level-25',cat:'Level Evolution',rarity:'Platinum',icon:'👑',name:'Royal Scholar',desc:'Reach Level 25 through the existing XP rules.',req:'Reach Level 25 (2,400 total XP at the current level formula).',need:25,metric:'level'},
+  {id:'level-100',cat:'Level Evolution',rarity:'Legendary',icon:'♛',name:'Sovereign Legacy',desc:'Reach Level 100 through the existing XP rules.',req:'Reach Level 100 (9,900 total XP at the current level formula).',need:100,metric:'level'},
+  {id:'first-plan',cat:'Special Honors',rarity:'Bronze',icon:'🗓️',name:'Plan in Action',desc:'Complete your first saved planned study block.',req:'At least 1 plan block marked done/completed.',need:1,metric:'plans'},
+  {id:'plans-10',cat:'Special Honors',rarity:'Silver',icon:'📅',name:'Planner in Motion',desc:'Complete 10 saved planned study blocks.',req:'At least 10 plan blocks marked done/completed.',need:10,metric:'plans'}
+ ];
+ function metrics(d){var xp=n(d.xpTotal),level=levelOf(xp),sess=uniqueSessionCount(d),mins=totalMinutes(d),days=studyDays(d),streak=Math.max(currentStreak(d),n(d.longestStreak)),tasks=countDone(d.tasks),chapters=chapterCount(d),plans=countDone(d.planBlocks);return {xp:xp,level:level,sessions:sess,minutes:mins,days:days,streak:streak,tasks:tasks,chapters:chapters,plans:plans};}
+ function valueFor(a,m){return n(m[a.metric]);}
+ function reached(a,m){return valueFor(a,m)>=a.need;}
+ function vaultFor(d){var v=d.trophyVaultV2;if(!v||typeof v!=='object'||Array.isArray(v)){v={version:2,initialized:false,records:{}};d.trophyVaultV2=v;}if(!v.records||typeof v.records!=='object'||Array.isArray(v.records))v.records={};v.version=2;return v;}
+ function persistVault(){try{if(typeof window.persist==='function')window.persist(true);else console.warn('[VELKORE Trophy Vault] Existing persistence function is unavailable; vault remains in memory for this page.');}catch(e){console.warn('[VELKORE Trophy Vault] Could not persist vault through existing persistence layer.',e);}}
+ function escapeHTML(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+ function localDate(iso){if(!iso)return 'Date not recorded';var d=new Date(iso);return isNaN(d)?'Date not recorded':d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}
+ function ensureModals(){if(!document.getElementById('vkTRDetail')){var x=document.createElement('div');x.id='vkTRDetail';x.className='vk-tr-modal';x.setAttribute('role','dialog');x.setAttribute('aria-modal','true');x.setAttribute('aria-labelledby','vkTRDetailTitle');x.innerHTML='<div class="vk-tr-modal-card"><button type="button" class="vk-tr-modal-x" id="vkTRDetailClose" aria-label="Close trophy details">×</button><div id="vkTRDetailIcon" class="vk-tr-detail-icon">🏆</div><div id="vkTRDetailRarity" class="vk-tr-rarity">BRONZE</div><h2 id="vkTRDetailTitle">Trophy</h2><p id="vkTRDetailDesc"></p><div class="vk-tr-detail-row"><span>Requirement</span><b id="vkTRDetailReq"></b></div><div class="vk-tr-detail-row"><span>Progress</span><b id="vkTRDetailProgress"></b></div><div class="vk-tr-detail-row"><span>Status</span><b id="vkTRDetailStatus"></b></div><div class="vk-tr-detail-row"><span>Unlocked</span><b id="vkTRDetailDate"></b></div><button type="button" class="vk-tr-action" id="vkTRDetailDone">CLOSE DETAILS</button></div></div>';room.appendChild(x);}
+ if(!document.getElementById('vkTRReveal')){var r=document.createElement('div');r.id='vkTRReveal';r.className='vk-tr-modal vk-tr-reveal';r.setAttribute('role','dialog');r.setAttribute('aria-modal','true');r.setAttribute('aria-labelledby','vkTRRevealTitle');r.innerHTML='<div class="vk-tr-modal-card"><div class="vk-tr-reveal-kicker">VELKORE · ACHIEVEMENT UNLOCKED</div><div id="vkTRRevealIcon" class="vk-tr-detail-icon">🏆</div><div id="vkTRRevealRarity" class="vk-tr-rarity">GOLD</div><h2 id="vkTRRevealTitle">New Trophy</h2><p id="vkTRRevealReason"></p><button type="button" class="vk-tr-action" id="vkTRRevealContinue">CONTINUE</button></div></div>';document.body.appendChild(r);}}
+ var detail=null,reveal=null;
+ function injectControls(){var section=room.querySelector('.vk-tr-section');if(!section||document.getElementById('vkTRControls'))return;var controls=document.createElement('div');controls.id='vkTRControls';controls.className='vk-tr-controls';controls.innerHTML='<label>SHOW<select id="vkTRStatusFilter"><option value="all">All trophies</option><option value="unlocked">Unlocked</option><option value="locked">Locked</option></select></label><label>CATEGORY<select id="vkTRCategoryFilter"><option value="all">All categories</option></select></label><label>SORT<select id="vkTRSort"><option value="progression">Progression</option><option value="rarity">Rarity</option><option value="date">Unlock date</option></select></label>';section.insertAdjacentElement('afterend',controls);var categories=[];catalog.forEach(function(a){if(categories.indexOf(a.cat)<0)categories.push(a.cat);});var sel=document.getElementById('vkTRCategoryFilter');categories.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});var progress=document.createElement('div');progress.id='vkTRCompletion';progress.className='vk-tr-completion';progress.innerHTML='<div><span id="vkTRCompletionLabel">Collection completion</span><b id="vkTRCompletionValue">0%</b></div><div class="vk-tr-progress"><i id="vkTRCompletionBar" style="width:0%"></i></div>';controls.insertAdjacentElement('afterend',progress);
+ // Replace native OS dropdowns with consistent VELKORE glass-metal pickers.
+ ['vkTRStatusFilter','vkTRCategoryFilter','vkTRSort'].forEach(function(id){
+   var e=document.getElementById(id);if(!e)return;
+   e.addEventListener('change',renderCards);
+   var label=e.closest('label');if(!label||label.querySelector('.vk-tr-picker'))return;
+   e.classList.add('vk-tr-native-select');
+   var picker=document.createElement('div');picker.className='vk-tr-picker';picker.setAttribute('data-picker-for',id);
+   var trigger=document.createElement('button');trigger.type='button';trigger.className='vk-tr-picker-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
+   var value=document.createElement('span');value.className='vk-tr-picker-value';
+   var chevron=document.createElement('span');chevron.className='vk-tr-picker-chevron';chevron.setAttribute('aria-hidden','true');chevron.textContent='⌄';
+   trigger.appendChild(value);trigger.appendChild(chevron);
+   var menu=document.createElement('div');menu.className='vk-tr-picker-menu';menu.setAttribute('role','listbox');menu.setAttribute('aria-label',label.childNodes[0]&&label.childNodes[0].textContent||'Choose option');
+   Array.prototype.forEach.call(e.options,function(opt){var item=document.createElement('button');item.type='button';item.className='vk-tr-picker-option';item.setAttribute('role','option');item.setAttribute('data-value',opt.value);item.textContent=opt.textContent;item.addEventListener('click',function(){e.value=opt.value;value.textContent=opt.textContent;Array.prototype.forEach.call(menu.children,function(ch){ch.classList.toggle('is-selected',ch===item);ch.setAttribute('aria-selected',ch===item?'true':'false');});picker.classList.remove('is-open');trigger.setAttribute('aria-expanded','false');renderCards();});menu.appendChild(item);});
+   function syncPicker(){var opt=e.options[e.selectedIndex];value.textContent=opt?opt.textContent:'Choose…';Array.prototype.forEach.call(menu.children,function(ch){var yes=ch.getAttribute('data-value')===e.value;ch.classList.toggle('is-selected',yes);ch.setAttribute('aria-selected',yes?'true':'false');});}
+   syncPicker();trigger.addEventListener('click',function(){var willOpen=!picker.classList.contains('is-open');document.querySelectorAll('#vkTrophyRoom .vk-tr-picker.is-open').forEach(function(other){other.classList.remove('is-open');var t=other.querySelector('.vk-tr-picker-trigger');if(t)t.setAttribute('aria-expanded','false');});picker.classList.toggle('is-open',willOpen);trigger.setAttribute('aria-expanded',willOpen?'true':'false');});
+   picker.appendChild(trigger);picker.appendChild(menu);label.appendChild(picker);
+ });
+ if(!room.__vkPickerOutside){room.__vkPickerOutside=true;document.addEventListener('click',function(ev){if(ev.target&&ev.target.closest&&ev.target.closest('.vk-tr-picker'))return;document.querySelectorAll('#vkTrophyRoom .vk-tr-picker.is-open').forEach(function(x){x.classList.remove('is-open');var t=x.querySelector('.vk-tr-picker-trigger');if(t)t.setAttribute('aria-expanded','false');});});}
+ }
+ function reasonFor(a,m){var v=valueFor(a,m);switch(a.metric){case'sessions':return v+' verified saved session'+(v===1?'':'s')+' / '+a.need+' required';case'minutes':return Math.floor(v/60)+'h '+Math.floor(v%60)+'m verified study time / '+Math.floor(a.need/60)+'h required';case'days':return v+' distinct study days / '+a.need+' required';case'streak':return v+' days recorded as current or longest streak / '+a.need+' required';case'tasks':return v+' completed saved tasks / '+a.need+' required';case'chapters':return v+' completed saved chapters / '+a.need+' required';case'plans':return v+' completed saved plan blocks / '+a.need+' required';case'level':return 'Level '+m.level+' / Level '+a.need+' required';default:return 'Verified saved progress';}}
+ function getRecords(){return vaultFor(D()).records;}
+ function isUnlocked(a){return !!getRecords()[a.id];}
+ function cardHTML(a,m){var rec=getRecords()[a.id],un=!!rec,prog=valueFor(a,m),pct=Math.min(100,Math.round(prog/Math.max(1,a.need)*100));return '<button type="button" class="vk-tr-card '+(un?'is-unlocked':'is-locked')+'" data-trophy-id="'+a.id+'" aria-label="'+escapeHTML(a.name+', '+(un?'unlocked':'locked')+', '+a.rarity+' rarity')+'"><div class="vk-tr-card-head"><div class="vk-tr-icon" aria-hidden="true">'+a.icon+'</div><div class="vk-tr-card-title"><h3>'+escapeHTML(a.name)+'</h3><span class="vk-tr-state">'+(un?'✦ UNLOCKED':'◇ LOCKED')+'</span></div></div><div class="vk-tr-tags"><span class="vk-tr-rarity vk-rarity-'+a.rarity.toLowerCase()+'">'+a.rarity+'</span><span class="vk-tr-category">'+escapeHTML(a.cat)+'</span></div><p>'+escapeHTML(a.desc)+'</p><div class="vk-tr-card-progress"><i style="width:'+pct+'%"></i></div><div class="vk-tr-card-foot"><span>'+(un?escapeHTML(localDate(rec.unlockedAt)):'Requirement')+'</span><b>'+(un?'UNLOCKED':Math.min(prog,a.need)+' / '+a.need)+'</b></div></button>';}
+ function renderCards(){var d=D(),m=metrics(d),status=(document.getElementById('vkTRStatusFilter')||{}).value||'all',cat=(document.getElementById('vkTRCategoryFilter')||{}).value||'all',sort=(document.getElementById('vkTRSort')||{}).value||'progression';var list=catalog.filter(function(a){var u=isUnlocked(a);return (status==='all'||(status==='unlocked'&&u)||(status==='locked'&&!u))&&(cat==='all'||a.cat===cat);});list.sort(function(a,b){var ra=getRecords()[a.id],rb=getRecords()[b.id];if(sort==='rarity')return rarityOrder[b.rarity]-rarityOrder[a.rarity]||a.name.localeCompare(b.name);if(sort==='date'){if(!!ra!==!!rb)return ra?-1:1;return String(rb&&rb.unlockedAt||'').localeCompare(String(ra&&ra.unlockedAt||''))||a.name.localeCompare(b.name);}var pa=valueFor(a,m)/a.need,pb=valueFor(b,m)/b.need;if(isUnlocked(a)!==isUnlocked(b))return isUnlocked(a)?-1:1;return pb-pa||rarityOrder[b.rarity]-rarityOrder[a.rarity];});var host=document.getElementById('vkTRAchievements');if(host)host.innerHTML=list.map(function(a){return cardHTML(a,m);}).join('')||'<div class="vk-tr-empty">No trophies match these filters.</div>';var unlocked=catalog.filter(isUnlocked).length,pct=Math.round(unlocked/catalog.length*100);var c=document.getElementById('vkTRCompletionValue'),bar=document.getElementById('vkTRCompletionBar'),lab=document.getElementById('vkTRCompletionLabel');if(c)c.textContent=pct+'%';if(bar)bar.style.width=pct+'%';if(lab)lab.textContent=unlocked+' of '+catalog.length+' trophies unlocked';var count=document.getElementById('vkTRUnlockedCount');if(count)count.textContent=unlocked+' / '+catalog.length+' unlocked';}
+ function render(){var d=D(),m=metrics(d),xp=m.xp,level=m.level,into=xp%100;var el=function(id){return document.getElementById(id)};el('vkTRRank').textContent=rankFor(level);el('vkTRLevelLine').textContent='Level '+level+' · '+(level>=100?'Top rank achieved':(100-into)+' XP until Level '+(level+1));el('vkTRXP').textContent=Math.round(xp).toLocaleString('en-IN');el('vkTRSessions').textContent=m.sessions.toLocaleString('en-IN');el('vkTRHours').textContent=(m.minutes/60).toLocaleString('en-IN',{maximumFractionDigits:1})+'h';el('vkTRProgress').style.width=into+'%';el('vkTRNext').textContent=(100-into)+' XP to next level';var rank=document.getElementById('vkRankBadge');if(rank)rank.textContent='♛ '+rankFor(level).toUpperCase()+' · L'+level;renderCards();}
+ function open(){render();room.classList.add('vk-tr-open');document.body.style.overflow='hidden';var close=document.getElementById('vkTrophyClose');if(close)close.focus();}
+ function close(){if(detail)detail.classList.remove('is-open');room.classList.remove('vk-tr-open');document.body.style.overflow='';var b=document.getElementById('vkRankBadge');if(b)b.focus();}
+ function showDetail(id){var a=catalog.find(function(x){return x.id===id;});if(!a)return;var d=D(),m=metrics(d),rec=getRecords()[id],un=!!rec;document.getElementById('vkTRDetailIcon').textContent=a.icon;document.getElementById('vkTRDetailRarity').textContent=a.rarity.toUpperCase()+' · '+a.cat.toUpperCase();document.getElementById('vkTRDetailRarity').className='vk-tr-rarity vk-rarity-'+a.rarity.toLowerCase();document.getElementById('vkTRDetailTitle').textContent=a.name;document.getElementById('vkTRDetailDesc').textContent=a.desc;document.getElementById('vkTRDetailReq').textContent=a.req;document.getElementById('vkTRDetailProgress').textContent=reasonFor(a,m);document.getElementById('vkTRDetailStatus').textContent=un?'Unlocked':'Locked';document.getElementById('vkTRDetailDate').textContent=un?localDate(rec.unlockedAt):'Not unlocked';detail.classList.add('is-open');document.getElementById('vkTRDetailClose').focus();}
+ function closeDetail(){detail.classList.remove('is-open');}
+ var revealQueue=[],showingReveal=false;
+ function timerBusy(){var d=D(),t=d.timer||{};return t.status==='RUNNING'||t.status==='PAUSED';}
+ function showNextReveal(){if(showingReveal||!revealQueue.length||timerBusy()||room.classList.contains('vk-tr-open'))return;if(document.querySelector('.vkLevelOverlay.show'))return;var a=revealQueue.shift();if(!a)return;showingReveal=true;var m=metrics(D());document.getElementById('vkTRRevealIcon').textContent=a.icon;document.getElementById('vkTRRevealRarity').textContent=a.rarity.toUpperCase()+' · TROPHY SECURED';document.getElementById('vkTRRevealRarity').className='vk-tr-rarity vk-rarity-'+a.rarity.toLowerCase();document.getElementById('vkTRRevealTitle').textContent=a.name;document.getElementById('vkTRRevealReason').textContent='Unlocked: '+reasonFor(a,m)+'. '+a.desc;reveal.classList.add('is-open');document.getElementById('vkTRRevealContinue').focus();}
+ function continueReveal(){reveal.classList.remove('is-open');showingReveal=false;setTimeout(showNextReveal,180);}
+ function unlockAndRecover(){var d=D(),v=vaultFor(d),m=metrics(d),changed=false;catalog.forEach(function(a){if(reached(a,m)&&!v.records[a.id]){v.records[a.id]={id:a.id,unlockedAt:v.initialized?new Date().toISOString():null,legacy:!v.initialized,source:v.initialized?'verified-live-progress':'verified-existing-data'};changed=true;if(v.initialized)revealQueue.push(a);}});if(!v.initialized){v.initialized=true;v.recoveredAt=new Date().toISOString();changed=true;}if(changed)persistVault();}
+ function installRank(){var streak=document.getElementById('streakBadge');if(!streak)return;var existing=document.getElementById('vkRankBadge');if(existing){render();return;}var stack=document.createElement('div');stack.className='vkRankStack';streak.parentNode.insertBefore(stack,streak);stack.appendChild(streak);var rank=document.createElement('button');rank.type='button';rank.id='vkRankBadge';rank.setAttribute('aria-label','Open Rank and Achievement Trophy Room');rank.textContent='♛ INITIATE · L1';rank.addEventListener('click',open);stack.appendChild(rank);render();}
+ ensureModals();detail=document.getElementById('vkTRDetail');reveal=document.getElementById('vkTRReveal');injectControls();unlockAndRecover();
+ var closeBtn=document.getElementById('vkTrophyClose');if(closeBtn)closeBtn.addEventListener('click',close);room.addEventListener('click',function(e){if(e.target===room)close();var card=e.target&&e.target.closest&&e.target.closest('[data-trophy-id]');if(card)showDetail(card.getAttribute('data-trophy-id'));});
+ document.getElementById('vkTRDetailClose').addEventListener('click',closeDetail);document.getElementById('vkTRDetailDone').addEventListener('click',closeDetail);detail.addEventListener('click',function(e){if(e.target===detail)closeDetail();});document.getElementById('vkTRRevealContinue').addEventListener('click',continueReveal);reveal.addEventListener('click',function(e){if(e.target===reveal)return;});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(detail.classList.contains('is-open'))closeDetail();else if(reveal.classList.contains('is-open'))continueReveal();else if(room.classList.contains('vk-tr-open'))close();}});
+ installRank();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installRank,{once:true});
+ var last='';function signature(){var d=D();return JSON.stringify([d.xpTotal,(d.sessions||[]).map(function(s){return [s.id,s.day,s.startTime,s.startedAt,s.minutes,s.min,s.status,s.deleted,s.cancelled];}),(d.tasks||[]).map(function(x){return [x.id,x.done,x.completed,x.status];}),(d.chapters||[]).map(function(x){return [x.id,x.done,x.completed,x.status];}),(d.planBlocks||[]).map(function(x){return [x.id,x.done,x.completed,x.status];}),d.activeDays,d.longestStreak]);}
+ function refresh(){try{var sig=signature();if(sig!==last){last=sig;unlockAndRecover();render();}showNextReveal();}catch(e){console.warn('[VELKORE Trophy Vault] Refresh skipped safely.',e);}}
+ setTimeout(refresh,120);setTimeout(refresh,700);setInterval(refresh,1400);
+ window.openVELKORETrophyRoom=open;window.closeVELKORETrophyRoom=close;window.renderVELKORETrophyRoom=render;window.VK_TROPHY_CATALOG=catalog.map(function(a){return {id:a.id,name:a.name,category:a.cat,rarity:a.rarity,requirement:a.req};});
+})();
+</script>
+
 </body>
 </html>
 <!-- VELKORE FINAL INTEGRATION PATCH -->
@@ -17154,10 +17361,11 @@ function install(){
     wrappedR.__vkCarry=true;
     window.resetCountdown=wrappedR;
   }
-  var start=document.getElementById('startBtn');
-  if(start) start.onclick=window.startCountdown;
-  var reset=document.getElementById('resetBtn');
-  if(reset) reset.onclick=window.resetCountdown;
+  /* Do not reassign START/RESET handlers from this repeating installer.
+     The final integrity patch replaces these buttons and installs the canonical
+     lifecycle handlers. Rebinding .onclick here alongside addEventListener made
+     a single START click run twice (RUNNING -> immediately PAUSED), and RESET
+     could also execute twice. The wrappers remain available through window APIs. */
   var fin=document.getElementById('finishBtn');
   if(fin && !fin.__vkCarry){
     fin.__vkCarry=1;
